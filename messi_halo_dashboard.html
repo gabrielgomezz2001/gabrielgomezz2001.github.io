@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond Miami — A Gabriel Gomez analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --paper: #faf6ef;
+    --ink: #1a1614;
+    --ink-soft: #4a4440;
+    --ink-faint: #8a827a;
+    --accent: #d63a2f;
+    --accent-soft: #e8c4be;
+    --miami-pink: #f7b7d2;
+    --miami-black: #000000;
+    --rule: #1a1614;
+    --rule-faint: #d4ccc0;
+    --highlight: #fff3a3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Masthead with menu icon ---------- */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 14px 28px 12px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    background: var(--paper);
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .menu-btn {
+    background: transparent;
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    padding: 9px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: background 0.2s;
+  }
+  .menu-btn:hover { background: var(--ink); }
+  .menu-btn:hover span { background: var(--paper); }
+  .menu-btn span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--ink);
+    transition: background 0.2s;
+  }
+  .masthead-center {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    font-style: italic;
+    text-align: center;
+  }
+  .masthead-right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  /* ---------- Side drawer ---------- */
+  .drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 22, 20, 0);
+    visibility: hidden;
+    transition: background 0.3s ease, visibility 0s 0.3s;
+    z-index: 100;
+  }
+  .drawer-overlay.open {
+    background: rgba(26, 22, 20, 0.5);
+    visibility: visible;
+    transition: background 0.3s ease;
+  }
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(360px, 85vw);
+    height: 100vh;
+    background: var(--paper);
+    border-right: 2px solid var(--ink);
+    z-index: 101;
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head {
+    padding: 22px 28px 18px;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .drawer-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .drawer-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    padding: 6px 10px;
+    color: var(--ink);
+  }
+  .drawer-close:hover { color: var(--accent); }
+  .drawer-section {
+    padding: 18px 28px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+  }
+  .drawer-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .drawer-nav li a {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 28px;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.3;
+    border-bottom: 1px solid var(--rule-faint);
+    transition: background 0.2s, color 0.2s;
+  }
+  .drawer-nav li a:hover {
+    background: var(--bg);
+    color: var(--accent);
+  }
+  .drawer-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 28px;
+  }
+  .drawer-foot {
+    margin-top: auto;
+    padding: 24px 28px;
+    border-top: 1px solid var(--rule-faint);
+    background: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    line-height: 1.6;
+  }
+  .drawer-foot strong { color: var(--ink); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 64px 32px 56px;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--rule);
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: inline-block;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 6px;
+  }
+  h1.headline {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 7vw, 88px);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    margin-bottom: 28px;
+    max-width: 18ch;
+  }
+  h1.headline em { font-style: italic; font-weight: 500; }
+  h1.headline .red { color: var(--accent); font-weight: 700; }
+  .deck {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(18px, 2.2vw, 22px);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    font-style: italic;
+  }
+  .author-line {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule-faint);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .author-line .by {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+  }
+  .author-line .name {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .author-line .name::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+    vertical-align: middle;
+    margin-right: 12px;
+    margin-bottom: 4px;
+  }
+  .byline {
+    margin-top: 36px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 36px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    align-items: baseline;
+  }
+  .byline span { white-space: nowrap; line-height: 1.6; }
+  .byline span strong { color: var(--ink); font-weight: 700; }
+
+  /* ---------- Section base ---------- */
+  section { padding: 72px 32px; max-width: 1400px; margin: 0 auto; scroll-margin-top: 80px; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(30px, 4.2vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    max-width: 24ch;
+  }
+  h2 em { font-style: italic; font-weight: 500; }
+  h2 .red { color: var(--accent); }
+  .section-intro {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin-bottom: 48px;
+  }
+  .section-intro strong {
+    color: var(--ink);
+    font-weight: 500;
+    background: linear-gradient(180deg, transparent 65%, var(--highlight) 65%);
+    padding: 0 2px;
+  }
+
+  /* ---------- Stat cards ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: 40px 0 24px;
+  }
+  .stat {
+    padding: 32px 24px 28px;
+    border-right: 1px solid var(--rule-faint);
+    transition: background 0.3s ease;
+  }
+  .stat:last-child { border-right: none; }
+  .stat:hover { background: var(--paper); }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    margin-bottom: 16px;
+    line-height: 1.4;
+    min-height: 28px;
+  }
+  .stat-value {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(40px, 5vw, 60px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .stat-value.red { color: var(--accent); }
+  .stat-value .unit {
+    font-size: 0.4em;
+    font-weight: 400;
+    color: var(--ink-soft);
+    margin-left: 4px;
+  }
+  .stat-plain {
+    margin-top: 14px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .stat-plain::before {
+    content: 'in plain words';
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- Story callouts ---------- */
+  .story-callout {
+    margin: 40px 0;
+    padding: 28px 32px;
+    background: var(--paper);
+    border-left: 4px solid var(--accent);
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+    max-width: 75ch;
+  }
+  .story-callout strong { font-weight: 600; }
+
+  /* ---------- Halo explainer ---------- */
+  .explainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    margin-top: 32px;
+  }
+  .explainer-block {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    padding: 32px 28px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.3s;
+  }
+  .explainer-block:hover { background: var(--bg); }
+  .explainer-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding-top: 6px;
+  }
+  .explainer-content h3 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(18px, 2.2vw, 22px);
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+  .explainer-content h3 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .explainer-content p {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .explainer-content p em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .explainer-content p strong {
+    color: var(--ink);
+    font-weight: 500;
+    background: linear-gradient(180deg, transparent 65%, var(--highlight) 65%);
+    padding: 0 2px;
+  }
+
+  /* ---------- Decomposition ---------- */
+  .decomp {
+    margin-top: 32px;
+    background: var(--paper);
+    padding: 40px 32px;
+    border: 1px solid var(--rule-faint);
+  }
+  .decomp-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .decomp-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin-bottom: 36px;
+  }
+  .decomp-subtitle::after {
+    content: ' →';
+    color: var(--accent);
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(4px); }
+  }
+  .bar-container {
+    margin-bottom: 32px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .bar-container:hover { transform: translateX(4px); }
+  .bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 10px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .bar-label {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(16px, 2vw, 19px);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .bar-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    text-align: right;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .bar-value .pct {
+    color: var(--ink-faint);
+    display: block;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  .bar-track {
+    height: 28px;
+    background: var(--rule-faint);
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    transition: width 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    width: 0;
+  }
+  .bar-fill.miami {
+    background: linear-gradient(90deg, var(--miami-black) 0%, var(--miami-pink) 100%);
+  }
+  .bar-fill.rest { background: var(--ink-soft); }
+  .bar-fill.halo { background: var(--accent); }
+  .bar-plain {
+    margin-top: 10px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 70ch;
+  }
+  .bar-plain b {
+    color: var(--ink);
+    font-weight: 500;
+    background: linear-gradient(180deg, transparent 65%, var(--highlight) 65%);
+    padding: 0 2px;
+  }
+  .bar-expand-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-top: 8px;
+    opacity: 0.7;
+  }
+
+  /* ---------- Counterfactual ---------- */
+  .counterfactual {
+    background: var(--paper);
+    padding: 40px 32px;
+    margin-top: 56px;
+    border: 1px solid var(--rule-faint);
+  }
+  .cf-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .cf-chart-wrap {
+    position: relative;
+    padding: 20px 20px 50px 60px;
+  }
+  .cf-chart {
+    height: 280px;
+    position: relative;
+    border-left: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .cf-text h3 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(24px, 3vw, 30px);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  .cf-text h3 em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .cf-text p {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .cf-text p strong { color: var(--ink); font-weight: 500; }
+  .cf-axis-label {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .cf-slider-wrap {
+    margin-top: 24px;
+    padding: 18px;
+    background: var(--bg);
+    border: 1px dashed var(--rule-faint);
+  }
+  .cf-slider-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cf-slider-value {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    font-style: italic;
+  }
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--rule-faint);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: -7px;
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: var(--rule-faint);
+  }
+  input[type="range"]::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--paper);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .cf-explain {
+    margin-top: 12px;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  /* ---------- Tabs ---------- */
+  .evidence-tabs {
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .tab-strip {
+    display: flex;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tab {
+    flex: 1;
+    padding: 22px 24px;
+    cursor: pointer;
+    border-right: 1px solid var(--rule-faint);
+    transition: background 0.2s;
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-bottom: none;
+    text-align: left;
+    font-family: inherit;
+  }
+  .tab:last-child { border-right: none; }
+  .tab:hover { background: rgba(0,0,0,0.03); }
+  .tab.active { background: var(--ink); color: var(--paper); }
+  .tab-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .tab-title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.2;
+    display: block;
+  }
+  .tab-content { padding: 40px 32px; min-height: 320px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from {opacity: 0; transform: translateY(8px);} to {opacity: 1; transform: translateY(0);} }
+  .tab-panel h4 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    max-width: 32ch;
+  }
+  .tab-panel h4 em { font-style: italic; color: var(--accent); }
+  .tab-panel p {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+    max-width: 65ch;
+  }
+  .tab-panel p strong { color: var(--ink); font-weight: 500; }
+  .pull-quote {
+    margin: 24px 0;
+    padding: 18px 24px;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: rgba(214, 58, 47, 0.04);
+  }
+  .plain-box {
+    margin-top: 20px;
+    padding: 18px 24px;
+    background: var(--bg);
+    border: 1px dashed var(--rule-faint);
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 65ch;
+  }
+  .plain-box::before {
+    content: 'what this means for you';
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  /* ---------- Chicago Fire plays ---------- */
+  .plays-intro {
+    margin-top: 28px;
+    margin-bottom: 20px;
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    font-style: italic;
+    max-width: 65ch;
+  }
+  .plays-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+  .play {
+    background: var(--bg);
+    border: 1px solid var(--rule-faint);
+    padding: 24px 22px;
+    transition: all 0.25s;
+  }
+  .play:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .play-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .play h5 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  .play h5 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .play p {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .play-tag {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 10px;
+    background: var(--paper);
+    border: 1px solid var(--rule-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Timeline ---------- */
+  .timeline { margin-top: 28px; position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 84px;
+    width: 1px;
+    background: var(--rule);
+  }
+  .tl-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 30px;
+    padding: 14px 0;
+    align-items: start;
+    position: relative;
+  }
+  .tl-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    padding-top: 4px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: 80px;
+    top: 18px;
+    width: 9px;
+    height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 2px solid var(--paper);
+  }
+  .tl-content { padding-left: 24px; }
+  .tl-action {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .tl-meta {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ---------- Kill shot ---------- */
+  .kill-shot {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 88px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kill-shot-inner { max-width: 1200px; margin: 0 auto; }
+  .kill-shot .kicker {
+    color: var(--accent-soft);
+    border-bottom-color: var(--accent-soft);
+  }
+  .kill-shot h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 5.5vw, 68px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--paper);
+    max-width: 22ch;
+    margin-bottom: 32px;
+  }
+  .kill-shot h2 em {
+    color: var(--accent-soft);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .pitch-quote {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(18px, 2.4vw, 22px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.55;
+    max-width: 60ch;
+    color: rgba(245, 241, 234, 0.85);
+    border-left: 3px solid var(--accent);
+    padding-left: 24px;
+    margin-top: 32px;
+  }
+  .kill-shot-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 64px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(245, 241, 234, 0.2);
+  }
+  .ks-stat-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 7vw, 80px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--accent-soft);
+    margin-bottom: 12px;
+  }
+  .ks-stat-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(245, 241, 234, 0.7);
+    max-width: 28ch;
+  }
+
+  /* ---------- Method ---------- */
+  .method {
+    background: var(--paper);
+    border-top: 2px solid var(--ink);
+    padding: 56px 32px;
+    scroll-margin-top: 80px;
+  }
+  .method-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+  }
+  .method h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .method p {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .sources {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    line-height: 1.85;
+    color: var(--ink-soft);
+  }
+  .sources strong { color: var(--ink); }
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 24px 32px;
+    background: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(2) { border-right: none; }
+    .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--rule-faint); }
+    .cf-grid { grid-template-columns: 1fr; gap: 32px; }
+    .tab-strip { flex-direction: column; }
+    .tab { border-right: none; border-bottom: 1px solid var(--rule-faint); }
+    .kill-shot-grid { grid-template-columns: 1fr; gap: 32px; }
+    .method-inner { grid-template-columns: 1fr; gap: 32px; }
+    .explainer { grid-template-columns: 1fr; }
+    .plays-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .masthead { padding: 12px 18px; }
+    .masthead-center { font-size: 18px; }
+    .masthead-right { font-size: 9px; }
+    .hero { padding: 40px 20px 36px; }
+    section { padding: 48px 20px; }
+    .kill-shot { padding: 56px 20px; }
+    .decomp { padding: 28px 20px; }
+    .counterfactual { padding: 28px 20px; }
+    .tab-content { padding: 28px 20px; }
+    .timeline::before { left: 64px; }
+    .tl-item { grid-template-columns: 70px 1fr; gap: 16px; }
+    .tl-item::before { left: 60px; }
+    .tl-content { padding-left: 16px; }
+    .byline { flex-direction: column; gap: 8px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== MASTHEAD ========== -->
+<div class="masthead">
+  <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="masthead-center">Beyond Miami</div>
+  <div class="masthead-right">2022 — 2024 · MLS</div>
+</div>
+
+<!-- ========== SIDE DRAWER ========== -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-title">Beyond Miami</div>
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">✕ Close</button>
+  </div>
+  <div class="drawer-section">Sections</div>
+  <ul class="drawer-nav">
+    <li><a href="#top" class="drawer-link"><span class="drawer-num">01</span>The big question</a></li>
+    <li><a href="#numbers" class="drawer-link"><span class="drawer-num">02</span>The headline numbers</a></li>
+    <li><a href="#what-is-halo" class="drawer-link"><span class="drawer-num">03</span>What's a "halo"?</a></li>
+    <li><a href="#breakdown" class="drawer-link"><span class="drawer-num">04</span>Pulling Miami out</a></li>
+    <li><a href="#evidence" class="drawer-link"><span class="drawer-num">05</span>Three angles, one answer</a></li>
+    <li><a href="#bottom-line" class="drawer-link"><span class="drawer-num">06</span>The bottom line</a></li>
+    <li><a href="#sources" class="drawer-link"><span class="drawer-num">07</span>Sources & method</a></li>
+  </ul>
+  <div class="drawer-foot">
+    <strong>Beyond Miami</strong><br>
+    A Gabriel Gomez analysis
+  </div>
+</aside>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="top">
+  <span class="kicker">Beyond Miami · No. 01</span>
+  <h1 class="headline">So did Messi <em>actually lift MLS</em> — or just <span class="red">Inter Miami?</span></h1>
+  <p class="deck">Everyone keeps saying he transformed the whole league's commercial fortunes. I went looking for the receipts. The story turned out more interesting than the headlines.</p>
+  <div class="author-line">
+    <span class="by">An analysis by</span>
+    <span class="name">Gabriel Gomez</span>
+  </div>
+  <div class="byline">
+    <span>Window · <strong>2022 → 2024</strong></span>
+    <span>Teams · <strong>29 MLS clubs</strong></span>
+    <span>Source · <strong>SponsorUnited</strong></span>
+  </div>
+</section>
+
+<!-- ========== HEADLINE NUMBERS ========== -->
+<section id="numbers">
+  <div class="section-label">First, the headline numbers</div>
+  <h2>The "Messi lifted MLS" story isn't <em>wrong</em>. It's just <em>incomplete</em>.</h2>
+  <p class="section-intro">MLS sponsorship money grew <strong>from $461M to $665M in two years</strong>. That's a real, big jump. But the question isn't whether the league grew — it's <strong>where the growth came from</strong>. That's where the simple story falls apart.</p>
+
+  <div class="stat-grid">
+    <div class="stat">
+      <div class="stat-label">2022 total<br>(before Messi)</div>
+      <div class="stat-value">$461<span class="unit">M</span></div>
+      <div class="stat-plain">Every MLS team's sponsor money added together, the year before Messi.</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">2024 total<br>(after Messi)</div>
+      <div class="stat-value">$665<span class="unit">M</span></div>
+      <div class="stat-plain">Two years later. About $204M more than 2022.</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">League growth<br>2022 → 2024</div>
+      <div class="stat-value red">+44<span class="unit">%</span></div>
+      <div class="stat-plain">The big number every press release loves to cite.</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Inter Miami's slice<br>of new money</div>
+      <div class="stat-value red">26<span class="unit">%</span></div>
+      <div class="stat-plain">One team — out of 29 — produced a quarter of all the new money.</div>
+    </div>
+  </div>
+
+  <div class="story-callout">
+    <strong>Hold on a second.</strong> If one team made up a quarter of the growth, then the headline "MLS grew 44%" is hiding a lot. Let's pull Miami out and see what's actually going on.
+  </div>
+</section>
+
+<!-- ========== HALO EXPLAINER ========== -->
+<section id="what-is-halo">
+  <div class="section-label">Wait — what's a "halo"?</div>
+  <h2>Quick detour for <em>anyone new to this</em>.</h2>
+
+  <div class="explainer">
+    <div class="explainer-block">
+      <div class="explainer-num">01</div>
+      <div class="explainer-content">
+        <h3>Think Tiger Woods.</h3>
+        <p>When Tiger was at his peak, every PGA event got more eyeballs and more sponsor interest — <em>even tournaments he wasn't playing in</em>. His being in the sport made the whole sport more valuable. That ripple effect is what people call a "halo."</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">02</div>
+      <div class="explainer-content">
+        <h3>The Messi version of that idea.</h3>
+        <p>The story everyone tells: Messi made MLS culturally interesting in a way it had never been. Brands that ignored MLS started paying attention. <em>Even teams that never played Inter Miami</em> got a boost — because being in MLS now meant being in the same league as Messi.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">03</div>
+      <div class="explainer-content">
+        <h3>So "halo" = the spillover.</h3>
+        <p>It's <em>not</em> Inter Miami's own growth. That's just Inter Miami winning. The halo is whether the <strong>other 28 teams</strong> are now in a better spot to sell sponsorships than they were before Messi showed up.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">04</div>
+      <div class="explainer-content">
+        <h3>Why this matters for everyone else.</h3>
+        <p>If you run a non-Miami team, you don't care that Inter Miami got rich. You care whether <em>your</em> sponsorship sales are happening in a better market because of him. So: <strong>did Messi make MLS a better place to sell, or did he just make one team better off?</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="story-callout" style="margin-top: 32px;">
+    <strong>Quick spoiler:</strong> the answer turns out to be "he just made one team better off." But the proof needs a few different angles to be airtight. Here's the math.
+  </div>
+</section>
+
+<!-- ========== DECOMPOSITION ========== -->
+<section id="breakdown">
+  <div class="section-label">Pulling Miami out of the math</div>
+  <h2>Once you separate Inter Miami, the picture changes <em>a lot</em>.</h2>
+  <p class="section-intro">Of the $204M in new sponsorship money MLS added between 2022 and 2024, here's where each piece came from. <strong>Tap any bar</strong> for more detail.</p>
+
+  <div class="decomp">
+    <div class="decomp-title">$204M of new money, broken into pieces</div>
+    <div class="decomp-subtitle">Tap any bar to expand</div>
+
+    <div class="bar-container" data-info="Inter Miami's sponsor money jumped from about $17M in 2022 to about $70M in 2024 — more than triple in two years. The biggest piece: Royal Caribbean signed on as their jersey sponsor in late 2023, a deal worth an estimated $8-10M per year by itself. Inter Miami also intentionally let earlier deals expire so they could re-sign them at Messi-era prices, with bonus clauses written in.">
+      <div class="bar-header">
+        <div class="bar-label">Inter Miami alone</div>
+        <div class="bar-value">+$53M<span class="pct">26% of all new MLS money</span></div>
+      </div>
+      <div class="bar-track"><div class="bar-fill miami" data-width="26"></div></div>
+      <div class="bar-plain">In plain words: <b>one team out of 29 made a quarter of all the new money</b> the league added in two years. They more than tripled their own sponsor revenue.</div>
+      <div class="bar-expand-hint">↓ Tap to see the Royal Caribbean detail</div>
+    </div>
+
+    <div class="bar-container" data-info="The 28 non-Miami teams went from about $444M to about $595M in sponsor revenue. That's $151M in new money — a 34% growth rate. Sounds great. But here's the catch: MLS sponsorship was already growing 15% per year before Messi was even a rumor. If you compound 15% for two years, you get 33% growth. So the other 28 teams grew almost exactly at the rate they were already growing. Without doing anything different.">
+      <div class="bar-header">
+        <div class="bar-label">Everyone else (28 teams combined)</div>
+        <div class="bar-value">+$151M<span class="pct">74% of all new MLS money</span></div>
+      </div>
+      <div class="bar-track"><div class="bar-fill rest" data-width="74"></div></div>
+      <div class="bar-plain">In plain words: <b>the other 28 teams added $151M too — but they were already on track to add about that much</b>. As a group they grew 34%. The pre-Messi pace would have produced ~33%. Almost no extra speed.</div>
+      <div class="bar-expand-hint">↓ Tap for the trend math</div>
+    </div>
+
+    <div class="bar-container" data-info="The 'real halo' is the part of growth in the other 28 teams that's MORE than the pre-Messi trend would have produced. Take what actually happened, subtract what would have happened anyway, and what's left is the actual Messi effect on everyone else. That number works out to roughly $5M total. That's tiny — barely 2.5% of total MLS growth, and well within the margin of error of the data. Statistically, there's almost nothing here.">
+      <div class="bar-header">
+        <div class="bar-label">The real "Messi halo" effect on other teams</div>
+        <div class="bar-value">+$5M<span class="pct">≈ 2.5% of all new MLS money</span></div>
+      </div>
+      <div class="bar-track"><div class="bar-fill halo" data-width="2.5"></div></div>
+      <div class="bar-plain">In plain words: <b>after you take out the growth that was already coming, only about $5M of "Messi bump" is left</b> for the other 28 teams. That's less than a single mid-size sleeve patch deal. The halo is basically a rounding error.</div>
+      <div class="bar-expand-hint">↓ Tap for the methodology</div>
+    </div>
+  </div>
+
+  <div class="counterfactual">
+    <div class="cf-grid">
+      <div class="cf-chart-wrap">
+        <div class="cf-chart" id="cfChart">
+          <span class="cf-axis-label" style="bottom: -22px; left: 0;">2021</span>
+          <span class="cf-axis-label" style="bottom: -22px; left: 33%;">2022</span>
+          <span class="cf-axis-label" style="bottom: -22px; left: 66%;">2023</span>
+          <span class="cf-axis-label" style="bottom: -22px; right: 0;">2024</span>
+          <span class="cf-axis-label" style="left: -50px; bottom: 0;">$400M</span>
+          <span class="cf-axis-label" style="left: -50px; top: 0;">$700M</span>
+        </div>
+      </div>
+      <div class="cf-text">
+        <h3>What if there was <em>no Messi</em>?</h3>
+        <p>The dashed line shows where the rest of MLS would have ended up if the pre-Messi growth rate just kept going — no Messi, no halo, no new factors. About <strong>$590M</strong>.</p>
+        <p>Where they actually ended up? <strong>$595M</strong>.</p>
+        <p>The gap — about $5M across 28 teams — is the entire "Messi halo" the data can find. Drag the slider to test the assumption yourself.</p>
+
+        <div class="cf-slider-wrap">
+          <div class="cf-slider-label">
+            <span>Pre-Messi growth rate</span>
+            <span class="cf-slider-value" id="rateVal">15%/yr</span>
+          </div>
+          <input type="range" id="rateSlider" min="8" max="22" value="15" step="0.5">
+          <div class="cf-explain" id="rateExplain">At 15%/yr (the actual 2021→2022 rate), the trend predicts $590M — almost exactly what happened.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EVIDENCE TABS ========== -->
+<section id="evidence">
+  <div class="section-label">Three angles, one answer</div>
+  <h2>This isn't just <em>one chart</em>. It's a pattern.</h2>
+  <p class="section-intro">If a halo were really there, you'd see it from multiple angles — in the overall numbers, in which categories grew, and in which teams gained the most. Instead, every angle says the same thing.</p>
+
+  <div class="evidence-tabs">
+    <div class="tab-strip">
+      <button class="tab active" data-tab="0">
+        <span class="tab-num">Angle 01</span>
+        <span class="tab-title">The trend was already there</span>
+      </button>
+      <button class="tab" data-tab="1">
+        <span class="tab-num">Angle 02</span>
+        <span class="tab-title">Where the surge came from</span>
+      </button>
+      <button class="tab" data-tab="2">
+        <span class="tab-num">Angle 03</span>
+        <span class="tab-title">The Chicago Fire story</span>
+      </button>
+    </div>
+
+    <div class="tab-content">
+      <div class="tab-panel active">
+        <h4>The other 28 teams grew 34%. The trend already predicted <em>33%</em>.</h4>
+        <p>Before Messi was even a rumor, MLS sponsorship was growing 15% a year. That's not a small number — it's healthy growth driven by league expansion, the 2026 World Cup approaching, and the new Apple TV deal.</p>
+        <p>If you take that 15%/year rate and run it for two years, you get ~33% growth. That's the "do nothing different, no Messi" prediction.</p>
+        <p>What actually happened to the other 28 teams? They grew <strong>34%</strong>.</p>
+        <p>That extra 1 point — about $5M total spread across 28 teams — is everything we can blame Messi for, outside Miami. It's less than a single decent sleeve patch deal. Calling that a "halo" is a stretch.</p>
+        <div class="pull-quote">"Once you take out the trend that was already there, there's basically nothing left for Messi to take credit for, outside Miami."</div>
+        <div class="plain-box">
+          If your team's sponsor revenue grew 30-35% in this window, you didn't catch a Messi halo — you caught the same growth MLS was already producing without him. To actually beat the trend, you needed to grow 40%+. Most teams didn't.
+        </div>
+      </div>
+
+      <div class="tab-panel">
+        <h4>Three categories drove the 2024 jump. <em>Two have nothing to do with Messi.</em></h4>
+        <p>SponsorUnited points to three categories that made up over $50M of MLS's 2023→2024 growth: <strong>Hotel/Restaurant/Leisure</strong>, <strong>Business Services</strong>, and <strong>Alcohol</strong>. The Messi story would say: this is where the halo lives. Let me check each one.</p>
+        <p><strong>Hotel/Restaurant/Leisure:</strong> SponsorUnited's CEO said directly that this surge was driven mostly by one deal — Royal Caribbean's jersey sponsorship with Inter Miami (~$8-10M/year). That's not a halo. That's Miami again.</p>
+        <p><strong>Business Services:</strong> Real, broad growth here. The standout was Chicago Fire tripling their business services deals — driven by a Chicago specialty steel company expanding its commitment. That's a sales win, not Messi spillover.</p>
+        <p><strong>Alcohol:</strong> Up across NFL, NBA, MLS, and F1 at the same time. A global trend in sports as drinking habits shift toward spirits, ready-to-drinks, and seltzers. Has nothing to do with one MLS player.</p>
+        <div class="pull-quote">"Even the categories supposedly 'unlocked by Messi' turn out to be mostly other stories wearing his hat."</div>
+        <div class="plain-box">
+          If you're trying to ride the Messi wave by chasing the categories the press credits him for, two of the three are actually being driven by things you can already pitch — local B2B and global drink trends. No global superstar required.
+        </div>
+      </div>
+
+      <div class="tab-panel">
+        <h4>Chicago Fire jumped from <em>16th to 2nd</em> in deals signed. They did it without using Messi's name once.</h4>
+        <p>Of every team in MLS, Chicago Fire had the biggest one-year jump in deal count over this window — climbing 14 spots in one year. If a halo would show up clearly anywhere, it should show up here.</p>
+        <p>So I went and looked at every deal they actually signed in 2023-2024. Here's the timeline:</p>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-date">Oct 2023</div>
+            <div class="tl-content">
+              <div class="tl-action">Signed Carvana as front-of-jersey sponsor</div>
+              <div class="tl-meta">Used cars · multi-year</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Oct 2023</div>
+            <div class="tl-content">
+              <div class="tl-action">Expanded Hyundai to sleeve patch</div>
+              <div class="tl-meta">New cars · existing partner</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">Dec 2023</div>
+            <div class="tl-content">
+              <div class="tl-action">Brought back Magellan as Official Partner</div>
+              <div class="tl-meta">Specialty steel · Chicago-local</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">May 2024</div>
+            <div class="tl-content">
+              <div class="tl-action">Upgraded Magellan to jersey sleeve sponsor</div>
+              <div class="tl-meta">Same partner · bigger deal</div>
+            </div>
+          </div>
+        </div>
+
+        <p class="plays-intro">But what's actually happening here? Four specific moves — and any MLS team could run them.</p>
+
+        <div class="plays-grid">
+          <div class="play">
+            <span class="play-num">Move 01</span>
+            <h5>Land a <em>national brand</em> on your best jersey spot.</h5>
+            <p>Carvana isn't from Chicago — they're a national online used-car company. The front of the jersey is the most valuable spot any soccer club has, usually a $5-15M/year multi-year deal. Chicago used their best inventory to land a big national advertiser. That's the upgrade move every team is trying to make.</p>
+            <span class="play-tag">Big national account</span>
+          </div>
+
+          <div class="play">
+            <span class="play-num">Move 02</span>
+            <h5>Sell <em>more</em> to partners you already have.</h5>
+            <p>Hyundai was already a Chicago Fire partner. Instead of leaving that as is, Chicago sold them the sleeve patch — a separate paid spot on the other part of the jersey. This is the easiest sale a team can make: take a partner who already trusts you, find more inventory to sell them, grow the deal. Sales people call it "expansion revenue" and it's the highest-ROI work they do.</p>
+            <span class="play-tag">Grow existing partner</span>
+          </div>
+
+          <div class="play">
+            <span class="play-num">Move 03</span>
+            <h5>Win back old partners <em>with a small deal first</em>.</h5>
+            <p>Magellan, a Chicago specialty steel company, used to sponsor the Fire but had stopped. Chicago brought them back in December 2023 as an "Official Partner" — a small, low-tier deal mostly about events and presence. Five months later, they upgraded Magellan to a <strong>jersey sleeve</strong> deal — much bigger money. Classic relationship sales: a small re-entry deal as the door-opener for a big deal later.</p>
+            <span class="play-tag">Small first, then big</span>
+          </div>
+
+          <div class="play">
+            <span class="play-num">Move 04</span>
+            <h5>Sell to your <em>actual local market</em>, not the league trend.</h5>
+            <p>A used-car company. A new-car company. A specialty steel company. Two of those three are Chicago industries — the city has a huge auto market and is historically a steel and manufacturing town. They didn't chase Royal Caribbean or some flashy global brand. They sold to companies with a real reason to want Chicago market exposure.</p>
+            <span class="play-tag">Lean into your city</span>
+          </div>
+        </div>
+
+        <div class="pull-quote">"A used-car company. A new-car company. A Chicago specialty steel company. The team that 'caught the Messi era' the most actually did it the old-fashioned way."</div>
+        <div class="plain-box">
+          None of these four moves needed Messi, soccer's global moment, or being a flashy team. They needed a sales team that knew their inventory, knew their city, and knew how to grow accounts. Every move is repeatable. <strong>This is the actionable lesson from the whole project</strong> — the team that won most in this window didn't ride a wave, they ran a disciplined playbook.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== KILL SHOT ========== -->
+<section class="kill-shot" id="bottom-line">
+  <div class="kill-shot-inner">
+    <span class="kicker">The bottom line</span>
+    <h2>Sales execution still wins. Even in <em>the Messi era.</em></h2>
+    <p class="pitch-quote">Everyone says Messi lifted MLS sponsorship 44%. The data says he made Inter Miami rich, and the rest of the league grew at exactly the rate it was already growing. The teams that actually won bigger — like Chicago Fire — did it through classic sales work, not by riding the wave. For any team that's not Inter Miami, the playbook hasn't changed.</p>
+
+    <div class="kill-shot-grid">
+      <div>
+        <div class="ks-stat-num">$53M</div>
+        <div class="ks-stat-label">Inter Miami's slice of all new MLS sponsor money (2022 → 2024)</div>
+      </div>
+      <div>
+        <div class="ks-stat-num">~$5M</div>
+        <div class="ks-stat-label">All the extra growth in the other 28 teams that's actually a "Messi halo"</div>
+      </div>
+      <div>
+        <div class="ks-stat-num">14</div>
+        <div class="ks-stat-label">Spots Chicago Fire climbed in deal count — without using Messi's name once</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== METHODOLOGY ========== -->
+<div class="method" id="sources">
+  <div class="method-inner">
+    <div>
+      <h3>How I did the math</h3>
+      <p>League totals come from SponsorUnited's annual MLS Marketing Partnerships Reports (2021 through 2024).</p>
+      <p>Inter Miami's specific sponsorship numbers are estimates. The club shares total revenue but not the sponsorship line item, so I used midpoints of public ranges.</p>
+      <p>The "halo" math is simple: actual growth in the rest of the league, minus what the pre-Messi growth rate (15%/yr) would have produced over two years.</p>
+    </div>
+    <div>
+      <h3>Sources</h3>
+      <div class="sources">
+        <strong>SponsorUnited</strong> · MLS Marketing Partnerships Reports 2021, 2022, 2023, 2024<br>
+        <strong>Sportico</strong> · "Messi Fueled 13% MLS Sponsorship Rise in 2024" (Dec 2024)<br>
+        <strong>Sportico</strong> · "Inter Miami Revenue Projected at MLS-Record $200M for 2024" (Dec 2023)<br>
+        <strong>Inside World Football</strong> · "MLS sponsorship hits record $665m in 2024"<br>
+        <strong>Ministry of Sport</strong> · 2023 category breakdown ($92M finance / $79M healthcare / $47M insurance)<br>
+        <strong>Chicago Fire FC</strong> · Official press releases (Oct 2023, Dec 2023, May 2024)<br>
+        <strong>Arthnova</strong> · Inter Miami sponsorship range estimate ($15-20M to $60-80M)
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>Beyond Miami · A Gabriel Gomez analysis · 2026</footer>
+
+<script>
+  // Drawer
+  const menuBtn = document.getElementById('menuBtn');
+  const drawer = document.getElementById('drawer');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const drawerClose = document.getElementById('drawerClose');
+  const drawerLinks = document.querySelectorAll('.drawer-link');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  menuBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+  drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+  // Bar animations
+  const bars = document.querySelectorAll('.bar-fill');
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const target = entry.target;
+        const w = target.dataset.width;
+        setTimeout(() => { target.style.width = w + '%'; }, 100);
+        barObserver.unobserve(target);
+      }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(b => barObserver.observe(b));
+
+  // Tab switching
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.tab-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = parseInt(tab.dataset.tab);
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      panels[idx].classList.add('active');
+    });
+  });
+
+  // Bar click expand
+  const barContainers = document.querySelectorAll('.bar-container');
+  const hints = ['↓ Tap to see the Royal Caribbean detail', '↓ Tap for the trend math', '↓ Tap for the methodology'];
+  barContainers.forEach((bc, idx) => {
+    bc.addEventListener('click', () => {
+      const plain = bc.querySelector('.bar-plain');
+      const hint = bc.querySelector('.bar-expand-hint');
+      const fullInfo = bc.dataset.info;
+      const original = bc.dataset.original || plain.innerHTML;
+      if (!bc.dataset.expanded) {
+        bc.dataset.original = original;
+        plain.innerHTML = fullInfo;
+        plain.style.color = 'var(--ink)';
+        plain.style.fontSize = '14px';
+        plain.style.maxWidth = '72ch';
+        plain.style.background = 'var(--bg)';
+        plain.style.padding = '14px 18px';
+        plain.style.borderLeft = '3px solid var(--accent)';
+        if (hint) hint.textContent = '↑ Tap to collapse';
+        bc.dataset.expanded = 'true';
+      } else {
+        plain.innerHTML = original;
+        plain.style.color = '';
+        plain.style.fontSize = '';
+        plain.style.maxWidth = '';
+        plain.style.background = '';
+        plain.style.padding = '';
+        plain.style.borderLeft = '';
+        if (hint) hint.textContent = hints[idx];
+        bc.dataset.expanded = '';
+      }
+    });
+  });
+
+  // Counterfactual chart
+  const cfChart = document.getElementById('cfChart');
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 400 280');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.style.width = '100%';
+  svg.style.height = '100%';
+  cfChart.appendChild(svg);
+
+  const yToY = (val) => 280 - ((val - 400) / 300) * 280;
+  const xPos = { 2021: 0, 2022: 133, 2023: 266, 2024: 400 };
+
+  const actualPts = [
+    [xPos[2021], yToY(383)],
+    [xPos[2022], yToY(444)],
+    [xPos[2023], yToY(547)],
+    [xPos[2024], yToY(595)],
+  ];
+
+  const actualPath = document.createElementNS(svgNS, 'path');
+  actualPath.setAttribute('d', `M${actualPts.map(p => p.join(',')).join(' L')}`);
+  actualPath.setAttribute('fill', 'none');
+  actualPath.setAttribute('stroke', '#1a1614');
+  actualPath.setAttribute('stroke-width', '3');
+  svg.appendChild(actualPath);
+
+  const cfPath = document.createElementNS(svgNS, 'path');
+  cfPath.setAttribute('fill', 'none');
+  cfPath.setAttribute('stroke', '#d63a2f');
+  cfPath.setAttribute('stroke-width', '2.5');
+  cfPath.setAttribute('stroke-dasharray', '7,5');
+  svg.appendChild(cfPath);
+
+  actualPts.forEach(([x, y]) => {
+    const dot = document.createElementNS(svgNS, 'circle');
+    dot.setAttribute('cx', x);
+    dot.setAttribute('cy', y);
+    dot.setAttribute('r', '4.5');
+    dot.setAttribute('fill', '#1a1614');
+    svg.appendChild(dot);
+  });
+
+  const actualLabel = document.createElementNS(svgNS, 'text');
+  actualLabel.setAttribute('x', '320');
+  actualLabel.setAttribute('y', yToY(595) - 10);
+  actualLabel.setAttribute('font-family', 'JetBrains Mono, monospace');
+  actualLabel.setAttribute('font-size', '11');
+  actualLabel.setAttribute('fill', '#1a1614');
+  actualLabel.setAttribute('font-weight', '700');
+  actualLabel.textContent = 'ACTUAL';
+  svg.appendChild(actualLabel);
+
+  const cfLabel = document.createElementNS(svgNS, 'text');
+  cfLabel.setAttribute('x', '255');
+  cfLabel.setAttribute('font-family', 'JetBrains Mono, monospace');
+  cfLabel.setAttribute('font-size', '11');
+  cfLabel.setAttribute('fill', '#d63a2f');
+  cfLabel.setAttribute('font-weight', '600');
+  cfLabel.textContent = 'IF NO MESSI';
+  svg.appendChild(cfLabel);
+
+  const rateSlider = document.getElementById('rateSlider');
+  const rateVal = document.getElementById('rateVal');
+  const rateExplain = document.getElementById('rateExplain');
+
+  function updateCounterfactual(rate) {
+    const r = rate / 100;
+    const cf2023 = 444 * (1 + r);
+    const cf2024 = 444 * (1 + r) * (1 + r);
+    const cfPts = [
+      [xPos[2021], yToY(383)],
+      [xPos[2022], yToY(444)],
+      [xPos[2023], yToY(cf2023)],
+      [xPos[2024], yToY(cf2024)],
+    ];
+    cfPath.setAttribute('d', `M${cfPts.map(p => p.join(',')).join(' L')}`);
+    cfLabel.setAttribute('y', yToY(cf2024) + 18);
+    rateVal.textContent = rate.toFixed(1).replace(/\.0$/, '') + '%/yr';
+
+    const diff = 595 - cf2024;
+    let explainText;
+    if (Math.abs(diff) < 8) {
+      explainText = `At ${rate.toFixed(1)}%/yr, the trend predicts $${cf2024.toFixed(0)}M — almost exactly where the rest of the league actually ended up ($595M). Halo: about $${diff.toFixed(0)}M.`;
+    } else if (diff > 0) {
+      explainText = `At ${rate.toFixed(1)}%/yr, the trend predicts $${cf2024.toFixed(0)}M. The rest of the league actually hit $595M — so $${diff.toFixed(0)}M of extra growth could be the "halo."`;
+    } else {
+      explainText = `At ${rate.toFixed(1)}%/yr, the trend predicts $${cf2024.toFixed(0)}M — actually MORE than the rest of the league hit ($595M). At this rate, no halo at all.`;
+    }
+    rateExplain.textContent = explainText;
+  }
+
+  rateSlider.addEventListener('input', (e) => {
+    updateCounterfactual(parseFloat(e.target.value));
+  });
+
+  const chartObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        updateCounterfactual(15);
+        chartObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  chartObserver.observe(cfChart);
+</script>
+
+</body>
+</html>

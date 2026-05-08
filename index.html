@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabriel Gomez · Business Analyst</title>
+<meta name="description" content="Bilingual business analyst. Boston University MS Applied Business Analytics. UNC Economics and Sports Management. Helping companies see themselves clearly.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --paper: #faf6ef;
+    --ink: #1a1614;
+    --ink-soft: #4a4440;
+    --ink-faint: #8a827a;
+    --accent: #d63a2f;
+    --accent-soft: #e8c4be;
+    --rule: #1a1614;
+    --rule-faint: #d4ccc0;
+    --highlight: #fff3a3;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding: 14px 32px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--paper);
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .masthead-mark {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .masthead-mark .dot { color: var(--accent); }
+  .masthead-nav {
+    display: flex;
+    gap: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .masthead-nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+  }
+  .masthead-nav a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 80px 32px 56px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 24px;
+    display: inline-block;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 6px;
+  }
+  h1.name {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(56px, 10vw, 124px);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    margin-bottom: 32px;
+    max-width: 14ch;
+  }
+  h1.name em { font-style: italic; font-weight: 500; }
+  h1.name .red { color: var(--accent); }
+  .tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(20px, 2.6vw, 28px);
+    line-height: 1.4;
+    color: var(--ink-soft);
+    max-width: 36ch;
+    margin-bottom: 36px;
+  }
+  .bio {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 62ch;
+  }
+  .bio strong {
+    color: var(--ink);
+    font-weight: 500;
+    background: linear-gradient(180deg, transparent 65%, var(--highlight) 65%);
+    padding: 0 2px;
+  }
+  .bio + .bio { margin-top: 18px; }
+
+  .credentials {
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule-faint);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .credentials .cred-wide {
+    grid-column: 1 / -1;
+    padding-top: 18px;
+    margin-top: 4px;
+    border-top: 1px solid var(--rule-faint);
+  }
+  .cred-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: block;
+    text-transform: uppercase;
+  }
+  .cred strong {
+    color: var(--ink);
+    font-weight: 700;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .cred em {
+    font-style: italic;
+    color: var(--ink-soft);
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+  }
+
+  /* ---------- Section labels ---------- */
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ---------- Work ---------- */
+  .work-section {
+    padding: 64px 32px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: 80px;
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4.5vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    max-width: 26ch;
+  }
+  h2 em { font-style: italic; font-weight: 500; }
+  .section-intro {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin-bottom: 48px;
+  }
+
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+  .project {
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 36px 32px 32px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 380px;
+  }
+  .project:hover { background: var(--bg); }
+  .project::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background: var(--accent);
+    transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .project:hover::after { width: 100%; }
+  .project-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    margin-bottom: 18px;
+  }
+  .project-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+  .project h3 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(26px, 3vw, 32px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  .project h3 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .project-deck {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .project-takeaway {
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule-faint);
+  }
+  .project-takeaway-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .project-takeaway-text {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .project-link {
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .project-link .arrow { display: inline-block; transition: transform 0.3s; }
+  .project:hover .project-link .arrow { transform: translateX(6px); }
+
+  /* ---------- About ---------- */
+  .about {
+    padding: 64px 32px 72px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: 80px;
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 56px;
+    margin-top: 32px;
+    align-items: start;
+  }
+  .about-line {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    max-width: 50ch;
+  }
+  .about-line strong {
+    color: var(--ink);
+    font-weight: 500;
+    background: linear-gradient(180deg, transparent 65%, var(--highlight) 65%);
+    padding: 0 2px;
+  }
+  .about-quote {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px 28px;
+    border-left: 4px solid var(--accent);
+  }
+  .about-quote-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent-soft);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .about-quote-text {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--paper);
+  }
+
+  /* ---------- Series section ---------- */
+  .series {
+    margin-top: 40px;
+    padding: 36px 32px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--accent);
+  }
+  .series-head {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+  .series-mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 700;
+    line-height: 1;
+    padding-top: 6px;
+    flex-shrink: 0;
+    animation: spin 5s linear infinite;
+    transform-origin: center;
+    display: inline-block;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .series-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .series-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(22px, 2.8vw, 28px);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .series-body {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 65ch;
+    margin-bottom: 28px;
+  }
+  .series-rotation {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+  .series-phase {
+    padding: 22px 24px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    transition: background 0.25s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .series-phase:hover { background: var(--paper); }
+  a.series-phase:hover { background: #2a2421; }
+  .series-phase.active {
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .series-phase.active:hover {
+    background: #2a2421;
+  }
+  .series-phase-cta {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent-soft);
+    font-weight: 700;
+    border-bottom: 1px solid var(--accent-soft);
+    padding-bottom: 2px;
+    transition: transform 0.25s;
+  }
+  a.series-phase:hover .series-phase-cta {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .series-phase-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .series-phase.active .series-phase-status {
+    color: var(--accent-soft);
+  }
+  .series-phase-name {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .series-phase-detail {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .series-phase.active .series-phase-detail {
+    color: rgba(245, 241, 234, 0.75);
+  }
+  .series-phase-detail a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+  }
+  .series-phase.active .series-phase-detail a {
+    color: var(--accent-soft);
+    border-bottom-color: var(--accent-soft);
+  }
+
+  /* ---------- Background ---------- */
+  .background {
+    padding: 64px 32px 72px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: 80px;
+  }
+  .exp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    margin-top: 32px;
+  }
+  .exp-item {
+    padding: 26px 28px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.25s;
+  }
+  .exp-item:hover { background: var(--bg); }
+  .exp-when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .exp-role {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .exp-org {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .exp-detail {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Skills strip ---------- */
+  .skills {
+    margin-top: 36px;
+    padding: 28px 0 0;
+    border-top: 1px solid var(--rule-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .skill-tag {
+    padding: 8px 14px;
+    background: var(--paper);
+    border: 1px solid var(--rule-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .skill-tag:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* ---------- Contact ---------- */
+  .contact {
+    margin-top: auto;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 72px 32px;
+    scroll-margin-top: 80px;
+  }
+  .contact-inner { max-width: 1200px; margin: 0 auto; }
+  .contact-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent-soft);
+    margin-bottom: 16px;
+    display: inline-block;
+    border-bottom: 2px solid var(--accent-soft);
+    padding-bottom: 6px;
+  }
+  .contact h2 {
+    color: var(--paper);
+    margin-bottom: 24px;
+    max-width: 22ch;
+  }
+  .contact h2 em { color: var(--accent-soft); }
+  .contact-text {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: rgba(245, 241, 234, 0.78);
+    max-width: 60ch;
+    margin-bottom: 36px;
+  }
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px 56px;
+    margin-top: 24px;
+  }
+  .contact-links a {
+    color: var(--paper);
+    text-decoration: none;
+    font-family: 'Fraunces', serif;
+    font-size: 21px;
+    font-style: italic;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(245, 241, 234, 0.3);
+    padding-bottom: 4px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .contact-links a:hover {
+    color: var(--accent-soft);
+    border-color: var(--accent-soft);
+  }
+  .contact-links a .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
+    color: var(--accent-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--rule);
+    padding: 22px 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  @media (max-width: 800px) {
+    .projects { grid-template-columns: 1fr; }
+    .credentials { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .exp-grid { grid-template-columns: 1fr; }
+    .series-rotation { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 28px; }
+    .hero { padding: 56px 22px 44px; }
+    .work-section { padding: 48px 22px 60px; }
+    .background { padding: 48px 22px; }
+    .contact { padding: 56px 22px; }
+    .masthead { padding: 12px 18px 10px; }
+    .masthead-nav { gap: 14px; font-size: 9px; }
+    footer { padding: 20px 22px; }
+    .contact-links { gap: 24px 0; flex-direction: column; }
+  }
+  @media (max-width: 540px) {
+    .masthead { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .credentials { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-mark">Gabriel Gomez<span class="dot">.</span></div>
+  <nav class="masthead-nav">
+    <a href="#about">About</a>
+    <a href="#work">Work</a>
+    <a href="#background">Background</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <span class="kicker">Portfolio · 2026</span>
+  <h1 class="name">Gabriel <em>Gomez</em><span class="red">.</span></h1>
+  <p class="tagline">I help companies see themselves clearly so they can build from the inside out.</p>
+  <p class="bio">
+    Bilingual analyst with experience across <strong>finance, operations, and commercial strategy</strong>. I turn data into the kind of insight executives can actually act on. The questions I love most are the ones everyone else skips, because that's usually where the real story is hiding.
+  </p>
+  <p class="bio">
+    Currently pursuing my <strong>MS in Applied Business Analytics at Boston University</strong> (3.9 GPA). Before that, dual undergrad in Economics and Sports Management at UNC Chapel Hill, plus a Data Science minor.
+  </p>
+
+  <div class="credentials">
+    <div>
+      <span class="cred-label">Studying</span>
+      <strong>Boston University</strong>
+      <em>MS Applied Business Analytics</em>
+    </div>
+    <div>
+      <span class="cred-label">Education</span>
+      <strong>UNC Chapel Hill</strong>
+      <em>Economics, Sports Management</em>
+    </div>
+    <div>
+      <span class="cred-label">Athletics</span>
+      <strong>Towson University</strong>
+      <em>D1 Football, 2x All CAA</em>
+    </div>
+    <div>
+      <span class="cred-label">Languages</span>
+      <strong>English, Spanish</strong>
+      <em>Both fluent</em>
+    </div>
+    <div class="cred-wide">
+      <span class="cred-label">Past Work In</span>
+      <strong>Sports Partnerships, Operations, Ticketing, and Finance</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section class="about" id="about">
+  <div class="section-label">About</div>
+  <h2>I care more about the build <em>than the highlight reel</em>.</h2>
+  <div class="about-grid">
+    <div class="about-col">
+      <p class="about-line">
+        I'm not the person who walks out of a great game thinking about the final score. I'm the person thinking about <strong>everything that had to happen behind the scenes</strong> for the game to feel that way.
+      </p>
+      <p class="about-line">
+        The same goes for projects. I'd rather be there from day one, watching a rough idea slowly turn into something real, than join when the work is already done.
+      </p>
+      <p class="about-line">
+        Building from scratch, with a team, watching it grow into something people actually use, that's the part I love.
+      </p>
+    </div>
+    <div class="about-col">
+      <div class="about-quote">
+        <div class="about-quote-label">My definition of failure</div>
+        <div class="about-quote-text">"Failure for me is when I don't try hard enough."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WORK ========== -->
+<section class="work-section" id="work">
+  <div class="section-label">Selected work</div>
+  <h2>Two projects, <em>two different problems</em>.</h2>
+  <p class="section-intro">
+    I picked sports for these because the data is public and the stories are loud. That makes them a great place to test what's actually true. The same approach works on any business: question the headline, isolate the variable, find what's really moving the numbers.
+  </p>
+
+  <div class="projects">
+
+    <a class="project" href="https://gabrielgomezz2001.github.io/Miami-HEAT-2025-2026-season/">
+      <div class="project-num">No. 01 · Heat 2025/26</div>
+      <div class="project-tag">Operations · Lineups · Performance</div>
+      <h3>Lineup analysis <em>for the Miami Heat</em>.</h3>
+      <p class="project-deck">An interactive site breaking down a full season. Efficiency by position, lineup splits, court zones, and concrete recommendations for next season's rotation.</p>
+      <div class="project-takeaway">
+        <div class="project-takeaway-label">The finding</div>
+        <div class="project-takeaway-text">Wiggins is meaningfully better at the 4 (+5.4 net rating vs +1.8). The Bam and Ware double big posted +6.7, but the headline number was inflated by weak opponents. Real recommendations follow.</div>
+      </div>
+      <div class="project-link">View the project <span class="arrow">→</span></div>
+    </a>
+
+    <a class="project" href="https://gabrielgomezz2001.github.io/messi_halo_dashboard.html">
+      <div class="project-num">No. 02 · Beyond Miami</div>
+      <div class="project-tag">Sponsorships · Commercial · Decomposition</div>
+      <h3>Did Messi <em>actually</em> lift MLS?</h3>
+      <p class="project-deck">An interactive analysis of post Messi sponsorship growth, plus a contrarian finding the press has missed. Built so you can stress test the assumption yourself.</p>
+      <div class="project-takeaway">
+        <div class="project-takeaway-label">The finding</div>
+        <div class="project-takeaway-text">Inter Miami captured 26% of all new MLS sponsorship dollars by themselves. The other 28 teams grew at the rate they were already growing. The "halo" is essentially zero.</div>
+      </div>
+      <div class="project-link">View the analysis <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+
+  <div class="series">
+    <div class="series-head">
+      <div class="series-mark">↻</div>
+      <div>
+        <div class="series-label">The Series</div>
+        <div class="series-title">One industry at a time, one analysis a week.</div>
+      </div>
+    </div>
+    <p class="series-body">
+      Each project lives inside a focused series. I pick one industry, dig into it weekly until I've stress tested the headlines worth questioning, then rotate to the next. Same approach, different sandbox. The goal is range plus depth, not jumping around.
+    </p>
+    <div class="series-rotation">
+      <a href="#work" class="series-phase active">
+        <div class="series-phase-status">Now</div>
+        <div class="series-phase-name">Sports</div>
+        <div class="series-phase-detail">Sponsorships, lineups, attendance, commercial strategy. <span class="series-phase-cta">View the analyses ↓</span></div>
+      </a>
+      <div class="series-phase">
+        <div class="series-phase-status">Up Next</div>
+        <div class="series-phase-name">TBD</div>
+        <div class="series-phase-detail">Real estate, hospitality, media, or wherever the data leads.</div>
+      </div>
+      <div class="series-phase">
+        <div class="series-phase-status">Later</div>
+        <div class="series-phase-name">Open</div>
+        <div class="series-phase-detail">Reader suggestions welcome through <a href="#contact">contact</a> or <a href="https://www.linkedin.com/in/gomez1812" target="_blank" rel="noopener">LinkedIn</a>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="background" id="background">
+  <div class="section-label">Background</div>
+  <h2>Real work for real <em>stakeholders</em>.</h2>
+  <p class="section-intro">
+    Roles across finance, sponsorships, ticketing, and operations. Every one of them ended in something I built that someone senior actually used.
+  </p>
+
+  <div class="exp-grid">
+    <div class="exp-item">
+      <div class="exp-when">2025 to 2026</div>
+      <div class="exp-role">Special Handling Associate, LATAM</div>
+      <div class="exp-org">StoneX Group, Miami</div>
+      <div class="exp-detail">LATAM trade lifecycle reconciliation across multiple platforms. Cross functional discrepancy resolution and real time risk and margin reporting for trading and risk stakeholders under daily deadlines.</div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-when">Summer 2025</div>
+      <div class="exp-role">Finance Intern</div>
+      <div class="exp-org">Equitable, Miami</div>
+      <div class="exp-detail">Strategic analysis and project planning for privacy and risk insurance functions. Built executive presentations and presented findings directly to senior Finance leadership in board meetings and quarterly business reviews.</div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-when">Spring 2025</div>
+      <div class="exp-role">Ticket Operations Representative</div>
+      <div class="exp-org">Agganis Arena, Boston University</div>
+      <div class="exp-detail">High volume event ticketing. Inventory management, financial reconciliation, transaction records, and reporting workflows supporting live event operations.</div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-when">Summer 2024</div>
+      <div class="exp-role">Corporate Sponsorship Intern</div>
+      <div class="exp-org">NC Courage, NWSL</div>
+      <div class="exp-detail">Built KPI driven sponsor performance reports for the Commercial Partnerships team to support renewals. Conducted competitive trend analysis on global soccer. Coordinated cross functional partnership activations.</div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-when">Spring 2024</div>
+      <div class="exp-role">Business Solutions Intern</div>
+      <div class="exp-org">NCHSAA, Chapel Hill</div>
+      <div class="exp-detail">Managed budgeting, expenditure tracking, and financial analysis for high school sports events. Contributed to financial planning and post event evaluations for state championships.</div>
+    </div>
+  </div>
+
+  <div class="skills">
+    <span class="skill-tag">SQL</span>
+    <span class="skill-tag">Python</span>
+    <span class="skill-tag">Power BI</span>
+    <span class="skill-tag">Excel</span>
+    <span class="skill-tag">RStudio</span>
+    <span class="skill-tag">Customer Experience</span>
+    <span class="skill-tag">KPI Dashboards</span>
+    <span class="skill-tag">Executive Reporting</span>
+    <span class="skill-tag">Stakeholder Management</span>
+    <span class="skill-tag">Bilingual</span>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <span class="contact-label">Get in touch</span>
+    <h2>Always open to <em>keep learning and improving</em>.</h2>
+    <p class="contact-text">
+      If you're hiring for an analyst role, or just curious about something in either of these projects, drop me a line.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:gabogomez181201@gmail.com">
+        <span class="label">Email</span>
+        gabogomez181201@gmail.com
+      </a>
+      <a href="https://www.linkedin.com/in/gomez1812" target="_blank" rel="noopener">
+        <span class="label">LinkedIn</span>
+        linkedin.com/in/gomez1812
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>Gabriel Gomez · Business Analyst · 2026</footer>
+
+</body>
+</html>
