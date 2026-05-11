@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miami Heat 2025–26 Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --red: #98002e;
+    --black: #000000;
+    --gold: #f9a01b;
+    --white: #f5f0eb;
+    --muted: #c8b8a0;
+    --card-bg: #0d0d0d;
+    --border: rgba(249,160,27,0.25);
+    --panel: #111111;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* DIAGONAL HERO */
+  header {
+    position: relative;
+    background: var(--red);
+    padding: 32px 40px 60px;
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 300px; height: 300px;
+    border: 60px solid rgba(0,0,0,0.15);
+    border-radius: 50%;
+  }
+  header::after {
+    content: 'HEAT';
+    position: absolute;
+    right: 30px; bottom: 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 160px;
+    color: rgba(0,0,0,0.12);
+    line-height: 1;
+    letter-spacing: -4px;
+  }
+  .header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 8vw, 90px);
+    line-height: 0.9;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+  h1 span { color: var(--gold); }
+  .header-sub {
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* NAV TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: var(--muted);
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--white); }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* MAIN */
+  main { padding: 24px 20px 60px; max-width: 1200px; margin: 0 auto; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .section-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* GRID LAYOUTS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media(max-width: 700px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--red);
+  }
+  .card.gold::before { background: var(--gold); }
+  .card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .card-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--white);
+  }
+  .card-value span { font-size: 18px; color: var(--muted); }
+  .card-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* CHART CONTAINERS */
+  .chart-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .chart-wrap h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  canvas { max-height: 280px; }
+
+  /* PLAYER TABLE */
+  .player-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .player-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .player-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+  }
+  .player-table tr:hover td { background: rgba(249,160,27,0.05); }
+  .player-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--white);
+  }
+  .pos-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    border-radius: 2px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .pos-PG { background: rgba(152,0,46,0.4); color: #ff6b8a; }
+  .pos-SG { background: rgba(249,160,27,0.2); color: var(--gold); }
+  .pos-SF { background: rgba(100,200,100,0.15); color: #7ed96c; }
+  .pos-PF { background: rgba(100,150,255,0.15); color: #88b4ff; }
+  .pos-C  { background: rgba(200,100,200,0.15); color: #d88bd8; }
+
+  /* EFFICIENCY BAR */
+  .eff-bar { display: flex; align-items: center; gap: 8px; }
+  .eff-track {
+    flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;
+  }
+  .eff-fill { height: 100%; border-radius: 3px; transition: width .4s; }
+  .eff-label { font-family: 'DM Mono', monospace; font-size: 11px; min-width: 38px; text-align: right; }
+
+  /* SHOT CHART */
+  .shot-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+  }
+  @media(max-width: 600px) { .shot-grid { grid-template-columns: repeat(2,1fr); } }
+  .shot-zone {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 10px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .shot-zone-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .shot-zone-pct {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    line-height: 1;
+  }
+  .shot-zone-volume {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* POSITION SUMMARY CARDS */
+  .pos-cards { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 20px; }
+  @media(max-width: 700px) { .pos-cards { grid-template-columns: repeat(2,1fr); } }
+  .pos-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, transform .15s;
+  }
+  .pos-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .pos-card.selected { border-color: var(--gold); background: rgba(249,160,27,0.08); }
+  .pos-card-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+  }
+  .pos-card-pts { font-size: 11px; color: var(--muted); }
+  .pos-card-grade {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  .grade-A { color: #4eca7a; }
+  .grade-B { color: var(--gold); }
+  .grade-C { color: #ff9940; }
+  .grade-D { color: var(--red); }
+
+  /* LEGEND */
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* SECTION: OVERVIEW STATS */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media(max-width: 600px) { .stat-grid { grid-template-columns: repeat(2,1fr); } }
+
+  /* TOOLTIP */
+  .tooltip-tag {
+    position: absolute;
+    top: 10px; right: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    background: rgba(0,0,0,0.5);
+    color: var(--muted);
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* RADAR PLACEHOLDER */
+  .radar-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* ── COURT MAP ── */
+  .court-wrap {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media(max-width: 800px) {
+    .court-wrap { grid-template-columns: 1fr; }
+  }
+  .court-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px;
+  }
+  .court-container h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .court-instructions {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .nba-court {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    background: #1a0a05;
+    border-radius: 4px;
+  }
+  .court-zone {
+    cursor: pointer;
+    transition: opacity .2s, fill .2s;
+    stroke: rgba(249,160,27,0.4);
+    stroke-width: 1;
+  }
+  .court-zone:hover {
+    opacity: 0.85;
+    stroke: var(--gold);
+    stroke-width: 2;
+  }
+  .court-zone.selected {
+    stroke: var(--gold);
+    stroke-width: 3;
+    filter: drop-shadow(0 0 8px rgba(249,160,27,0.7));
+  }
+  .court-line {
+    fill: none;
+    stroke: rgba(255,255,255,0.6);
+    stroke-width: 2;
+    pointer-events: none;
+  }
+  .court-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    fill: rgba(255,255,255,0.85);
+    letter-spacing: 1px;
+    text-anchor: middle;
+    pointer-events: none;
+    font-weight: 600;
+  }
+  .zone-pct {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    fill: var(--white);
+    text-anchor: middle;
+    pointer-events: none;
+  }
+
+  /* Detail panel */
+  .court-detail {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px;
+    min-height: 380px;
+    position: relative;
+    overflow: hidden;
+  }
+  .court-detail::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--gold);
+  }
+  .detail-zone-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .detail-position {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .detail-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .detail-stat {
+    background: var(--panel);
+    padding: 12px;
+    border-radius: 3px;
+    border-left: 2px solid var(--red);
+  }
+  .detail-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .detail-stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--white);
+  }
+  .detail-stat-value.gold { color: var(--gold); }
+  .detail-stat-value.green { color: #4eca7a; }
+  .detail-stat-value.red { color: #ff5555; }
+
+  .detail-leaders {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+  .detail-leaders-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .leader-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .leader-row:last-child { border-bottom: none; }
+  .leader-name {
+    color: var(--white);
+    font-weight: 600;
+  }
+  .leader-stat {
+    font-family: 'DM Mono', monospace;
+    color: var(--gold);
+    font-size: 12px;
+  }
+  .verdict-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    border-radius: 2px;
+    margin-top: 8px;
+  }
+  .verdict-EFFICIENT { background: rgba(78,202,122,0.15); color: #4eca7a; }
+  .verdict-AVERAGE   { background: rgba(249,160,27,0.15); color: var(--gold); }
+  .verdict-DEFICIENT { background: rgba(255,85,85,0.15); color: #ff5555; }
+
+  /* ── LINEUPS ── */
+  .lineup-block {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 22px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .lineup-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--red);
+  }
+  .lineup-block.gold-edge::before { background: var(--gold); }
+  .lineup-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .lineup-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .split-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  @media(max-width: 600px) { .split-row { grid-template-columns: 1fr; } }
+  .split-card {
+    background: var(--panel);
+    padding: 14px;
+    border-radius: 3px;
+    border-left: 3px solid var(--muted);
+  }
+  .split-card.good { border-left-color: #4eca7a; }
+  .split-card.bad  { border-left-color: #ff5555; }
+  .split-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .split-card-stat {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--white);
+  }
+  .split-card-stat.green { color: #4eca7a; }
+  .split-card-stat.red   { color: #ff5555; }
+  .split-card-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .lineup-takeaway {
+    background: rgba(249,160,27,0.06);
+    border-left: 3px solid var(--gold);
+    padding: 12px 14px;
+    border-radius: 2px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--white);
+    margin-top: 14px;
+  }
+  .lineup-takeaway strong {
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    display: block;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Shared portfolio nav (dark theme) ---------- */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: #000;
+    border-bottom: 1px solid rgba(249,160,27,0.3);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    font-family: 'DM Mono', monospace;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--white);
+    transition: opacity 0.2s;
+  }
+  .nav-logo:hover { opacity: 0.7; }
+  .nav-logo-mark {
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .nav-logo-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 19px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .nav-link {
+    text-decoration: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 0;
+    border-bottom: 1.5px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-link:hover {
+    color: var(--white);
+    border-bottom-color: var(--gold);
+  }
+  .nav-link.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+  .nav-social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-social a {
+    color: var(--muted);
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+  }
+  .nav-social a:hover { color: var(--gold); }
+
+  @media (max-width: 720px) {
+    .site-nav { padding: 12px 20px; flex-wrap: wrap; gap: 12px; }
+    .nav-links { gap: 16px; order: 3; width: 100%; justify-content: center; padding-top: 8px; border-top: 1px solid rgba(249,160,27,0.2); }
+    .nav-link { font-size: 10px; }
+    .nav-logo-name { font-size: 16px; }
+  }
+  @media (max-width: 480px) {
+    .nav-logo-name { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== SHARED PORTFOLIO NAV ========== -->
+<nav class="site-nav">
+  <a href="index.html" class="nav-logo" aria-label="Gabriel Gomez home">
+    <span class="nav-logo-mark">GG</span>
+    <span class="nav-logo-name">Gabriel Gomez</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="beyond-miami.html" class="nav-link">Beyond Miami</a>
+    <a href="miami-heat.html" class="nav-link active">Miami Heat</a>
+  </div>
+  <div class="nav-social">
+    <a href="https://linkedin.com/in/gomez1812" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<header>
+  <div class="header-label">2025 – 26 Regular Season · Eastern Conference</div>
+  <h1>MIAMI<br><span>HEAT</span></h1>
+  <div class="header-sub">43 – 39 · 10th East · Eliminated in Play-In</div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showSection('overview', this)">Overview</div>
+  <div class="tab" onclick="showSection('players', this)">Players</div>
+  <div class="tab" onclick="showSection('positions', this)">By Position</div>
+  <div class="tab" onclick="showSection('shots', this)">Shot Types</div>
+  <div class="tab" onclick="showSection('court', this)">Court Map</div>
+  <div class="tab" onclick="showSection('lineups', this)">Lineups</div>
+</div>
+
+<main>
+
+<!-- ───────────── OVERVIEW ───────────── -->
+<div id="overview" class="section active">
+  <div class="section-title">Team Overview</div>
+  <div class="section-desc">// KEY METRICS · 2025–26 REGULAR SEASON</div>
+
+  <div class="stat-grid">
+    <div class="card gold">
+      <div class="card-label">Off Rating</div>
+      <div class="card-value">115.3<span>/100</span></div>
+      <div class="card-sub">15th of 30 · Points scored per game: 119.9 (2nd)</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Def Rating</div>
+      <div class="card-value">112.2<span>/100</span></div>
+      <div class="card-sub">20th of 30 · Points allowed per game: 116.7</div>
+    </div>
+    <div class="card gold">
+      <div class="card-label">Net Rating</div>
+      <div class="card-value">+3.1</div>
+      <div class="card-sub">11th of 30</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Pace</div>
+      <div class="card-value">103.8</div>
+      <div class="card-sub">1st of 30 · Fastest team in the league</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-wrap">
+      <h3>Offensive vs Defensive Rating</h3>
+      <canvas id="offDefChart"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <h3>Top Scorers (PPG)</h3>
+      <canvas id="scorersChart"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Player Efficiency by Field Goal Percentage</h3>
+    <canvas id="fgChart"></canvas>
+  </div>
+</div>
+
+<!-- ───────────── PLAYERS ───────────── -->
+<div id="players" class="section">
+  <div class="section-title">Player Analysis</div>
+  <div class="section-desc">// EFFICIENCY · OFFENSE · DEFENSE · ALL PLAYERS</div>
+
+  <div class="chart-wrap" style="margin-bottom:16px">
+    <h3>Offensive Efficiency, Points plus Assists per 36 Minutes</h3>
+    <canvas id="offEffChart"></canvas>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Defensive Efficiency, Steals plus Blocks per 36 Minutes</h3>
+    <canvas id="defEffChart"></canvas>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title" style="font-size:24px; margin-bottom:4px;">Full Roster Breakdown</div>
+  <div class="section-desc">// SORTED BY PPG · FG% BARS SHOWN</div>
+  <div class="chart-wrap" style="padding:0; overflow-x:auto;">
+    <table class="player-table" id="rosterTable"></table>
+  </div>
+</div>
+
+<!-- ───────────── POSITIONS ───────────── -->
+<div id="positions" class="section">
+  <div class="section-title">Position Analysis</div>
+  <div class="section-desc">// WHICH POSITIONS EXCELLED OR STRUGGLED</div>
+
+  <div class="pos-cards" id="posCards"></div>
+
+  <div class="grid-2">
+    <div class="chart-wrap">
+      <h3>Avg Points by Position</h3>
+      <canvas id="posOffChart"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <h3>Avg Steals + Blocks by Position</h3>
+      <canvas id="posDefChart"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Avg FG% by Position</h3>
+    <canvas id="posFGChart"></canvas>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-label">Position Verdict</div>
+    <div style="display:grid; gap:10px; margin-top:10px;" id="posVerdict"></div>
+  </div>
+</div>
+
+<!-- ───────────── SHOTS ───────────── -->
+<div id="shots" class="section">
+  <div class="section-title">Shot Types</div>
+  <div class="section-desc">// SHOOTING ZONES & TENDENCIES</div>
+
+  <div class="chart-wrap">
+    <h3>Team Shooting Distribution</h3>
+    <canvas id="shotDistChart" style="max-height:260px;"></canvas>
+  </div>
+
+  <div class="shot-grid" id="shotZones"></div>
+
+  <div class="divider"></div>
+  <div class="section-title" style="font-size:22px; margin-bottom:4px;">3-Point Leaders</div>
+  <div class="section-desc">// 3P% AMONG REGULAR CONTRIBUTORS</div>
+  <div class="chart-wrap">
+    <h3>3P% by Player (min 25 attempts)</h3>
+    <canvas id="threeChart"></canvas>
+  </div>
+</div>
+
+<!-- ───────────── COURT MAP ───────────── -->
+<div id="court" class="section">
+  <div class="section-title">Interactive Court Map</div>
+  <div class="section-desc">// CLICK ANY ZONE TO SEE TEAM SHOOTING SPLITS</div>
+
+  <div class="court-wrap">
+    <div class="court-container">
+      <h3>Miami Heat Shot Zones</h3>
+      <div class="court-instructions">// Tap any colored zone on the court</div>
+
+      <svg class="nba-court" viewBox="0 0 500 470" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <!-- Court background -->
+        <rect x="0" y="0" width="500" height="470" fill="#1a0a05"/>
+
+        <!-- ZONES (clickable, drawn first so lines sit on top) -->
+
+        <!-- At Rim — small zone at hoop -->
+        <path id="zone-rim" class="court-zone" d="M 220 410 A 30 30 0 0 1 280 410 L 280 440 L 220 440 Z"/>
+
+        <!-- Paint / Post-Ups — the lane area -->
+        <path id="zone-post" class="court-zone" d="M 170 250 L 330 250 L 330 410 A 30 30 0 0 0 220 410 L 170 410 Z"/>
+
+        <!-- Mid-range left wing -->
+        <path id="zone-mid-left" class="court-zone" d="M 90 250 L 170 250 L 170 410 L 50 410 A 175 175 0 0 1 90 290 Z"/>
+        <!-- Mid-range right wing -->
+        <path id="zone-mid-right" class="court-zone" d="M 330 250 L 410 250 L 410 290 A 175 175 0 0 1 450 410 L 330 410 Z"/>
+
+        <!-- Mid-range top (free throw extended area) -->
+        <path id="zone-mid-top" class="court-zone" d="M 170 250 L 330 250 L 330 200 A 137 137 0 0 0 170 200 Z"/>
+
+        <!-- Above-Break 3 -->
+        <path id="zone-ab3" class="court-zone" d="M 90 250 A 175 175 0 0 1 410 250 L 410 100 L 90 100 Z"/>
+
+        <!-- Corner 3 left -->
+        <path id="zone-corner-l" class="court-zone" d="M 0 250 L 90 250 L 90 440 L 0 440 Z"/>
+        <!-- Corner 3 right -->
+        <path id="zone-corner-r" class="court-zone" d="M 410 250 L 500 250 L 500 440 L 410 440 Z"/>
+
+        <!-- Court lines -->
+        <line x1="0" y1="440" x2="500" y2="440" class="court-line"/>
+        <line x1="0" y1="0" x2="0" y2="440" class="court-line"/>
+        <line x1="500" y1="0" x2="500" y2="440" class="court-line"/>
+        <line x1="0" y1="0" x2="500" y2="0" class="court-line"/>
+
+        <!-- Paint outline -->
+        <rect x="170" y="250" width="160" height="190" class="court-line"/>
+        <!-- Free throw arc -->
+        <path d="M 170 250 A 80 80 0 0 0 330 250" class="court-line"/>
+        <path d="M 170 250 A 80 80 0 0 1 330 250" class="court-line" stroke-dasharray="6,4"/>
+
+        <!-- Three-point line -->
+        <line x1="90" y1="250" x2="90" y2="440" class="court-line"/>
+        <line x1="410" y1="250" x2="410" y2="440" class="court-line"/>
+        <path d="M 90 250 A 175 175 0 0 1 410 250" class="court-line"/>
+
+        <!-- Backboard + rim -->
+        <line x1="222" y1="423" x2="278" y2="423" class="court-line" stroke-width="3"/>
+        <circle cx="250" cy="430" r="9" class="court-line"/>
+
+        <!-- Restricted area arc -->
+        <path d="M 220 430 A 30 30 0 0 1 280 430" class="court-line"/>
+
+        <!-- Center circle (top) -->
+        <path d="M 230 0 A 20 20 0 0 1 270 0" class="court-line"/>
+
+        <!-- Labels -->
+        <text class="court-label" x="250" y="430">RIM</text>
+        <text class="zone-pct" x="250" y="418" id="lbl-rim">64.2%</text>
+
+        <text class="court-label" x="250" y="350">POST-UPS</text>
+        <text class="zone-pct" x="250" y="335" id="lbl-post">51.2%</text>
+
+        <text class="court-label" x="125" y="350">MID</text>
+        <text class="zone-pct" x="125" y="335" id="lbl-mid-left">41.8%</text>
+
+        <text class="court-label" x="375" y="350">MID</text>
+        <text class="zone-pct" x="375" y="335" id="lbl-mid-right">41.8%</text>
+
+        <text class="court-label" x="250" y="225">MID-RANGE TOP</text>
+        <text class="zone-pct" x="250" y="210" id="lbl-mid-top">41.8%</text>
+
+        <text class="court-label" x="250" y="160">ABOVE-BREAK 3</text>
+        <text class="zone-pct" x="250" y="145" id="lbl-ab3">37.1%</text>
+
+        <!-- Corner 3 labels: stacked horizontally inside the zones -->
+        <text class="court-label" x="45" y="335">CORNER 3</text>
+        <text class="zone-pct" x="45" y="360" id="lbl-corner-l">39.4%</text>
+
+        <text class="court-label" x="455" y="335">CORNER 3</text>
+        <text class="zone-pct" x="455" y="360" id="lbl-corner-r">39.4%</text>
+      </svg>
+
+      <div style="display:flex; gap:14px; margin-top:14px; flex-wrap:wrap;">
+        <div class="legend-item"><span class="legend-dot" style="background:#4eca7a"></span><span>≥ 50% (Efficient)</span></div>
+        <div class="legend-item"><span class="legend-dot" style="background:#f9a01b"></span><span>40–49% (Average)</span></div>
+        <div class="legend-item"><span class="legend-dot" style="background:#98002e"></span><span>&lt; 40% (Deficient)</span></div>
+      </div>
+
+      <div style="margin-top:14px; padding:10px 12px; background:rgba(249,160,27,0.06); border-left:3px solid var(--gold); border-radius:2px; font-size:12px; color:var(--muted); line-height:1.5;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; color:var(--gold); letter-spacing:1.5px;">// NOTE</span><br>
+        Left and right corner 3 percentages are shown as a combined total, as are the left and right mid-range zones. Detailed left vs right tracking data was not publicly available for this season, so totals reflect both sides together.
+      </div>
+    </div>
+
+    <div class="court-detail" id="courtDetail">
+      <div class="detail-zone-name" id="detailName">SELECT A ZONE</div>
+      <div class="detail-position" id="detailPosition">// Tap any area on the court</div>
+
+      <div class="detail-stats" id="detailStats" style="display:none;">
+        <div class="detail-stat">
+          <div class="detail-stat-label">Team FG%</div>
+          <div class="detail-stat-value" id="detailFG">—</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-label">eFG%</div>
+          <div class="detail-stat-value" id="detailEFG">—</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-label">Total Attempts</div>
+          <div class="detail-stat-value gold" id="detailAtt">—</div>
+        </div>
+        <div class="detail-stat">
+          <div class="detail-stat-label">Total Makes</div>
+          <div class="detail-stat-value gold" id="detailMakes">—</div>
+        </div>
+      </div>
+
+      <div id="detailVerdictWrap" style="display:none; margin-bottom:16px;">
+        <div class="detail-stat-label" style="margin-bottom:6px;">Verdict</div>
+        <span id="detailVerdict" class="verdict-badge">—</span>
+      </div>
+
+      <div class="detail-leaders" id="detailLeadersWrap" style="display:none;">
+        <div class="detail-leaders-title">Top Shooters in This Zone</div>
+        <div id="detailLeaders"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────── LINEUPS ───────────── -->
+<div id="lineups" class="section">
+  <div class="section-title">Lineup Splits</div>
+  <div class="section-desc">// HOW POSITIONAL CHANGES AFFECTED EFFICIENCY</div>
+
+  <!-- WIGGINS AT PF vs SF -->
+  <div class="lineup-block">
+    <div class="lineup-title">Andrew Wiggins at the 4 vs the 3</div>
+    <div class="lineup-tagline">// Sliding up to power forward in small-ball lineups</div>
+
+    <div class="split-row">
+      <div class="split-card">
+        <div class="split-card-label">As Small Forward</div>
+        <div class="split-card-stat">15.5 PPG</div>
+        <div class="split-card-sub">44.8% FG · 0.5 BPG · 4.5 RPG · base role</div>
+      </div>
+      <div class="split-card good">
+        <div class="split-card-label">As Power Forward (small ball)</div>
+        <div class="split-card-stat green">17.2 PPG</div>
+        <div class="split-card-sub">46.4% FG · 1.0 BPG · 5.4 RPG · more rim attacks</div>
+      </div>
+    </div>
+
+    <div class="split-row">
+      <div class="split-card">
+        <div class="split-card-label">SF Minutes Net Rating</div>
+        <div class="split-card-stat">+1.8</div>
+        <div class="split-card-sub">Per 100 possessions</div>
+      </div>
+      <div class="split-card good">
+        <div class="split-card-label">PF Minutes Net Rating</div>
+        <div class="split-card-stat green">+5.4</div>
+        <div class="split-card-sub">Per 100 possessions</div>
+      </div>
+    </div>
+
+    <div class="lineup-takeaway">
+      <strong>What it means</strong>
+      Wiggins was meaningfully better at the 4. He attacked closeouts against slower defenders, his block rate doubled, and the spacing around him opened up because the lineup added another shooter at the 3. Spo leaned into this look most when Jović sat or struggled, and it should be a baseline rotation move next year.
+    </div>
+  </div>
+
+  <!-- BAM + WARE ON COURT -->
+  <div class="lineup-block gold-edge">
+    <div class="lineup-title">Bam Adebayo and Kel'el Ware on the floor together</div>
+    <div class="lineup-tagline">// Double-big lineup · 49 games · about 10 minutes per game shared</div>
+
+    <div class="split-row">
+      <div class="split-card bad">
+        <div class="split-card-label">Pre-February (first 3 months)</div>
+        <div class="split-card-stat red">−11.3</div>
+        <div class="split-card-sub">Net rating · 202 minutes · spacing was poor</div>
+      </div>
+      <div class="split-card good">
+        <div class="split-card-label">Post-February</div>
+        <div class="split-card-stat green">+8.2</div>
+        <div class="split-card-sub">Net rating · 75 minutes · trust grew</div>
+      </div>
+    </div>
+
+    <div class="split-row">
+      <div class="split-card good">
+        <div class="split-card-label">Full season together</div>
+        <div class="split-card-stat green">+6.7</div>
+        <div class="split-card-sub">Net rating · per Cleaning The Glass</div>
+      </div>
+      <div class="split-card">
+        <div class="split-card-label">vs top-half defenses</div>
+        <div class="split-card-stat red">−9.7</div>
+        <div class="split-card-sub">250 minutes · feasted on weaker opponents</div>
+      </div>
+    </div>
+
+    <div class="split-row">
+      <div class="split-card good">
+        <div class="split-card-label">Bam Adebayo individual on/off</div>
+        <div class="split-card-stat green">+4.1</div>
+        <div class="split-card-sub">Team net rating swing with Bam on</div>
+      </div>
+      <div class="split-card good">
+        <div class="split-card-label">Kel'el Ware individual on/off</div>
+        <div class="split-card-stat green">+3.6</div>
+        <div class="split-card-sub">Team net rating swing with Ware on</div>
+      </div>
+    </div>
+
+    <div class="lineup-takeaway">
+      <strong>What it means</strong>
+      The double-big started rough because both players occupied the same spots and the offense bogged down. Once Spo trusted them more in February, Ware became a real lob threat and Bam moved out to the perimeter. The catch is the +6.7 was inflated by beating up on bottom-tier opponents. Against quality defenses they still struggled, which is the next piece they need to figure out.
+    </div>
+  </div>
+
+  <!-- BAM AT PF -->
+  <div class="lineup-block">
+    <div class="lineup-title">Bam Adebayo when sliding to the 4</div>
+    <div class="lineup-tagline">// Playing next to Ware as a true center</div>
+
+    <div class="split-row">
+      <div class="split-card">
+        <div class="split-card-label">Bam at Center (most minutes)</div>
+        <div class="split-card-stat">18.4 PPG</div>
+        <div class="split-card-sub">52.1% FG · 9.2 RPG · 3.4 APG · default role</div>
+      </div>
+      <div class="split-card good">
+        <div class="split-card-label">Bam at Power Forward (next to Ware)</div>
+        <div class="split-card-stat green">22.4 PPG</div>
+        <div class="split-card-sub">53.4% FG · 41.8% from 3 · 11.4 RPG · 4.6 APG</div>
+      </div>
+    </div>
+
+    <div class="split-row">
+      <div class="split-card">
+        <div class="split-card-label">Usage as center</div>
+        <div class="split-card-stat">23.1%</div>
+        <div class="split-card-sub">More post touches, fewer perimeter looks</div>
+      </div>
+      <div class="split-card good">
+        <div class="split-card-label">Usage as PF</div>
+        <div class="split-card-stat green">26.8%</div>
+        <div class="split-card-sub">More face-up game and pull-up threes</div>
+      </div>
+    </div>
+
+    <div class="lineup-takeaway">
+      <strong>What it means</strong>
+      This was Bam's best version of himself. With Ware anchoring the rim, Bam got to operate as a face-up four, posting career-high efficiency from three (41.8%) and pushing his scoring near 23 a night. The numbers say it is the right direction long term, but the team needs to commit to a true backup center to make these minutes sustainable.
+    </div>
+  </div>
+
+  <!-- OPTIMAL LINEUPS -->
+  <div class="lineup-block gold-edge">
+    <div class="lineup-title">Optimal lineups by opponent type</div>
+    <div class="lineup-tagline">// Suggested fives based on the season's data</div>
+
+    <div class="split-row">
+      <div class="split-card good">
+        <div class="split-card-label">vs Small or Quick teams</div>
+        <div class="split-card-stat green" style="font-size:18px; line-height:1.3; margin-top:6px;">
+          PG · Davion Mitchell<br>
+          SG · Norman Powell<br>
+          SF · Tyler Herro<br>
+          PF · Andrew Wiggins<br>
+          C · Bam Adebayo
+        </div>
+        <div class="split-card-sub" style="margin-top:8px;">Switchable, fast, three shooters around Bam</div>
+      </div>
+      <div class="split-card good">
+        <div class="split-card-label">vs Big or Physical teams</div>
+        <div class="split-card-stat green" style="font-size:18px; line-height:1.3; margin-top:6px;">
+          PG · Davion Mitchell<br>
+          SG · Norman Powell<br>
+          SF · Andrew Wiggins<br>
+          PF · Bam Adebayo<br>
+          C · Kel'el Ware
+        </div>
+        <div class="split-card-sub" style="margin-top:8px;">Two seven-footers, length, rim protection</div>
+      </div>
+    </div>
+
+    <div class="lineup-takeaway">
+      <strong>Small-ball logic</strong>
+      Against teams that play four shooters and a mobile center (Boston, Indiana, OKC), the small-ball five lets Wiggins switch one through four and keeps Bam at the rim. Mitchell sets the table, Powell and Herro stretch the floor, and the offense gets to play in transition off the league's fastest pace.
+    </div>
+
+    <div class="lineup-takeaway">
+      <strong>Big-ball logic</strong>
+      Against teams with two real bigs (Cleveland, Memphis, Minnesota, Denver), going big with Bam at the 4 and Ware at the 5 matches the size up front and gives you the lineup that posted Bam's most efficient scoring stretch of the year. Wiggins slides to the 3 where his defensive versatility is wasted on smaller teams but valuable against physical wings.
+    </div>
+
+    <div class="lineup-takeaway">
+      <strong>Why these specifically</strong>
+      Both lineups keep Mitchell and Powell as the backcourt because that pairing was the team's most consistent two-way duo. The swap is at the 3, 4, and 5. The data says Bam plays better at the 4, Ware was a +3.6 on/off, and Wiggins was meaningfully better at the 4 than the 3, which means the only real question is how much you trust Herro defensively against a given matchup.
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const players = [
+  { name: "Norman Powell",    pos: "SG", age: 33, g: 62, min: 30.1, pts: 21.7, reb: 3.5, ast: 2.5, stl: 0.9, blk: 0.3, tov: 1.6, fg: 48.2, tp: 41.5, ft: 82.4 },
+  { name: "Tyler Herro",      pos: "SG", age: 25, g: 33, min: 33.2, pts: 21.0, reb: 4.8, ast: 4.1, stl: 0.8, blk: 0.3, tov: 2.9, fg: 46.3, tp: 41.7, ft: 88.3 },
+  { name: "Bam Adebayo",      pos: "C",  age: 28, g: 55, min: 32.0, pts: 20.0, reb: 9.4, ast: 3.6, stl: 1.1, blk: 0.9, tov: 2.5, fg: 53.7, tp: 31.8, ft: 73.2 },
+  { name: "Andrew Wiggins",   pos: "SF", age: 30, g: 69, min: 31.8, pts: 15.5, reb: 4.5, ast: 2.0, stl: 0.8, blk: 0.5, tov: 1.2, fg: 44.8, tp: 40.1, ft: 70.0 },
+  { name: "Jaime Jaquez Jr.", pos: "SF", age: 23, g: 75, min: 30.5, pts: 15.4, reb: 5.0, ast: 4.7, stl: 0.9, blk: 0.3, tov: 1.9, fg: 50.7, tp: 32.0, ft: 75.0 },
+  { name: "Davion Mitchell",  pos: "PG", age: 27, g: 70, min: 28.6, pts: 9.3,  reb: 2.7, ast: 6.5, stl: 1.0, blk: 0.2, tov: 1.5, fg: 49.0, tp: 39.5, ft: 64.6 },
+  { name: "Kel'el Ware",      pos: "C",  age: 21, g: 70, min: 22.0, pts: 11.4, reb: 8.5, ast: 1.2, stl: 0.7, blk: 1.4, tov: 1.1, fg: 57.3, tp: 39.5, ft: 68.0 },
+  { name: "Simone Fontecchio",pos: "SF", age: 30, g: 70, min: 16.8, pts: 8.5,  reb: 3.0, ast: 1.4, stl: 0.5, blk: 0.1, tov: 0.7, fg: 41.2, tp: 37.5, ft: 84.3 },
+  { name: "Nikola Jović",     pos: "PF", age: 22, g: 47, min: 17.2, pts: 7.3,  reb: 3.3, ast: 2.2, stl: 0.6, blk: 0.4, tov: 1.4, fg: 36.6, tp: 26.9, ft: 68.3 },
+  { name: "Kasparas Jakučionis",pos:"PG",age:19, g: 53, min: 17.8, pts: 6.2,  reb: 2.6, ast: 2.6, stl: 0.6, blk: 0.1, tov: 0.9, fg: 42.9, tp: 42.3, ft: 87.9 },
+  { name: "Dru Smith",        pos: "SG", age: 28, g: 70, min: 16.3, pts: 5.6,  reb: 2.5, ast: 2.6, stl: 1.4, blk: 0.3, tov: 0.8, fg: 41.5, tp: 29.5, ft: 82.9 },
+  { name: "Keshad Johnson",   pos: "SF", age: 24, g: 32, min: 8.8,  pts: 4.3,  reb: 1.9, ast: 0.3, stl: 0.5, blk: 0.3, tov: 0.4, fg: 49.0, tp: 29.5, ft: 72.4 },
+];
+
+const positions = ["PG","SG","SF","PF","C"];
+const posFullName = {
+  PG: "Point Guard",
+  SG: "Shooting Guard",
+  SF: "Small Forward",
+  PF: "Power Forward",
+  C:  "Center"
+};
+const posColors = { PG: '#ff6b8a', SG: '#f9a01b', SF: '#7ed96c', PF: '#88b4ff', C: '#d88bd8' };
+
+function byPos(pos) { return players.filter(p => p.pos === pos); }
+function avg(arr, key) { if (!arr.length) return 0; return arr.reduce((s,p)=>s+p[key],0)/arr.length; }
+function lastName(full) {
+  // Strip suffixes like "Jr.", "Sr.", "II", "III"
+  const parts = full.trim().split(' ');
+  const suffixes = ['Jr.', 'Sr.', 'II', 'III', 'IV'];
+  if (parts.length >= 2 && suffixes.includes(parts[parts.length - 1])) {
+    return parts[parts.length - 2] + ' ' + parts[parts.length - 1];
+  }
+  return parts[parts.length - 1];
+}
+
+// ── CHART DEFAULTS ────────────────────────────────────────────────────────
+Chart.defaults.color = '#c8b8a0';
+Chart.defaults.borderColor = 'rgba(249,160,27,0.1)';
+Chart.defaults.font.family = "'Barlow Condensed', sans-serif";
+
+function mkChart(id, type, data, opts={}) {
+  const ctx = document.getElementById(id).getContext('2d');
+  return new Chart(ctx, { type, data, options: { responsive:true, maintainAspectRatio:true, plugins:{ legend:{ display:false } }, ...opts }});
+}
+
+// ── OVERVIEW CHARTS ───────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+
+  // Off vs Def — compare to league averages
+  mkChart('offDefChart', 'bar', {
+    labels: ['Off Rating', 'Def Rating', 'Net Rating'],
+    datasets: [
+      { label: 'Miami Heat', data: [115.3, 112.2, 3.1], backgroundColor: ['#98002e','#f9a01b','#4eca7a'] },
+      { label: 'League Avg', data: [113.5, 113.5, 0], backgroundColor: ['rgba(255,255,255,0.08)','rgba(255,255,255,0.08)','rgba(255,255,255,0.08)'] }
+    ]
+  }, { plugins: { legend: { display: true, labels: { color: '#c8b8a0', boxWidth: 12 } } }, scales: { x: { ticks: { color:'#c8b8a0' } }, y: { ticks: { color:'#c8b8a0' }, min: -2 } } });
+
+  // Top scorers
+  const topScorers = [...players].sort((a,b)=>b.pts-a.pts).slice(0,7);
+  mkChart('scorersChart', 'bar', {
+    labels: topScorers.map(p => lastName(p.name)),
+    datasets: [{ data: topScorers.map(p=>p.pts), backgroundColor: topScorers.map(p=>posColors[p.pos]), borderRadius: 3 }]
+  }, { indexAxis: 'y', scales: { x: { ticks: { color:'#c8b8a0' } }, y: { ticks: { color:'#c8b8a0' } } } });
+
+  // FG% by player (sorted)
+  const fgSorted = [...players].sort((a,b)=>b.fg-a.fg);
+  mkChart('fgChart', 'bar', {
+    labels: fgSorted.map(p => lastName(p.name)),
+    datasets: [{ data: fgSorted.map(p=>p.fg), backgroundColor: fgSorted.map(p => p.fg >= 50 ? '#4eca7a' : p.fg >= 44 ? '#f9a01b' : '#98002e'), borderRadius: 3 }]
+  }, { scales: { x: { ticks: { color:'#c8b8a0' } }, y: { min: 30, ticks: { color:'#c8b8a0', callback: v=>v+'%' } } } });
+
+  // ── PLAYERS CHARTS ──────────────────────────────────────────────────────
+  // Offensive: pts + ast normalized per 36
+  const off36 = players.map(p => ({ name: p.name, pos: p.pos, val: +(p.pts * (36/p.min) + p.ast * (36/p.min)).toFixed(1) })).sort((a,b)=>b.val-a.val);
+  mkChart('offEffChart', 'bar', {
+    labels: off36.map(p=>lastName(p.name)),
+    datasets: [{ data: off36.map(p=>p.val), backgroundColor: off36.map(p=>posColors[p.pos]), borderRadius: 3 }]
+  }, { scales: { x: { ticks: { color:'#c8b8a0' } }, y: { ticks: { color:'#c8b8a0' } } } });
+
+  // Defensive: stl + blk per 36
+  const def36 = players.map(p => ({ name: p.name, pos: p.pos, val: +((p.stl + p.blk) * (36/p.min)).toFixed(2) })).sort((a,b)=>b.val-a.val);
+  mkChart('defEffChart', 'bar', {
+    labels: def36.map(p=>lastName(p.name)),
+    datasets: [{ data: def36.map(p=>p.val), backgroundColor: def36.map(p=>posColors[p.pos]), borderRadius: 3 }]
+  }, { scales: { x: { ticks: { color:'#c8b8a0' } }, y: { ticks: { color:'#c8b8a0' } } } });
+
+  // ── ROSTER TABLE ────────────────────────────────────────────────────────
+  const tbl = document.getElementById('rosterTable');
+  tbl.innerHTML = `<thead><tr>
+    <th>Player</th><th>POS</th><th>G</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>FG%</th><th>3P%</th>
+  </tr></thead>`;
+  const tbody = document.createElement('tbody');
+  [...players].sort((a,b)=>b.pts-a.pts).forEach(p => {
+    const eff = p.fg >= 50 ? '#4eca7a' : p.fg >= 44 ? '#f9a01b' : '#ff5555';
+    tbody.innerHTML += `<tr>
+      <td><span class="player-name">${p.name}</span></td>
+      <td><span class="pos-badge pos-${p.pos}">${p.pos}</span></td>
+      <td style="color:var(--muted)">${p.g}</td>
+      <td style="font-weight:700">${p.pts}</td>
+      <td>${p.reb}</td>
+      <td>${p.ast}</td>
+      <td>${p.stl}</td>
+      <td>${p.blk}</td>
+      <td style="color:${eff};font-weight:600">${p.fg}%</td>
+      <td style="color:${p.tp>=40?'#f9a01b':'var(--muted)'}">${p.tp > 0 ? p.tp+'%' : '—'}</td>
+    </tr>`;
+  });
+  tbl.appendChild(tbody);
+
+  // ── POSITION CARDS ──────────────────────────────────────────────────────
+  const posData = {};
+  positions.forEach(pos => {
+    const pp = byPos(pos);
+    if (!pp.length) return;
+    const offScore = avg(pp,'pts') + avg(pp,'ast');
+    const defScore = avg(pp,'stl') + avg(pp,'blk');
+    const fg = avg(pp,'fg');
+    const grade = offScore > 22 && fg > 48 ? 'A' : offScore > 16 ? 'B' : offScore > 10 ? 'C' : 'D';
+    posData[pos] = { pp, offScore, defScore, fg, grade };
+  });
+
+  const posCardsEl = document.getElementById('posCards');
+  Object.entries(posData).forEach(([pos, d]) => {
+    posCardsEl.innerHTML += `<div class="pos-card" onclick="">
+      <div class="pos-card-label" style="color:${posColors[pos]}; font-size:18px; line-height:1.1;">${posFullName[pos]}</div>
+      <div class="pos-card-pts">${avg(d.pp,'pts').toFixed(1)} PPG</div>
+      <div class="pos-card-grade grade-${d.grade}">${d.grade}</div>
+    </div>`;
+  });
+
+  // Position verdict
+  const verdicts = {
+    PG: "Mitchell quietly held this group together. 6.5 assists a night and a clean 49% from the floor isn't flashy, but it's exactly what Spo asks for. The real surprise was Jakučionis. He's only 19 and already shooting 42.3% from deep, which is wild.",
+    SG: "This is where the offense actually lived. Powell was a steal, putting up 21.7 a game on 48% shooting and 41% from three. Herro gave you another 21 a night when his body cooperated, which sadly wasn't often enough. Dru Smith doesn't show up in the box score, but ask anyone he guarded.",
+    SF: "A real mixed bag at this position. Jaquez Jr. was the breakout, putting up 50.7% from the field at 15.4 PPG. He looked like a different player from year two. Wiggins did Wiggins things. Fontecchio though, 41% shooting just doesn't cut it for a spacing role.",
+    PF: "The clear problem spot. Jović had a rough year, finishing at 36.6% from the field and an ugly 26.9% from three. That's hard to play through, especially in a starting role. Whether through development or a roster move, this position needs an answer.",
+    C:  "Quietly the best story on the team. Ware became a real defensive presence in his second year, and Bam at 53.7% shooting is still elite. The only catch is availability. 55 games from your franchise center is a tough pill to swallow."
+  };
+  const verdictEl = document.getElementById('posVerdict');
+  Object.entries(verdicts).forEach(([pos, text]) => {
+    verdictEl.innerHTML += `<div style="display:flex;gap:10px;align-items:flex-start;">
+      <span class="pos-badge pos-${pos}" style="font-size:11px;padding:3px 8px;">${pos}</span>
+      <span style="font-size:13px;color:var(--muted);line-height:1.5">${text}</span>
+    </div>`;
+  });
+
+  // Position off chart
+  mkChart('posOffChart', 'bar', {
+    labels: positions,
+    datasets: [{ data: positions.map(p => posData[p] ? +avg(posData[p].pp,'pts').toFixed(1) : 0), backgroundColor: positions.map(p=>posColors[p]), borderRadius: 3 }]
+  }, { scales: { x: { ticks:{color:'#c8b8a0'} }, y: { ticks:{color:'#c8b8a0'} } } });
+
+  // Position def chart (stl+blk)
+  mkChart('posDefChart', 'bar', {
+    labels: positions,
+    datasets: [
+      { label:'Steals', data: positions.map(p => posData[p] ? +avg(posData[p].pp,'stl').toFixed(2) : 0), backgroundColor: '#f9a01b', borderRadius: 3 },
+      { label:'Blocks', data: positions.map(p => posData[p] ? +avg(posData[p].pp,'blk').toFixed(2) : 0), backgroundColor: '#98002e', borderRadius: 3 }
+    ]
+  }, { plugins:{ legend:{ display:true, labels:{color:'#c8b8a0',boxWidth:12} } }, scales: { x:{ticks:{color:'#c8b8a0'}}, y:{ticks:{color:'#c8b8a0'}} } });
+
+  // Position FG% chart
+  mkChart('posFGChart', 'bar', {
+    labels: positions,
+    datasets: [{ data: positions.map(p => posData[p] ? +avg(posData[p].pp,'fg').toFixed(1) : 0), backgroundColor: positions.map(p => { const v = avg(posData[p]?.pp||[],'fg'); return v>=50?'#4eca7a':v>=44?'#f9a01b':'#98002e'; }), borderRadius: 3 }]
+  }, { scales: { x:{ticks:{color:'#c8b8a0'}}, y:{min:30, ticks:{color:'#c8b8a0', callback:v=>v+'%'}} } });
+
+  // ── SHOT CHARTS ─────────────────────────────────────────────────────────
+  const shotZoneData = [
+    { name: "At Rim", pct: 64.2, vol: "HIGH", color: '#4eca7a' },
+    { name: "Mid-Range", pct: 41.8, vol: "MED",  color: '#f9a01b' },
+    { name: "Corner 3", pct: 39.4, vol: "HIGH", color: '#f9a01b' },
+    { name: "Above Break 3", pct: 37.1, vol: "HIGH", color: '#88b4ff' },
+    { name: "Floaters", pct: 43.5, vol: "LOW",  color: '#ff9940' },
+    { name: "Post-Ups", pct: 51.2, vol: "MED",  color: '#d88bd8' },
+    { name: "Pull-Up 3", pct: 35.8, vol: "MED",  color: '#ff6b8a' },
+    { name: "Free Throw", pct: 77.1, vol: "HIGH", color: '#4eca7a' },
+  ];
+  const zonesEl = document.getElementById('shotZones');
+  shotZoneData.forEach(z => {
+    zonesEl.innerHTML += `<div class="shot-zone">
+      <div class="shot-zone-name">${z.name}</div>
+      <div class="shot-zone-pct" style="color:${z.color}">${z.pct}%</div>
+      <div class="shot-zone-volume">Volume: ${z.vol}</div>
+    </div>`;
+  });
+
+  // Distribution donut
+  mkChart('shotDistChart', 'doughnut', {
+    labels: ['At Rim', 'Mid-Range', 'Corner 3', 'Above Break 3', 'Floaters/Other'],
+    datasets: [{ data: [28, 14, 18, 30, 10], backgroundColor: ['#4eca7a','#f9a01b','#88b4ff','#98002e','#d88bd8'], borderWidth: 0 }]
+  }, { plugins:{ legend:{ display:true, position:'right', labels:{ color:'#c8b8a0', boxWidth:12, font:{size:12} } } } });
+
+  // 3P% chart
+  const shooters3 = players.filter(p=>p.tp>0).sort((a,b)=>b.tp-a.tp);
+  mkChart('threeChart', 'bar', {
+    labels: shooters3.map(p=>lastName(p.name)),
+    datasets: [{ data: shooters3.map(p=>p.tp), backgroundColor: shooters3.map(p => p.tp>=40?'#4eca7a':p.tp>=35?'#f9a01b':'#98002e'), borderRadius: 3 }]
+  }, { scales: { x:{ticks:{color:'#c8b8a0'}}, y:{min:25, ticks:{color:'#c8b8a0', callback:v=>v+'%'}} } });
+
+});
+
+// ── COURT MAP DATA & INTERACTIVITY ────────────────────────────────────────
+const courtZones = {
+  'zone-rim': {
+    name: 'AT RIM',
+    position: 'Inside the restricted area',
+    fg: 64.2, efg: 64.2, attempts: 2275, makes: 1461,
+    leaders: [
+      { name: "Kel'el Ware", stat: '68.8%' },
+      { name: 'Bam Adebayo', stat: '65.3%' },
+      { name: 'Jaime Jaquez Jr.', stat: '68.3%' },
+    ]
+  },
+  'zone-post': {
+    name: 'POST-UPS',
+    position: 'Inside the paint, back-to-basket',
+    fg: 51.2, efg: 51.2, attempts: 350, makes: 182,
+    leaders: [
+      { name: 'Kel\'el Ware', stat: '52.2%' },
+      { name: 'Bam Adebayo', stat: '52.9%' },
+      { name: 'Jaime Jaquez Jr.', stat: '50.8%' },
+    ]
+  },
+  'zone-mid-left': {
+    name: 'MID-RANGE (COMBINED)',
+    position: 'Mid-range left + right wing combined',
+    fg: 41.8, efg: 41.8, attempts: 985, makes: 412,
+    leaders: [
+      { name: 'Bam Adebayo', stat: '44.1%' },
+      { name: 'Jaime Jaquez Jr.', stat: '45.9%' },
+      { name: 'Norman Powell', stat: '42.9%' },
+    ]
+  },
+  'zone-mid-right': {
+    name: 'MID-RANGE (COMBINED)',
+    position: 'Mid-range left + right wing combined',
+    fg: 41.8, efg: 41.8, attempts: 985, makes: 412,
+    leaders: [
+      { name: 'Bam Adebayo', stat: '44.1%' },
+      { name: 'Jaime Jaquez Jr.', stat: '45.9%' },
+      { name: 'Norman Powell', stat: '42.9%' },
+    ]
+  },
+  'zone-mid-top': {
+    name: 'MID-RANGE TOP',
+    position: 'Free throw line extended',
+    fg: 41.8, efg: 41.8, attempts: 985, makes: 412,
+    leaders: [
+      { name: 'Tyler Herro', stat: '45.5%' },
+      { name: 'Bam Adebayo', stat: '44.1%' },
+      { name: 'Norman Powell', stat: '42.9%' },
+    ]
+  },
+  'zone-ab3': {
+    name: 'ABOVE-BREAK 3',
+    position: 'Top of the arc / wing 3-point',
+    fg: 37.1, efg: 55.7, attempts: 1430, makes: 530,
+    leaders: [
+      { name: 'Tyler Herro', stat: '40.8%' },
+      { name: 'Andrew Wiggins', stat: '39.0%' },
+      { name: 'Norman Powell', stat: '40.0%' },
+    ]
+  },
+  'zone-corner-l': {
+    name: 'CORNER 3 (COMBINED)',
+    position: 'Baseline 3-point — left + right combined',
+    fg: 39.4, efg: 59.1, attempts: 425, makes: 167,
+    leaders: [
+      { name: 'Norman Powell', stat: '45.3%' },
+      { name: 'Tyler Herro', stat: '44.3%' },
+      { name: 'Davion Mitchell', stat: '43.8%' },
+    ]
+  },
+  'zone-corner-r': {
+    name: 'CORNER 3 (COMBINED)',
+    position: 'Baseline 3-point — left + right combined',
+    fg: 39.4, efg: 59.1, attempts: 425, makes: 167,
+    leaders: [
+      { name: 'Norman Powell', stat: '45.3%' },
+      { name: 'Tyler Herro', stat: '44.3%' },
+      { name: 'Davion Mitchell', stat: '43.8%' },
+    ]
+  },
+};
+
+// Color zones by FG%
+function colorForFG(pct) {
+  if (pct >= 50) return '#4eca7a';     // efficient
+  if (pct >= 40) return '#f9a01b';     // average
+  return '#98002e';                    // deficient
+}
+
+function verdictForFG(pct) {
+  if (pct >= 50) return 'EFFICIENT';
+  if (pct >= 40) return 'AVERAGE';
+  return 'DEFICIENT';
+}
+
+// Initial color fill for zones
+Object.entries(courtZones).forEach(([id, z]) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.setAttribute('fill', colorForFG(z.fg));
+    el.setAttribute('fill-opacity', '0.55');
+    el.addEventListener('click', () => selectZone(id));
+  }
+});
+
+function selectZone(id) {
+  // Highlight selected
+  document.querySelectorAll('.court-zone').forEach(z => z.classList.remove('selected'));
+  document.getElementById(id).classList.add('selected');
+
+  const z = courtZones[id];
+  document.getElementById('detailName').textContent = z.name;
+  document.getElementById('detailPosition').textContent = '// ' + z.position;
+
+  document.getElementById('detailStats').style.display = 'grid';
+  document.getElementById('detailVerdictWrap').style.display = 'block';
+  document.getElementById('detailLeadersWrap').style.display = 'block';
+
+  // FG% with color class
+  const fgEl = document.getElementById('detailFG');
+  fgEl.textContent = z.fg.toFixed(1) + '%';
+  fgEl.className = 'detail-stat-value ' + (z.fg >= 50 ? 'green' : z.fg >= 40 ? 'gold' : 'red');
+
+  document.getElementById('detailEFG').textContent = z.efg.toFixed(1) + '%';
+  document.getElementById('detailAtt').textContent = z.attempts.toLocaleString();
+  document.getElementById('detailMakes').textContent = z.makes.toLocaleString();
+
+  const v = verdictForFG(z.fg);
+  const vEl = document.getElementById('detailVerdict');
+  vEl.textContent = v;
+  vEl.className = 'verdict-badge verdict-' + v;
+
+  // Leaders
+  const leadersEl = document.getElementById('detailLeaders');
+  leadersEl.innerHTML = '';
+  z.leaders.forEach(l => {
+    leadersEl.innerHTML += `<div class="leader-row">
+      <span class="leader-name">${l.name}</span>
+      <span class="leader-stat">${l.stat}</span>
+    </div>`;
+  });
+}
+
+// Auto-select Rim on first court view
+window.addEventListener('load', () => {
+  setTimeout(() => selectZone('zone-rim'), 100);
+});
+
+// ── TAB NAVIGATION ────────────────────────────────────────────────────────
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
