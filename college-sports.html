@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cost of Saving College Sports — A Gabriel Gomez analysis</title>
+<meta name="description" content="The free market created a system nobody can fix. A structural analysis of NIL, the House settlement, Olympic sports cuts, and the federal government's failed attempts to put friction back in.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #fafaf7;
+    --bg: #f3efe6;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --rule: #d8d3c4;
+    --accent: #8b0000;
+    --highlight: #fbe9b7;
+    --red: #b91c1c;
+    --gold: #c4a76a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Shared portfolio nav ---------- */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: var(--paper);
+    border-bottom: 2px solid var(--ink);
+    padding: 14px 28px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .site-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .menu-btn {
+    background: transparent;
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    padding: 9px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: background 0.2s;
+  }
+  .menu-btn:hover { background: var(--ink); }
+  .menu-btn:hover span { background: var(--paper); }
+  .menu-btn span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--ink);
+    transition: background 0.2s;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: opacity 0.2s;
+  }
+  .nav-logo:hover { opacity: 0.7; }
+  .nav-logo-mark {
+    width: 34px;
+    height: 34px;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .nav-logo-name {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .nav-link {
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 0;
+    border-bottom: 1.5px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-link:hover { color: var(--ink); border-bottom-color: var(--accent); }
+  .nav-link.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .nav-social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-social a {
+    color: var(--ink-soft);
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+  }
+  .nav-social a:hover { color: var(--accent); }
+
+  @media (max-width: 820px) {
+    .site-nav { flex-wrap: wrap; padding: 12px 18px; gap: 10px; }
+    .nav-logo-name { font-size: 14px; }
+    .nav-links { gap: 14px; order: 3; width: 100%; justify-content: center; padding-top: 8px; border-top: 1px solid var(--rule); }
+    .nav-link { font-size: 10px; letter-spacing: 0.05em; }
+  }
+  @media (max-width: 480px) {
+    .nav-logo-name { display: none; }
+  }
+
+  /* ---------- Nav dropdown ---------- */
+  .nav-dropdown {
+    position: relative;
+  }
+  .nav-dropdown-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-bottom: 1.5px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .nav-dropdown-trigger:hover,
+  .nav-dropdown.is-open .nav-dropdown-trigger,
+  .nav-dropdown-trigger.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+  .nav-dropdown-arrow {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg) translate(-1px, -1px);
+    transition: transform 0.2s;
+    margin-left: 4px;
+  }
+  .nav-dropdown.is-open .nav-dropdown-arrow {
+    transform: rotate(-135deg) translate(-1px, -1px);
+  }
+  .nav-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,0.18);
+    padding: 8px;
+    min-width: 300px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0s 0.2s, transform 0.2s;
+    z-index: 250;
+  }
+  .nav-dropdown.is-open .nav-dropdown-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    transition: opacity 0.2s, visibility 0s 0s, transform 0.2s;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-dropdown:hover .nav-dropdown-panel {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+      transition: opacity 0.2s, visibility 0s 0s, transform 0.2s;
+    }
+    .nav-dropdown:hover .nav-dropdown-arrow {
+      transform: rotate(-135deg) translate(-1px, -1px);
+    }
+    .nav-dropdown:hover .nav-dropdown-trigger {
+      color: var(--ink);
+      border-bottom-color: var(--accent);
+    }
+  }
+  .nav-dropdown-category {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 12px 14px 6px;
+    border-top: 1px solid var(--rule);
+  }
+  .nav-dropdown-category:first-child {
+    border-top: none;
+    padding-top: 8px;
+  }
+  .nav-dropdown-item {
+    display: block;
+    text-decoration: none;
+    color: var(--ink);
+    padding: 8px 14px 14px;
+    transition: background 0.2s;
+  }
+  .nav-dropdown-item:hover {
+    background: var(--bg);
+  }
+  .nav-dropdown-item.is-current {
+    background: var(--bg);
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+  }
+  .nav-dropdown-item-title {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 2px;
+    color: var(--ink);
+  }
+  .nav-dropdown-item-title em { font-style: italic; color: var(--accent); }
+  .nav-dropdown-item-desc {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  @media (max-width: 820px) {
+    .nav-dropdown-panel {
+      position: fixed;
+      top: auto;
+      left: 16px;
+      right: 16px;
+      transform: translateY(-8px);
+      min-width: 0;
+    }
+    .nav-dropdown.is-open .nav-dropdown-panel {
+      transform: translateY(0);
+    }
+  }
+
+  /* ---------- Side drawer ---------- */
+  .drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 22, 20, 0);
+    visibility: hidden;
+    transition: background 0.3s ease, visibility 0s 0.3s;
+    z-index: 300;
+  }
+  .drawer-overlay.open {
+    background: rgba(26, 22, 20, 0.5);
+    visibility: visible;
+    transition: background 0.3s ease;
+  }
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(360px, 85vw);
+    height: 100vh;
+    background: var(--paper);
+    border-right: 1px solid var(--rule);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 400;
+    overflow-y: auto;
+    padding: 24px 28px;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 20px;
+  }
+  .drawer-title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .drawer-close {
+    background: transparent;
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .drawer-close:hover { background: var(--ink); color: var(--paper); }
+  .drawer-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .drawer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .drawer-list li { margin: 0; }
+  .drawer-list a {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 12px 4px;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.2s;
+  }
+  .drawer-list a:hover { background: var(--bg); }
+  .drawer-list .drawer-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+    width: 26px;
+  }
+  .drawer-list .drawer-text {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  /* ---------- Section base ---------- */
+  section {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 80px 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+  section:last-of-type { border-bottom: none; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(30px, 4.5vw, 46px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    max-width: 22ch;
+  }
+  h2 em { font-style: italic; color: var(--accent); }
+  .section-intro {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin-bottom: 28px;
+  }
+  .section-intro strong { color: var(--ink); font-weight: 500; }
+  section p {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    max-width: 62ch;
+  }
+  section p strong { color: var(--ink); font-weight: 500; }
+  section p em {
+    font-style: italic;
+    color: var(--ink);
+  }
+
+  /* ---------- Hero / opening ---------- */
+  .hero {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 80px 32px 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 36px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .byline-mark {
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .hero-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: block;
+  }
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(40px, 7vw, 72px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin-bottom: 28px;
+    max-width: 18ch;
+  }
+  .hero-title em { font-style: italic; color: var(--accent); }
+  .hero-deck {
+    font-family: 'Fraunces', serif;
+    font-size: 21px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 36px;
+    max-width: 60ch;
+  }
+  .hero-deck em { font-style: italic; color: var(--accent); }
+  .hero-meta {
+    display: flex;
+    gap: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .hero-meta-item strong { color: var(--ink); font-weight: 700; margin-left: 6px; }
+
+  /* ---------- Opening case study ---------- */
+  .opening-case {
+    background: var(--bg);
+    border-left: 3px solid var(--accent);
+    padding: 32px 32px 24px;
+    margin: 0 auto 0;
+    max-width: 980px;
+    margin-top: 0;
+  }
+  .opening-case-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .opening-case h3 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .opening-case p {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .opening-case .stat-line {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 18px 0;
+    padding: 16px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .opening-case .stat-line .stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--paper);
+    padding: 6px 12px;
+    border: 1px solid var(--rule);
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- Stat grid ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    margin-top: 36px;
+  }
+  @media (max-width: 720px) {
+    .stat-grid { grid-template-columns: 1fr; }
+  }
+  .stat-cell {
+    padding: 28px 24px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .stat-cell-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    line-height: 1.3;
+    display: block;
+    min-height: 28px;
+  }
+  .stat-cell-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(36px, 5vw, 48px);
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  .stat-cell-desc {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .stat-cell-desc strong { color: var(--ink); font-weight: 500; }
+
+  /* ---------- Explainer blocks (4-up grid) ---------- */
+  .explainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    margin-top: 32px;
+  }
+  @media (max-width: 720px) {
+    .explainer { grid-template-columns: 1fr; }
+  }
+  .explainer-block {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 22px;
+    padding: 28px 24px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.3s;
+  }
+  .explainer-block:hover { background: var(--bg); }
+  .explainer-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding-top: 6px;
+  }
+  .explainer-content h3 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(17px, 2vw, 20px);
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+  .explainer-content h3 em { font-style: italic; color: var(--accent); }
+  .explainer-content p {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: none;
+    margin-bottom: 0;
+  }
+  .explainer-content p strong {
+    color: var(--ink);
+    font-weight: 500;
+    background: linear-gradient(180deg, transparent 65%, var(--highlight) 65%);
+    padding: 0 2px;
+  }
+
+  /* ---------- Story callout ---------- */
+  .story-callout {
+    background: var(--bg);
+    border-left: 3px solid var(--accent);
+    padding: 22px 26px;
+    margin: 28px 0;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .story-callout strong { color: var(--ink); font-weight: 600; }
+  .story-callout em { font-style: italic; }
+  .story-callout.gold {
+    background: #f8f4ec;
+    border-left-color: var(--gold);
+  }
+  .story-callout.gold strong { color: var(--ink); }
+
+  /* ---------- Pull quote ---------- */
+  .pull-quote {
+    margin: 36px 0;
+    padding: 0 0 0 24px;
+    border-left: 3px solid var(--ink);
+    max-width: 62ch;
+  }
+  .pull-quote-text {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(20px, 2.6vw, 24px);
+    line-height: 1.35;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .pull-quote-attr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Personal callout (kicker) ---------- */
+  .personal-callout {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px 32px;
+    margin: 36px 0;
+    border-left: 4px solid var(--gold);
+  }
+  .personal-callout-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .personal-callout p {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--paper);
+    margin-bottom: 14px;
+    max-width: 60ch;
+  }
+  .personal-callout p:last-child { margin-bottom: 0; }
+  .personal-callout em { font-style: italic; color: var(--highlight); }
+  .personal-callout strong { color: var(--paper); font-weight: 500; }
+
+  /* ---------- Kill shot (closer) ---------- */
+  .kill-shot {
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: none;
+  }
+  .kill-shot .section-label {
+    color: var(--gold);
+  }
+  .kill-shot h2 {
+    color: var(--paper);
+    max-width: 24ch;
+  }
+  .kill-shot h2 em { color: var(--highlight); }
+  .kill-shot p {
+    color: #d8d3c4;
+    font-size: 18px;
+    max-width: 60ch;
+  }
+  .kill-shot p strong { color: var(--paper); }
+  .kill-shot p em { color: var(--highlight); font-style: italic; }
+  .closer-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 40px 0 32px;
+    padding: 28px 0;
+    border-top: 1px solid rgba(216,211,196,0.3);
+    border-bottom: 1px solid rgba(216,211,196,0.3);
+  }
+  @media (max-width: 720px) {
+    .closer-stats { grid-template-columns: 1fr; gap: 16px; }
+  }
+  .closer-stat-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(34px, 4.5vw, 44px);
+    line-height: 1;
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .closer-stat-desc {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #d8d3c4;
+  }
+
+  /* ---------- What I Found (personal sign-off) ---------- */
+  .what-i-found {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 80px 32px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .what-i-found-inner {
+    max-width: 62ch;
+  }
+  .what-i-found-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    display: block;
+  }
+  .what-i-found h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(28px, 4vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    max-width: 22ch;
+    color: var(--ink);
+  }
+  .what-i-found h2 em { font-style: italic; color: var(--accent); }
+  .what-i-found p {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+  .what-i-found p strong { color: var(--ink); font-weight: 600; }
+  .what-i-found p em { font-style: italic; color: var(--ink); }
+  .what-i-found .signoff {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .what-i-found .signoff strong { color: var(--ink); }
+
+  /* ---------- Sources ---------- */
+  .sources {
+    background: var(--bg);
+    padding: 60px 32px;
+    border-top: 1px solid var(--rule);
+  }
+  .sources-inner {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+  .sources h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 18px;
+    color: var(--ink);
+  }
+  .sources p {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    max-width: 70ch;
+  }
+  .sources p strong { color: var(--ink); font-weight: 600; }
+  .sources ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 18px;
+  }
+  .sources ul li {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .sources ul li strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 40px 32px;
+    text-align: center;
+    border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    background: var(--paper);
+  }
+  footer a { color: var(--ink-soft); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ========== SHARED PORTFOLIO NAV ========== -->
+<nav class="site-nav">
+  <div class="site-nav-left">
+    <button class="menu-btn" id="menuBtn" aria-label="Open table of contents">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="nav-logo" aria-label="Gabriel Gomez home">
+      <span class="nav-logo-mark">GG</span>
+      <span class="nav-logo-name">Gabriel Gomez</span>
+    </a>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Home</a>
+    <div class="nav-dropdown" id="analysisDropdown">
+      <button class="nav-dropdown-trigger active" aria-expanded="false" aria-haspopup="true" id="analysisDropdownTrigger">
+        Analysis Work
+        <span class="nav-dropdown-arrow"></span>
+      </button>
+      <div class="nav-dropdown-panel" role="menu">
+        <div class="nav-dropdown-category">Sponsorships</div>
+        <a href="beyond-miami.html" class="nav-dropdown-item" role="menuitem">
+          <div class="nav-dropdown-item-title">Beyond Miami</div>
+          <div class="nav-dropdown-item-desc">Did Messi actually lift MLS, or just Inter Miami?</div>
+        </a>
+        <div class="nav-dropdown-category">Performance Data</div>
+        <a href="miami-heat.html" class="nav-dropdown-item" role="menuitem">
+          <div class="nav-dropdown-item-title">Miami Heat</div>
+          <div class="nav-dropdown-item-desc">The 2025 to 2026 season, from the inside.</div>
+        </a>
+        <div class="nav-dropdown-category">Articles</div>
+        <a href="college-sports.html" class="nav-dropdown-item is-current" role="menuitem" aria-current="page">
+          <div class="nav-dropdown-item-title">The Cost of Saving College Sports</div>
+          <div class="nav-dropdown-item-desc">The free market created a system nobody can fix.</div>
+        </a>
+      </div>
+    </div>
+    <a href="index.html#about" class="nav-link">About Me</a>
+  </div>
+  <div class="nav-social">
+    <a href="https://linkedin.com/in/gomez1812" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- ========== SIDE DRAWER ========== -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-header">
+    <span class="drawer-title">The Cost of Saving College Sports</span>
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">✕ Close</button>
+  </div>
+  <div class="drawer-label">Sections</div>
+  <ul class="drawer-list">
+    <li><a href="#top"><span class="drawer-num">01</span><span class="drawer-text">The Mensah hook</span></a></li>
+    <li><a href="#universities"><span class="drawer-num">02</span><span class="drawer-text">Universities are getting squeezed</span></a></li>
+    <li><a href="#olympic"><span class="drawer-num">03</span><span class="drawer-text">Olympic sports are dying</span></a></li>
+    <li><a href="#boosters"><span class="drawer-num">04</span><span class="drawer-text">The booster ROI is broken</span></a></li>
+    <li><a href="#monopoly"><span class="drawer-num">05</span><span class="drawer-text">A two conference monopoly</span></a></li>
+    <li><a href="#federal"><span class="drawer-num">06</span><span class="drawer-text">The federal government had to step in</span></a></li>
+    <li><a href="#bright-spot"><span class="drawer-num">07</span><span class="drawer-text">The one thing that got better</span></a></li>
+    <li><a href="#closer"><span class="drawer-num">08</span><span class="drawer-text">The closer</span></a></li>
+    <li><a href="#what-i-found"><span class="drawer-num">09</span><span class="drawer-text">What I found</span></a></li>
+    <li><a href="#sources"><span class="drawer-num">10</span><span class="drawer-text">Sources &amp; method</span></a></li>
+  </ul>
+</aside>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="top" style="border-bottom: 1px solid var(--rule);">
+  <div class="byline">
+    <div class="byline-mark">GG</div>
+    <span>The Cost of Saving College Sports · A Gabriel Gomez analysis</span>
+  </div>
+  <span class="hero-kicker">The Cost of Saving College Sports · No. 01</span>
+  <h1 class="hero-title">The federal government is now trying to save college sports <em>from itself.</em></h1>
+  <p class="hero-deck">
+    Universities are cutting academic programs. Olympic sports are getting dropped. Boosters are walking away. The President had to write <em>two</em> executive orders. The free market created a system <em>nobody can fix.</em>
+  </p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">Window<strong>2024 → 2026</strong></div>
+    <div class="hero-meta-item">Programs cut<strong>415+</strong></div>
+    <div class="hero-meta-item">Executive orders<strong>2</strong></div>
+    <div class="hero-meta-item">Source<strong>House settlement filings, White House, ESPN, CBS Sports, SBJ</strong></div>
+  </div>
+</section>
+
+<!-- ========== OPENING CASE STUDY ========== -->
+<div class="opening-case">
+  <div class="opening-case-label">The cleanest example of what we built</div>
+  <h3>Duke paid $8 million for Darian Mensah. They got him for one year.</h3>
+  <p>In December 2024, Duke signed Darian Mensah to a two year, $8 million NIL deal. He was their guy. Above market rate sure, but he delivered.</p>
+  <div class="stat-line">
+    <span class="stat">3,973 passing yards</span>
+    <span class="stat">34 touchdowns</span>
+    <span class="stat">Second team All-ACC</span>
+    <span class="stat">First ACC title since 1962</span>
+  </div>
+  <p>After the season he publicly announced he was coming back for year two. Two months later he was at Miami for $10 million.</p>
+  <p><strong>Duke sued. They lost. Mensah is now at a conference rival, and Duke and Miami play each other in 2026.</strong></p>
+</div>
+
+<!-- ========== SECTION 1: Universities ========== -->
+<section id="universities">
+  <div class="section-label">Section 01 · Universities are getting squeezed</div>
+  <h2>The same schools paying NIL deals are <em>cutting academic programs</em> at a level we haven't seen before.</h2>
+  <p class="section-intro">Here's what nobody is connecting. The universities writing seven figure NIL checks are also closing degree programs, laying off employees, and piling on debt. The two stories are actually one story.</p>
+
+  <div class="stat-grid">
+    <div class="stat-cell">
+      <span class="stat-cell-label">Clemson · Athletics debt</span>
+      <div class="stat-cell-num">$1.5B</div>
+      <p class="stat-cell-desc">Total athletics related debt. Cited in the April 2026 executive order as a national problem.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">Syracuse · Programs closing</span>
+      <div class="stat-cell-num">93</div>
+      <p class="stat-cell-desc">Academic programs being closed or paused. Announced April 2026.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">UNC Chapel Hill · Cuts</span>
+      <div class="stat-cell-num">$89M</div>
+      <p class="stat-cell-desc">Spending cuts over the next three years across the institution.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">Duke · Layoffs</span>
+      <div class="stat-cell-num">600</div>
+      <p class="stat-cell-desc">Employees laid off as part of a $350 million budget cut.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">Indiana public colleges · Programs</span>
+      <div class="stat-cell-num">580</div>
+      <p class="stat-cell-desc">Academic programs eliminated or merged statewide. Roughly a quarter of all academic offerings.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">East Carolina · Program cuts</span>
+      <div class="stat-cell-num">44</div>
+      <p class="stat-cell-desc">Programs cut alongside a $25 million reduction in spending.</p>
+    </div>
+  </div>
+
+  <p style="margin-top: 36px;">This isn't a coincidence and it isn't separate stories. Universities have to find the money for revenue sharing somewhere. The House v. NCAA settlement requires schools to share up to $20.5 million per year with their athletes starting July 2025, and that number climbs to $32.9 million by 2035. That money isn't coming from new revenue. It's coming from inside the building.</p>
+
+  <div class="story-callout">
+    <strong>The White House cited the numbers directly</strong> in the April 2026 executive order. One major athletic program closed fiscal year 2025 with <strong>$535 million in athletics related debt</strong>. Another has <strong>$437 million</strong>. Their own framing: <em>"These financial perils will inevitably siphon funds from universities' educational and research purposes."</em>
+  </div>
+
+  <p>And it's happening at the exact moment universities are losing students. Enrollment peaked at 21 million in 2010 and is now around 19.6 million. That's 2.7 million fewer adults in higher education. The demographic cliff hits in 2025. Fewer 18 year olds, fewer tuition dollars, more pressure on every line item in the budget. Universities are trying to attract fewer students with smaller academic offerings while their athletic departments grow.</p>
+
+  <p><strong>The math doesn't work.</strong></p>
+</section>
+
+<!-- ========== SECTION 2: Olympic Sports ========== -->
+<section id="olympic">
+  <div class="section-label">Section 02 · Olympic sports are dying</div>
+  <h2>The same squeeze is happening inside athletics. <em>Just not to football or basketball.</em></h2>
+  <p class="section-intro">More than <strong>415 Olympic sports programs have been cut, merged, or eliminated since May 2024</strong>. The athletes finally getting paid are concentrated in two sports. The athletes getting cut are everywhere else.</p>
+
+  <div class="explainer">
+    <div class="explainer-block">
+      <div class="explainer-num">01</div>
+      <div class="explainer-content">
+        <h3>Cleveland State Wrestling.</h3>
+        <p>The team raised over <strong>$500,000 in donations</strong> and won a student led fee increase to stay alive. Didn't matter. The program got cut.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">02</div>
+      <div class="explainer-content">
+        <h3>Cal Poly Swimming.</h3>
+        <p>Cut both <strong>men's and women's swimming</strong> in one announcement. No replacement, no transition path for the athletes.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">03</div>
+      <div class="explainer-content">
+        <h3>Grand Canyon Men's Volleyball.</h3>
+        <p>Made the <strong>NCAA Final Four in 2024</strong>. Program cut shortly after. Going to the Final Four didn't save them.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">04</div>
+      <div class="explainer-content">
+        <h3>Iowa State Gymnastics.</h3>
+        <p>Suspended along with cuts at Hilton Coliseum. A program with decades of history, gone in a single announcement.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">05</div>
+      <div class="explainer-content">
+        <h3>Georgia Tech Swimming and Diving.</h3>
+        <p>Cut <strong>19 swimmers and divers</strong> from the active roster. Scholarship slots gone overnight.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">06</div>
+      <div class="explainer-content">
+        <h3>Tennis programs gone.</h3>
+        <p><strong>Eastern Illinois, Prairie View A&amp;M, Radford, UTEP, Louisiana Monroe.</strong> Five programs eliminated in a single recruiting cycle.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="story-callout">
+    <strong>The Olympic pipeline runs through these schools.</strong> America doesn't have a national sports academy system like most other countries. The universities ARE the pipeline. <strong>75%</strong> of US Olympians in 2024 came through NCAA sports. Over <strong>80%</strong> of US medalists at Paris 2024 competed in college first. Around <strong>85%</strong> of the US wrestling team came through the college system. <em>When these programs get cut, the pipeline gets cut.</em>
+  </div>
+
+  <!-- ===== KICKER CREDIBILITY PARAGRAPH ===== -->
+  <div class="personal-callout">
+    <div class="personal-callout-label">From the inside · D1 Football, Towson</div>
+    <p>I played D1 football as a kicker at Towson. So I know how the locker room actually works. The QB and the skill position players are the ones getting the NIL deals, <em>the same way the football and basketball stars are the ones getting paid in this whole system.</em></p>
+    <p>Some kickers and long snappers do well too, especially the ones with a real social media following. But most of the special teams guys, the walk on receivers, the backup linemen, they're not on the NIL boards. <strong>They're closer to the swimmers and wrestlers getting cut than they are to the QB making $4 million.</strong></p>
+    <p>That perspective matters when you talk about who actually benefits from all of this. It's not "athletes" in general. It's a very specific slice of athletes.</p>
+  </div>
+
+  <p>The coaching associations for swimming, wrestling, track and field, and volleyball put out a joint statement after the House settlement was approved. Their concern was simple. The new financial obligations would force administrators to divert resources away from non football and non basketball sports, which is where the majority of NCAA student athletes actually compete. They were right.</p>
+</section>
+
+<!-- ========== SECTION 3: Booster ROI ========== -->
+<section id="boosters">
+  <div class="section-label">Section 03 · The booster ROI is broken</div>
+  <h2>The Mensah case <em>isn't an exception.</em> It's becoming the rule.</h2>
+  <p class="section-intro">Boosters are funding a system where they have no leverage. Players don't know who's paying them. Donors don't get acknowledgment. Contracts can't be enforced. The player can leave after one year for more money somewhere else.</p>
+
+  <div class="pull-quote">
+    <p class="pull-quote-text">"I gave money to a kid. I won't mention who. I've done it one time at UCLA. Never met the young man. He was there a year, he left after the year. I wrote a sizable check, and he went to another school. I didn't even get so much as a thank you note. So, it's one of those deals to where I'm done with NIL."</p>
+    <div class="pull-quote-attr">Troy Aikman · UCLA alum · Three time Super Bowl champion</div>
+  </div>
+
+  <p>Aikman went on the Sports Media Podcast with Richard Deitsch and said he's done with NIL completely. The player he funded didn't even know who paid him. According to one source familiar with the UCLA collective at the time, it was <strong>standard practice for players not to know which donors contributed NIL funds</strong>. The team's collective handled the routing.</p>
+
+  <p>So you have a system where boosters write seven figure checks, players don't know who funded them, the player leaves after one year, and the booster quits the system. That's not sustainable for any donor-funded operation.</p>
+
+  <div class="pull-quote">
+    <p class="pull-quote-text">"If I write you a check for a million dollars, you can't stay for 300 days. You gotta at least give me 2 years."</p>
+    <div class="pull-quote-attr">Shaquille O'Neal · The Big Podcast with Shaq</div>
+  </div>
+
+  <p>And it's not just Shaq. Dwyane Wade and Tina Thompson have been vocal that NIL is slowly killing the educational side of college sports. <strong>"These kids are transferring colleges, going to a different school every single year. You can't get an education that way,"</strong> Thompson said in conversation with Wade. <em>"Like, you're not getting a degree."</em></p>
+
+  <div class="pull-quote">
+    <p class="pull-quote-text">"We're not recruiting any high school players."</p>
+    <div class="pull-quote-attr">Rick Pitino · St. John's basketball coach</div>
+  </div>
+
+  <p>Pitino said this at a press conference in February 2025. Think about what that actually means. The transfer portal is now so competitive that major programs aren't using roster spots on high schoolers anymore. They're grabbing proven players out of the portal. <strong>The system is choking off opportunities for the next generation of athletes before they even get to college.</strong></p>
+
+  <div class="story-callout gold">
+    <strong>The structural picture.</strong> Boosters write checks to players they've never met. Players don't know who's paying them. Contracts can't be enforced. Players leave after one year for more money. High school recruits get fewer scholarship slots. Boosters quit the system. <em>That's not a funding model. That's a market that punishes the only people putting money into it.</em>
+  </div>
+</section>
+
+<!-- ========== SECTION 4: Two Conference Monopoly ========== -->
+<section id="monopoly">
+  <div class="section-label">Section 04 · A two conference monopoly</div>
+  <h2>The talent isn't flowing to "the top." <em>It's flowing to two specific conferences.</em></h2>
+  <p class="section-intro">Here's the data point that doesn't get enough attention. The 2026 transfer portal cycle isn't producing a balanced talent market. It's producing a hierarchy that gets more extreme every year.</p>
+
+  <div class="stat-grid">
+    <div class="stat-cell">
+      <span class="stat-cell-label">SEC + Big Ten · Retention</span>
+      <div class="stat-cell-num">97.4%</div>
+      <p class="stat-cell-desc">Of eligible returning all-conference players in the SEC and Big Ten <strong>stayed at their school</strong>. The talent doesn't leave.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">ACC + Big 12 · Retention</span>
+      <div class="stat-cell-num">56.8%</div>
+      <p class="stat-cell-desc">The other two Power Four conferences kept just over half their all-conference talent. The rest <strong>left for the SEC or Big Ten.</strong></p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">Group of Six · Retention</span>
+      <div class="stat-cell-num">29.5%</div>
+      <p class="stat-cell-desc">Less than a third of Group of Six all-conference players stayed. The rest are now <strong>feeding the Power Four</strong>.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">Power Four overall · Retention</span>
+      <div class="stat-cell-num">74.6%</div>
+      <p class="stat-cell-desc">The averaged Power Four retention hides the bigger story. The SEC and Big Ten are doing most of the keeping.</p>
+    </div>
+  </div>
+
+  <div class="pull-quote">
+    <p class="pull-quote-text">"If we don't act, we are very quickly going to be in a world of 30 to 50 college football teams that are basically a mini NFL."</p>
+    <div class="pull-quote-attr">A US Senator · White House college sports meeting · March 2026</div>
+  </div>
+
+  <p>That's already happening. The SEC and Big Ten have TV contracts the other conferences can't match. Schools in those two conferences can offer more in NIL and revenue sharing than anyone else. Players follow the money, and the money is concentrated in two leagues.</p>
+
+  <p>The Group of Six and even the ACC and Big 12 are becoming feeder leagues. <strong>This isn't just about football and basketball getting bigger. It's about a small group of schools getting bigger while everyone else gets squeezed out, both in athletics AND in academics.</strong></p>
+</section>
+
+<!-- ========== SECTION 5: Federal Government ========== -->
+<section id="federal">
+  <div class="section-label">Section 05 · The federal government had to step in</div>
+  <h2>When the problem gets this big, eventually someone in Washington <em>tries to fix it.</em></h2>
+  <p class="section-intro">President Trump has signed two executive orders on college sports in nine months. The second one is the most aggressive federal intervention into college athletics in modern history. The lawyers say it's probably unconstitutional. It might still create market chaos before the courts ever weigh in.</p>
+
+  <div class="explainer">
+    <div class="explainer-block">
+      <div class="explainer-num">01</div>
+      <div class="explainer-content">
+        <h3>July 24, 2025 · "Saving College Sports"</h3>
+        <p>President Trump signs the first executive order. Tries to ban pay for play NIL schemes and require wealthy programs to maintain Olympic sports scholarships. <strong>Didn't really do anything.</strong> Industry stakeholders called it a signal more than a solution.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">02</div>
+      <div class="explainer-content">
+        <h3>April 3, 2026 · "Urgent National Action"</h3>
+        <p>President Trump signs the second, more aggressive order. Limits athletes to <strong>5 seasons in a 5 year window</strong>. Caps transfers at <strong>1 before graduation</strong>. Schools that violate could lose federal funding. Effective August 1, 2026.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">03</div>
+      <div class="explainer-content">
+        <h3>The legal problem.</h3>
+        <p>Multiple sports lawyers told ESPN they expect courts to rule the order <strong>unconstitutional and unenforceable</strong>. The 2021 Supreme Court ruling that started all of this made clear the NCAA isn't exempt from antitrust laws. Federal limits on athlete movement are exactly the kind of restraint the original case struck down.</p>
+      </div>
+    </div>
+    <div class="explainer-block">
+      <div class="explainer-num">04</div>
+      <div class="explainer-content">
+        <h3>The chaos is the point.</h3>
+        <p>Even if the order doesn't hold up legally, it creates immediate market uncertainty. Athletes don't know if they'll be eligible if they transfer. Schools don't know if they'll lose federal funding. <strong>The system is now operating under federal uncertainty.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pull-quote">
+    <p class="pull-quote-text">"The whole educational system is going to go out of business because of this."</p>
+    <div class="pull-quote-attr">President Donald Trump · Roundtable on college sports · March 2026</div>
+  </div>
+
+  <p>And Congress is on the clock. President Trump's order is meant to force lawmakers to act. After more than five years of discussing options and proposing bills, <strong>neither the US House nor the Senate has held a full vote on any college sports legislation</strong>. The SCORE Act has been delayed twice since September 2025.</p>
+
+  <p>In the Senate, Ted Cruz and Maria Cantwell are still trying to produce a bipartisan bill. The largest obstacle is whether college athletes should be classified as employees. Cruz says no. Several Democrats believe employment classification is the only path to a sustainable model. <strong>That gap has been unresolved for two years.</strong></p>
+
+  <div class="story-callout">
+    <strong>The trap.</strong> The NCAA can't fix this because antitrust law prevents them from agreeing to limit athlete earnings. The federal government may not have constitutional authority to fix it either. Congress could fix it but hasn't held a vote in five years. <em>Every potential solution runs into the same wall the original 2021 Supreme Court ruling built.</em>
+  </div>
+</section>
+
+<!-- ========== SECTION 6: Bright Spot ========== -->
+<section id="bright-spot">
+  <div class="section-label">Section 06 · The one thing that actually got better</div>
+  <h2>Not everything in this story is bad. <em>Athletes are staying in school longer.</em></h2>
+  <p class="section-intro">There's one outcome of NIL that genuinely helped, and it's worth naming. For the first time in modern college basketball, players are choosing the college path over the NBA Draft. The numbers are dramatic.</p>
+
+  <div class="stat-grid">
+    <div class="stat-cell">
+      <span class="stat-cell-label">NBA early entry · 2021</span>
+      <div class="stat-cell-num">363</div>
+      <p class="stat-cell-desc">College players who filed as <strong>early entry candidates</strong> for the NBA Draft the year NIL started.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">NBA early entry · 2024</span>
+      <div class="stat-cell-num">195</div>
+      <p class="stat-cell-desc">By 2024, the number had dropped by <strong>46%</strong>. Players were starting to do the math.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">NBA early entry · 2025</span>
+      <div class="stat-cell-num">106</div>
+      <p class="stat-cell-desc">Less than one third of the pre NIL number. <strong>Lowest in a decade.</strong> The math became obvious.</p>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-cell-label">Top player NIL · JT Toppin</span>
+      <div class="stat-cell-num">$2.8M</div>
+      <p class="stat-cell-desc">Big 12 Player of the Year at Texas Tech. NIL valuation alone <strong>beats four years of an NBA second round contract.</strong></p>
+    </div>
+  </div>
+
+  <p style="margin-top: 36px;">The math is now obvious. Unless you're a guaranteed first round pick, you'll make more money in college through NIL than on an NBA rookie contract. Donovan Dent, who transferred to UCLA, was valued at $2 million in NIL while projected as a possible second round pick. Even if he got drafted, his NIL would be worth more than four years of his NBA contract.</p>
+
+  <p>So players are choosing to finish their college careers, develop further, earn degrees, and bank serious money in the process. <strong>That's actually a win, both for the players and for the college game.</strong> Casual fans get to watch stars stick around for three or four years instead of one and done. Players walk out with a credential they can use after sports.</p>
+
+  <div class="story-callout">
+    <strong>But here's the catch, even on the good news.</strong> The athletes staying are concentrated in football and basketball. Which means even more money has to flow into those sports. Which means even more pressure on the rest of the system. <em>The one bright spot makes the other problems worse.</em>
+  </div>
+</section>
+
+<!-- ========== KILL SHOT (CLOSER) ========== -->
+<section class="kill-shot" id="closer">
+  <div class="section-label">The closer</div>
+  <h2>The free market created a system <em>nobody can fix.</em></h2>
+
+  <p>Let's put the whole picture together. Universities are cutting academic programs at a scale we haven't seen in modern history. They're cutting Olympic sports at the same time. They're piling up athletic debt that the federal government is now calling a national problem. Boosters are publicly walking away from the system. High school recruits are getting fewer opportunities. Talent is concentrating in two conferences. The federal government has tried twice to step in and may not have legal authority to do either time. Congress is paralyzed.</p>
+
+  <p>And the one genuinely good outcome, athletes staying in school longer, just makes the financial pressure on universities worse.</p>
+
+  <p>This isn't a story about athletes being greedy. They generated the revenue. They deserve to share in it. <strong>Football and basketball players finally getting paid is the fair part of all of this.</strong></p>
+
+  <div class="closer-stats">
+    <div>
+      <div class="closer-stat-num">$20.5M</div>
+      <div class="closer-stat-desc">Required revenue share per school per year, growing to $32.9M by 2035</div>
+    </div>
+    <div>
+      <div class="closer-stat-num">415+</div>
+      <div class="closer-stat-desc">Olympic sports programs cut, merged, or eliminated since May 2024</div>
+    </div>
+    <div>
+      <div class="closer-stat-num">2</div>
+      <div class="closer-stat-desc">Executive orders signed by President Trump trying to put friction back into the system</div>
+    </div>
+  </div>
+
+  <p><strong>The free market created a system nobody can fix.</strong> Universities are choosing football and basketball over their academic mission AND their Olympic sports AND their athletes who aren't superstars. Even the federal government can't stop it. And the few benefits (athletes staying in school, players finally getting paid) come at a structural cost that's <em>restructuring American higher education from the inside out.</em></p>
+
+  <p style="margin-top: 32px; font-size: 16px; color: rgba(216,211,196,0.85); font-style: italic;">The question for the next decade isn't whether we should pay college athletes. That's settled. The question is whether American universities can survive what college sports has become.</p>
+</section>
+
+<!-- ========== WHAT I FOUND (PERSONAL SIGNOFF) ========== -->
+<section class="what-i-found" id="what-i-found">
+  <div class="what-i-found-inner">
+    <span class="what-i-found-label">What I found</span>
+    <h2>Three things stood out by the end of this.</h2>
+
+    <p><strong>One.</strong> The academic and athletic stories are the same story. You can't write about Syracuse cutting 93 programs without writing about the $20.5 million per year revenue share schools owe their athletes starting July 2025. The two pressures are sitting on the same balance sheet.</p>
+
+    <p><strong>Two.</strong> The federal government can't fix this. The 2021 Supreme Court ruling made the NCAA subject to antitrust law, which means almost any restriction on athlete movement or pay can be challenged. President Trump's April 2026 executive order tried anyway. Lawyers say it won't hold up. Even if it does, it doesn't solve the financial problem underneath.</p>
+
+    <p><strong>Three.</strong> The benefits are real but narrow. Players staying in school longer is good. Football and basketball stars finally being paid is fair. But those gains are concentrated in a small slice of athletes at a small slice of schools, and <em>everyone else is paying for it.</em></p>
+
+    <p>The real question isn't whether to pay college athletes. <strong>It's whether American universities can afford what college sports has become.</strong></p>
+
+    <div class="signoff">
+      <strong>Gabriel Gomez</strong> · Miami · 2026
+    </div>
+  </div>
+</section>
+
+<!-- ========== SOURCES ========== -->
+<div class="sources" id="sources">
+  <div class="sources-inner">
+    <h3>Sources &amp; method</h3>
+    <p><strong>The data spine.</strong> All numbers in this piece are verified from public sources. The House v. NCAA settlement figures come from the approved settlement documents filed June 6, 2025. The Olympic sports cuts are tracked from coaching association statements and individual school announcements between May 2024 and April 2026. The retention percentages for the 2026 transfer portal cycle are reported by CBS Sports. The NBA Draft early entry numbers come from the official NCAA draft tracker. The executive order language is pulled directly from the White House published orders dated July 24, 2025 and April 3, 2026.</p>
+
+    <p><strong>What this piece doesn't try to do.</strong> It doesn't take a side on whether athletes should be paid. They should be, and they are, and that's the fair part of all of this. It doesn't predict whether the second executive order will hold up in court. The lawyers are split. It doesn't argue that the SEC and Big Ten are villains. They're operating rationally in the market the 2021 Supreme Court ruling created. The piece is structural. It names what the system actually built, and what it's costing.</p>
+
+    <ul>
+      <li><strong>House v. NCAA Settlement</strong> · Approved June 6, 2025 · Effective July 1, 2025 · $20.5M to $32.9M per school revenue sharing range</li>
+      <li><strong>ESPN · Dan Murphy</strong> · "Executive order aims to limit NCAA athletes to 5 years, 1 transfer" · April 3, 2026</li>
+      <li><strong>The White House</strong> · "Urgent National Action to Save College Sports" executive order · April 3, 2026</li>
+      <li><strong>The White House</strong> · "Saving College Sports" executive order · July 24, 2025</li>
+      <li><strong>CBS Sports</strong> · 2026 transfer portal retention data · SEC and Big Ten retention figures</li>
+      <li><strong>CBS Sports · David Hookstead</strong> · "Why Troy Aikman says he's 'done with' NIL" · December 9, 2025</li>
+      <li><strong>NBC Sports · Mike Florio</strong> · Troy Aikman NIL commentary coverage · December 10, 2025</li>
+      <li><strong>Yahoo Sports</strong> · Why Troy Aikman wasn't thanked for his UCLA NIL donation · December 11, 2025</li>
+      <li><strong>The Sports Rush · Ayo Biyibi</strong> · Shaquille O'Neal NIL commentary on The Big Podcast with Shaq · June 6, 2025</li>
+      <li><strong>NPR</strong> · "President Trump takes aim at college sports with a new executive order" · July 25, 2025</li>
+      <li><strong>Morgan Lewis · LawFlash</strong> · "New Executive Order Targets NIL and Athlete Mobility" · April 8, 2026</li>
+      <li><strong>Loeb &amp; Loeb LLP</strong> · "With Executive Order, President Trump Aims To Reshape College Sports" · August 2025</li>
+      <li><strong>Coaching associations</strong> · Joint statements on House settlement impact on Olympic and non revenue sports · 2024 to 2026</li>
+      <li><strong>NCAA</strong> · Early entry candidate tracker · 2021 to 2025</li>
+      <li><strong>Sportico</strong> · NIL valuation reporting on JT Toppin and Donovan Dent · 2025</li>
+    </ul>
+
+    <p style="margin-top: 24px;"><strong>Have something to add or push back on?</strong> The best feedback on these analyses comes from people who lived parts of the story I didn't. If you worked in a college athletic department, a collective, a Power Four front office, or you've been on the receiving end of a program cut, I'd love to hear from you. Contact info is at <a href="index.html" style="color: var(--accent); text-decoration: underline;">the home page</a>.</p>
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <p>The Cost of Saving College Sports · A Gabriel Gomez analysis · 2026 · <a href="https://linkedin.com/in/gomez1812" target="_blank" rel="noopener">LinkedIn</a> · <a href="mailto:gabogomez181201@gmail.com">Email</a></p>
+</footer>
+
+<script>
+  // Drawer toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const drawer = document.getElementById('drawer');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const drawerClose = document.getElementById('drawerClose');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  menuBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+
+  document.querySelectorAll('.drawer-list a').forEach(a => {
+    a.addEventListener('click', closeDrawer);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) {
+      closeDrawer();
+    }
+  });
+
+  // Nav dropdown (click to toggle on touch, hover handled by CSS on desktop)
+  const analysisDropdown = document.getElementById('analysisDropdown');
+  const analysisDropdownTrigger = document.getElementById('analysisDropdownTrigger');
+
+  if (analysisDropdown && analysisDropdownTrigger) {
+    analysisDropdownTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isOpen = analysisDropdown.classList.toggle('is-open');
+      analysisDropdownTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (analysisDropdown.classList.contains('is-open') && !analysisDropdown.contains(e.target)) {
+        analysisDropdown.classList.remove('is-open');
+        analysisDropdownTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && analysisDropdown.classList.contains('is-open')) {
+        analysisDropdown.classList.remove('is-open');
+        analysisDropdownTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
