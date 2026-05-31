@@ -1680,6 +1680,18 @@ document.getElementById("confirmSubmitBtn").addEventListener("click", async () =
     const docRef = await window.firebaseAddDoc(bracketsCollection, bracketData);
     console.log("Bracket saved with ID:", docRef.id);
 
+    // Save to localStorage so the leaderboard knows this person submitted
+    // and can identify their row
+    try {
+      localStorage.setItem("wc_bracket_submitted", "true");
+      localStorage.setItem("wc_bracket_id", docRef.id);
+      localStorage.setItem("wc_bracket_name", userPicks.name);
+      localStorage.setItem("wc_bracket_champion", userPicks.knockouts["final-0"] || "");
+    } catch (e) {
+      // localStorage might be blocked in private browsing - that's OK
+      console.warn("Could not save to localStorage:", e);
+    }
+
     // Hide the overlay
     document.getElementById("confirmOverlay").classList.remove("is-visible");
     document.body.style.overflow = "";
