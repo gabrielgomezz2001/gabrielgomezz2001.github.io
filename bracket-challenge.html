@@ -160,6 +160,11 @@
     margin-bottom: 24px;
   }
   .step-section.is-active { display: block; }
+  .step-section[data-section="success"] {
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
 
   .section-title {
     font-family: 'Fraunces', serif;
@@ -472,41 +477,221 @@
   .nav-btn-secondary:hover { background: var(--ink); color: var(--paper); }
 
   /* === SUCCESS STATE === */
+  /* === REDESIGNED SUCCESS SCREEN === */
   .success-card {
+    background: linear-gradient(180deg, var(--paper) 0%, #f5f1e3 100%);
+    color: var(--ink);
+    padding: 0;
+    text-align: center;
+    border: 1.5px solid var(--ink);
+    overflow: hidden;
+    position: relative;
+  }
+  .success-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 50%, var(--accent) 100%);
+  }
+  .success-hero {
+    padding: 50px 28px 30px;
     background: var(--ink);
     color: var(--paper);
-    padding: 40px 28px;
-    text-align: center;
+    position: relative;
+  }
+  .success-hero::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(180deg, var(--ink) 0%, transparent 100%);
+    opacity: 0.05;
   }
   .success-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+    font-size: 64px;
+    margin-bottom: 18px;
+    animation: trophy-bob 2.5s ease-in-out infinite;
+    display: inline-block;
+  }
+  @keyframes trophy-bob {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-6px) rotate(3deg); }
+  }
+  .success-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+    font-weight: 700;
   }
   .success-title {
     font-family: 'Fraunces', serif;
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-size: clamp(28px, 4vw, 36px);
+    font-weight: 500;
+    line-height: 1.15;
+    margin-bottom: 14px;
     color: var(--paper);
+    letter-spacing: -0.01em;
+  }
+  .success-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .success-name-pill {
+    display: inline-block;
+    padding: 6px 18px;
+    background: rgba(196, 167, 106, 0.2);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 6px;
+  }
+  .success-champion {
+    padding: 32px 28px 28px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .success-champion-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .success-champion-name {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 6vw, 52px);
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .success-champion-tagline {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .success-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+  }
+  .success-stat {
+    padding: 18px 12px;
+    text-align: center;
+    border-right: 1px solid var(--rule);
+  }
+  .success-stat:last-child { border-right: none; }
+  .success-stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .success-stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
   }
   .success-message {
+    padding: 24px 28px 20px;
     font-family: 'Fraunces', serif;
     font-size: 15px;
-    color: var(--paper);
-    margin-bottom: 20px;
+    color: var(--ink);
     line-height: 1.6;
-    opacity: 0.85;
+    background: var(--paper);
+    text-align: center;
   }
-  .success-note {
-    background: rgba(196, 167, 106, 0.15);
-    border: 1px solid var(--gold);
-    padding: 14px;
+  .success-actions {
+    padding: 0 28px 32px;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    background: var(--paper);
+  }
+  @media (max-width: 480px) {
+    .success-actions { grid-template-columns: 1fr; }
+  }
+  .success-btn {
+    display: block;
+    padding: 14px 18px;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 0;
+  }
+  .success-btn-primary {
+    background: var(--accent);
+    color: var(--paper);
+    border: 1.5px solid var(--accent);
+  }
+  .success-btn-primary:hover { background: #6e0000; border-color: #6e0000; }
+  .success-btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+  }
+  .success-btn-secondary:hover { background: var(--ink); color: var(--paper); }
+  .success-share {
+    padding: 18px 28px 28px;
+    background: var(--bg);
+    text-align: center;
+  }
+  .success-share-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .success-share-text {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .success-share-link {
+    display: inline-block;
+    padding: 8px 14px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    color: var(--gold);
-    letter-spacing: 0.1em;
-    margin-top: 16px;
+    color: var(--accent);
+    cursor: pointer;
+    user-select: all;
   }
+  .success-share-link:hover { border-color: var(--accent); }
 
   .progress-counter {
     display: inline-block;
@@ -715,10 +900,48 @@
   <!-- SUCCESS -->
   <div class="step-section" data-section="success">
     <div class="success-card">
-      <div class="success-icon">🎯</div>
-      <div class="success-title">Bracket submitted!</div>
-      <div class="success-message">Your picks are locked in. As the World Cup unfolds, the leaderboard will update with your score in real time.</div>
-      <div class="success-note">SAVED · Leaderboard launches before the tournament starts</div>
+      <div class="success-hero">
+        <div class="success-icon">🏆</div>
+        <div class="success-eyebrow">Bracket locked in</div>
+        <h2 class="success-title">You're <em>in.</em></h2>
+        <div class="success-name-pill" id="successName">--</div>
+      </div>
+
+      <div class="success-champion">
+        <div class="success-champion-label">Your pick to win it all</div>
+        <div class="success-champion-name" id="successChampion">--</div>
+        <div class="success-champion-tagline">2026 FIFA World Cup champion</div>
+      </div>
+
+      <div class="success-stats">
+        <div class="success-stat">
+          <div class="success-stat-num">55</div>
+          <div class="success-stat-label">Picks made</div>
+        </div>
+        <div class="success-stat">
+          <div class="success-stat-num">208</div>
+          <div class="success-stat-label">Max points</div>
+        </div>
+        <div class="success-stat">
+          <div class="success-stat-num" id="successDays">--</div>
+          <div class="success-stat-label">Days until kickoff</div>
+        </div>
+      </div>
+
+      <div class="success-message">
+        Your picks are locked. The leaderboard updates as real matches happen. Come back to check your score as the tournament unfolds.
+      </div>
+
+      <div class="success-actions">
+        <a href="leaderboard.html" class="success-btn success-btn-primary">See the leaderboard</a>
+        <a href="world-cup.html" class="success-btn success-btn-secondary">Explore the predictor</a>
+      </div>
+
+      <div class="success-share">
+        <div class="success-share-label">Share with friends</div>
+        <div class="success-share-text">Send them this link so they can fill out their own bracket and compete with you.</div>
+        <div class="success-share-link" id="successShareLink">gabrielgomezz2001.github.io/bracket-challenge.html</div>
+      </div>
     </div>
   </div>
 
@@ -831,6 +1054,44 @@ function goToStep(stepNum) {
     // Hide step tracker on success
     const tracker = document.querySelector(".step-tracker");
     if (tracker) tracker.style.display = "none";
+
+    // Populate dynamic content
+    const nameEl = document.getElementById("successName");
+    if (nameEl) nameEl.textContent = userPicks.name || "Anonymous";
+
+    const champEl = document.getElementById("successChampion");
+    if (champEl) champEl.textContent = userPicks.knockouts["final-0"] || "--";
+
+    // Days until tournament (June 11, 2026)
+    const daysEl = document.getElementById("successDays");
+    if (daysEl) {
+      const kickoff = new Date("2026-06-11T00:00:00");
+      const now = new Date();
+      const days = Math.max(0, Math.ceil((kickoff - now) / (1000 * 60 * 60 * 24)));
+      daysEl.textContent = days;
+    }
+
+    // Wire up share link click to copy
+    const shareLink = document.getElementById("successShareLink");
+    if (shareLink) {
+      shareLink.addEventListener("click", () => {
+        const url = "https://gabrielgomezz2001.github.io/bracket-challenge.html";
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(() => {
+            const originalText = shareLink.textContent;
+            shareLink.textContent = "✓ Copied!";
+            setTimeout(() => { shareLink.textContent = originalText; }, 1500);
+          });
+        } else {
+          // Fallback for older browsers
+          const range = document.createRange();
+          range.selectNode(shareLink);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+        }
+      });
+    }
+
     // Scroll to top
     window.scrollTo(0, 0);
     return;

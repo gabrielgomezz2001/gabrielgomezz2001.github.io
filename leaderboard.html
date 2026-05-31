@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bracket Leaderboard - Gabriel Gomez</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #faf8f3;
+    --bg: #f0ede4;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --accent: #8b0000;
+    --gold: #c4a76a;
+    --rule: #d8d3c2;
+    --green: #2e7d32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === NAV === */
+  .topnav {
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-left { display: flex; align-items: center; gap: 14px; }
+  .gg-logo {
+    width: 38px; height: 38px;
+    border: 1.5px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-back {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .nav-back:hover { color: var(--accent); }
+
+  /* === HERO === */
+  .hero {
+    padding: 50px 24px 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--ink-soft);
+    max-width: 720px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  /* === STATUS BAR === */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    margin: 30px 0 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .status-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .status-pill.is-live {
+    background: #f5e9e9;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .status-pill .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .status-pill.is-live .dot {
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .status-info {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .status-info strong { color: var(--ink); font-weight: 600; font-style: normal; }
+  .status-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .status-btn {
+    padding: 8px 14px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .status-btn:hover { background: var(--ink); color: var(--paper); }
+  .status-btn.primary {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+  .status-btn.primary:hover { background: #6e0000; border-color: #6e0000; }
+
+  /* === LOADING === */
+  .loading-state {
+    text-align: center;
+    padding: 80px 24px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+  .loading-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--rule);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  /* === EMPTY STATE === */
+  .empty-state {
+    text-align: center;
+    padding: 60px 28px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    display: none;
+  }
+  .empty-state.is-visible { display: block; }
+  .empty-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+  .empty-title {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .empty-sub {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .empty-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--accent);
+    color: var(--paper);
+    border: 1.5px solid var(--accent);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .empty-btn:hover { background: #6e0000; border-color: #6e0000; }
+
+  /* === PODIUM (TOP 3) === */
+  .podium-wrapper { display: none; margin-bottom: 30px; }
+  .podium-wrapper.is-visible { display: block; }
+  .podium-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .podium {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    gap: 10px;
+    align-items: end;
+  }
+  @media (max-width: 600px) {
+    .podium { grid-template-columns: 1fr; gap: 8px; align-items: stretch; }
+  }
+  .podium-card {
+    background: var(--paper);
+    border: 1.5px solid var(--rule);
+    padding: 22px 18px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .podium-card.first {
+    border-color: var(--gold);
+    padding: 30px 20px 24px;
+    background: linear-gradient(180deg, var(--paper) 0%, #f7f1e0 100%);
+  }
+  .podium-card.first::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gold);
+  }
+  .podium-card.second::before, .podium-card.third::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--ink-soft);
+  }
+  .podium-medal {
+    font-size: 30px;
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  .podium-card.first .podium-medal { font-size: 40px; }
+  .podium-name {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    word-break: break-word;
+  }
+  .podium-card.first .podium-name { font-size: 22px; }
+  .podium-score {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .podium-card.first .podium-score { font-size: 48px; color: var(--gold); }
+  .podium-score-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .podium-champion {
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    margin-top: 4px;
+  }
+  .podium-champion-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .podium-champion-team {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .podium-champion-team .flag {
+    margin-right: 4px;
+  }
+
+  /* === FULL LEADERBOARD === */
+  .full-leaderboard { display: none; }
+  .full-leaderboard.is-visible { display: block; }
+  .leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .leaderboard-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .leaderboard-search {
+    padding: 8px 12px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    width: 200px;
+  }
+  .leaderboard-search:focus { outline: none; border-color: var(--ink); }
+
+  .leaderboard-table-wrap {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    overflow-x: auto;
+  }
+  .leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .leaderboard-table th {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 14px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .leaderboard-table th.right { text-align: right; }
+  .leaderboard-table td {
+    padding: 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+  }
+  .leaderboard-table tr:last-child td { border-bottom: none; }
+  .leaderboard-table tr.is-hidden { display: none; }
+
+  .lb-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    width: 50px;
+  }
+  .lb-name {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .lb-champion {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .lb-champion .flag {
+    margin-right: 4px;
+  }
+  .lb-score {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .lb-score .max {
+    font-size: 11px;
+    color: var(--ink-soft);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  /* === FOOTER === */
+  .info-card {
+    background: var(--paper);
+    border-left: 4px solid var(--ink);
+    padding: 22px 24px;
+    margin-top: 32px;
+  }
+  .info-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .info-card p {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .info-card p:last-child { margin-bottom: 0; }
+  .info-card strong { font-weight: 600; }
+  .info-card em { color: var(--accent); font-style: italic; }
+
+  footer {
+    padding: 28px 20px;
+    text-align: center;
+    border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 30px;
+  }
+  footer strong { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-left">
+    <a href="index.html" class="gg-logo">GG</a>
+    <a href="index.html" class="nav-back">&lt; Back to portfolio</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-label">Just for fun · 2026 World Cup</div>
+  <h1>The Leaderboard. <em>Who's winning?</em></h1>
+  <p class="hero-sub">Every bracket submitted lives here. As real matches happen during the tournament, scores update. Most points at the end wins bragging rights. Maximum possible score is 208.</p>
+</section>
+
+<div class="container">
+
+  <div class="status-bar">
+    <div class="status-left">
+      <span class="status-pill" id="statusPill">
+        <span class="dot"></span>
+        <span id="statusText">Pre-tournament</span>
+      </span>
+      <span class="status-info">
+        Updated <strong id="lastUpdate">just now</strong>
+      </span>
+    </div>
+    <div class="status-actions">
+      <a href="bracket-challenge.html" class="status-btn primary">Submit your bracket</a>
+      <a href="world-cup.html" class="status-btn">See predictor</a>
+    </div>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div class="loading-state" id="loadingState">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading brackets...</div>
+  </div>
+
+  <!-- EMPTY STATE (no brackets submitted yet) -->
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">📋</div>
+    <h2 class="empty-title">No brackets submitted yet</h2>
+    <p class="empty-sub">Be the first to lock in your picks. Fill out a bracket, share the link with friends, and watch the leaderboard fill up.</p>
+    <a href="bracket-challenge.html" class="empty-btn">Submit the first bracket</a>
+  </div>
+
+  <!-- PODIUM (top 3) -->
+  <div class="podium-wrapper" id="podiumWrapper">
+    <div class="podium-label">Top 3</div>
+    <div class="podium" id="podium"></div>
+  </div>
+
+  <!-- FULL LEADERBOARD -->
+  <div class="full-leaderboard" id="fullLeaderboard">
+    <div class="leaderboard-header">
+      <div class="leaderboard-title">All brackets · <span id="totalCount">0</span> submitted</div>
+      <input type="text" class="leaderboard-search" placeholder="Search by name..." id="searchInput">
+    </div>
+    <div class="leaderboard-table-wrap">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Champion pick</th>
+            <th class="right">Score</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <div class="info-card-title">How scoring works</div>
+    <p>Each correct group stage pick (1st or 2nd place) is worth <strong>1 point</strong>. Knockout match wins are worth more as the rounds go on: <strong>R32 = 2 pts</strong>, <strong>R16 = 4 pts</strong>, <strong>QF = 8 pts</strong>, <strong>SF = 16 pts</strong>, <strong>Final = 32 pts</strong>.</p>
+    <p>Max possible score is <strong>208 points</strong>. The leaderboard updates after each match day as real results come in. <em>Right now everyone is at 0 because the tournament hasn't started yet.</em></p>
+  </div>
+
+</div>
+
+<footer>
+  <p><strong>Gabriel Gomez</strong> · World Cup Bracket Challenge</p>
+</footer>
+
+<script type="module">
+// =====================================================
+// FIREBASE SETUP
+// =====================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDW17wBicwcwKWI1qa0-rRmSiKHIw47Rd8",
+  authDomain: "fifa-world-cup-bracket-project.firebaseapp.com",
+  projectId: "fifa-world-cup-bracket-project",
+  storageBucket: "fifa-world-cup-bracket-project.firebasestorage.app",
+  messagingSenderId: "621433307906",
+  appId: "1:621433307906:web:8ec6bb7c7196b863fb381b",
+  measurementId: "G-ZJ4T0V0JRP"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+window.firebaseDB = db;
+window.firebaseColl = collection;
+window.firebaseGetDocs = getDocs;
+window.firebaseQuery = query;
+window.firebaseOrderBy = orderBy;
+</script>
+
+<script>
+// =====================================================
+// COUNTRY FLAGS (unicode emojis, no copyright issue)
+// =====================================================
+const FLAGS = {
+  "Mexico": "🇲🇽", "South Korea": "🇰🇷", "South Africa": "🇿🇦", "Czechia": "🇨🇿",
+  "Switzerland": "🇨🇭", "Canada": "🇨🇦", "Bosnia-Herzegovina": "🇧🇦", "Qatar": "🇶🇦",
+  "Brazil": "🇧🇷", "Morocco": "🇲🇦", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "Haiti": "🇭🇹",
+  "United States": "🇺🇸", "Türkiye": "🇹🇷", "Paraguay": "🇵🇾", "Australia": "🇦🇺",
+  "Germany": "🇩🇪", "Ecuador": "🇪🇨", "Ivory Coast": "🇨🇮", "Curaçao": "🇨🇼",
+  "Netherlands": "🇳🇱", "Japan": "🇯🇵", "Sweden": "🇸🇪", "Tunisia": "🇹🇳",
+  "Belgium": "🇧🇪", "Egypt": "🇪🇬", "Iran": "🇮🇷", "New Zealand": "🇳🇿",
+  "Spain": "🇪🇸", "Uruguay": "🇺🇾", "Cape Verde": "🇨🇻", "Saudi Arabia": "🇸🇦",
+  "France": "🇫🇷", "Norway": "🇳🇴", "Senegal": "🇸🇳", "Iraq": "🇮🇶",
+  "Argentina": "🇦🇷", "Algeria": "🇩🇿", "Austria": "🇦🇹", "Jordan": "🇯🇴",
+  "Portugal": "🇵🇹", "Colombia": "🇨🇴", "Uzbekistan": "🇺🇿", "Congo DR": "🇨🇩",
+  "Croatia": "🇭🇷", "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Ghana": "🇬🇭", "Panama": "🇵🇦"
+};
+
+function flagFor(team) {
+  return FLAGS[team] || "🏳";
+}
+
+// =====================================================
+// SCORING ENGINE
+// =====================================================
+// Real results will be loaded from Firebase later when admin enters them.
+// For now, every bracket's score is 0 because the tournament hasn't started.
+//
+// When real results exist (a separate "results" doc in Firebase), this function
+// will compare each user's picks to actual results and award points.
+
+function calculateScore(bracket, realResults) {
+  if (!realResults) return 0;
+
+  let score = 0;
+
+  // Group stage: 1 point per correct group winner or runner-up
+  if (realResults.groups && bracket.groups) {
+    for (const g in realResults.groups) {
+      const real = realResults.groups[g];
+      const pick = bracket.groups[g];
+      if (!pick) continue;
+      if (pick.winner === real.winner) score += 1;
+      if (pick.runnerUp === real.runnerUp) score += 1;
+    }
+  }
+
+  // Knockouts: scaled by round
+  const roundPoints = { "r32": 2, "r16": 4, "qf": 8, "sf": 16, "final": 32 };
+  if (realResults.knockouts && bracket.knockouts) {
+    for (const matchKey in realResults.knockouts) {
+      // Skip the _third helper fields for now (they're separate logic)
+      if (matchKey.includes("_third")) continue;
+      const round = matchKey.split("-")[0];
+      const points = roundPoints[round] || 0;
+      if (bracket.knockouts[matchKey] === realResults.knockouts[matchKey]) {
+        score += points;
+      }
+    }
+  }
+
+  return score;
+}
+
+// =====================================================
+// LOAD AND RENDER LEADERBOARD
+// =====================================================
+async function loadLeaderboard() {
+  // Wait for Firebase to load (module scripts are async)
+  let attempts = 0;
+  while (!window.firebaseDB && attempts < 30) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
+
+  if (!window.firebaseDB) {
+    showError("Could not connect to the database. Please refresh the page.");
+    return;
+  }
+
+  try {
+    // Get all brackets
+    const bracketsCol = window.firebaseColl(window.firebaseDB, "brackets");
+    const bracketsSnap = await window.firebaseGetDocs(bracketsCol);
+
+    // Try to get real results doc (will be empty for now)
+    const resultsCol = window.firebaseColl(window.firebaseDB, "results");
+    const resultsSnap = await window.firebaseGetDocs(resultsCol);
+    let realResults = null;
+    resultsSnap.forEach(doc => {
+      if (doc.id === "current") realResults = doc.data();
+    });
+
+    // Build the list of brackets with scores
+    const brackets = [];
+    bracketsSnap.forEach(doc => {
+      const data = doc.data();
+      const score = calculateScore(data, realResults);
+      brackets.push({
+        id: doc.id,
+        name: data.name || "Anonymous",
+        champion: data.champion || (data.knockouts && data.knockouts["final-0"]) || "?",
+        score,
+        submittedAt: data.submittedAt
+      });
+    });
+
+    // Sort by score descending, then by submission time ascending (earlier = better tiebreaker)
+    brackets.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      const aTime = a.submittedAt && a.submittedAt.seconds ? a.submittedAt.seconds : 0;
+      const bTime = b.submittedAt && b.submittedAt.seconds ? b.submittedAt.seconds : 0;
+      return aTime - bTime;
+    });
+
+    document.getElementById("loadingState").style.display = "none";
+
+    if (brackets.length === 0) {
+      document.getElementById("emptyState").classList.add("is-visible");
+      return;
+    }
+
+    renderPodium(brackets.slice(0, 3));
+    renderFullTable(brackets);
+    updateStatus(brackets, realResults);
+  } catch (error) {
+    console.error("Error loading leaderboard:", error);
+    showError("Something went wrong loading the leaderboard. Please refresh.");
+  }
+}
+
+function showError(msg) {
+  document.getElementById("loadingState").innerHTML = `
+    <div style="font-family: 'Fraunces', serif; font-size: 16px; color: var(--accent); margin-bottom: 10px;">⚠ Error</div>
+    <div style="font-family: 'Inter', sans-serif; font-size: 14px; color: var(--ink-soft);">${msg}</div>
+  `;
+}
+
+function renderPodium(top3) {
+  const podiumEl = document.getElementById("podium");
+  const wrapper = document.getElementById("podiumWrapper");
+
+  if (top3.length === 0) {
+    wrapper.classList.remove("is-visible");
+    return;
+  }
+
+  podiumEl.innerHTML = "";
+
+  // Render order: 2nd, 1st, 3rd (for visual hierarchy on desktop)
+  // But on mobile we want 1st, 2nd, 3rd so we let CSS handle the visual order via grid
+  // Actually we'll just render 1, 2, 3 in order and use grid-template-columns to position
+  const positions = [
+    { rank: 2, medal: "🥈", className: "second" },
+    { rank: 1, medal: "🥇", className: "first" },
+    { rank: 3, medal: "🥉", className: "third" }
+  ];
+
+  for (const pos of positions) {
+    const player = top3[pos.rank - 1];
+    if (!player) {
+      // Show an empty slot if we don't have 3 brackets yet
+      podiumEl.innerHTML += `<div class="podium-card ${pos.className}" style="opacity:0.4;">
+        <div class="podium-medal">${pos.medal}</div>
+        <div class="podium-name">--</div>
+        <div class="podium-score">--</div>
+        <div class="podium-score-label">No bracket yet</div>
+      </div>`;
+      continue;
+    }
+    podiumEl.innerHTML += `<div class="podium-card ${pos.className}">
+      <div class="podium-medal">${pos.medal}</div>
+      <div class="podium-name">${escapeHtml(player.name)}</div>
+      <div class="podium-score">${player.score}</div>
+      <div class="podium-score-label">Points</div>
+      <div class="podium-champion">
+        <div class="podium-champion-label">Champion pick</div>
+        <div class="podium-champion-team">
+          <span class="flag">${flagFor(player.champion)}</span>${escapeHtml(player.champion)}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  wrapper.classList.add("is-visible");
+}
+
+function renderFullTable(brackets) {
+  const body = document.getElementById("leaderboardBody");
+  document.getElementById("totalCount").textContent = brackets.length;
+  body.innerHTML = "";
+
+  brackets.forEach((player, i) => {
+    const row = document.createElement("tr");
+    row.dataset.name = player.name.toLowerCase();
+    row.innerHTML = `
+      <td class="lb-rank">#${i + 1}</td>
+      <td class="lb-name">${escapeHtml(player.name)}</td>
+      <td class="lb-champion"><span class="flag">${flagFor(player.champion)}</span>${escapeHtml(player.champion)}</td>
+      <td class="lb-score">${player.score}<span class="max">/208</span></td>
+    `;
+    body.appendChild(row);
+  });
+
+  document.getElementById("fullLeaderboard").classList.add("is-visible");
+
+  // Wire up search
+  const search = document.getElementById("searchInput");
+  search.addEventListener("input", () => {
+    const q = search.value.toLowerCase().trim();
+    body.querySelectorAll("tr").forEach(row => {
+      if (!q || row.dataset.name.includes(q)) {
+        row.classList.remove("is-hidden");
+      } else {
+        row.classList.add("is-hidden");
+      }
+    });
+  });
+}
+
+function updateStatus(brackets, realResults) {
+  const pill = document.getElementById("statusPill");
+  const statusText = document.getElementById("statusText");
+  const lastUpdate = document.getElementById("lastUpdate");
+
+  const now = new Date();
+  const kickoff = new Date("2026-06-11T00:00:00");
+  const final = new Date("2026-07-19T23:59:59");
+
+  if (now < kickoff) {
+    statusText.textContent = "Pre-tournament";
+    const days = Math.ceil((kickoff - now) / (1000 * 60 * 60 * 24));
+    lastUpdate.textContent = `${days} days until kickoff`;
+  } else if (now > final) {
+    statusText.textContent = "Tournament over";
+    pill.classList.remove("is-live");
+    lastUpdate.textContent = "Final results";
+  } else {
+    statusText.textContent = "Live";
+    pill.classList.add("is-live");
+    lastUpdate.textContent = formatLastUpdate(realResults);
+  }
+}
+
+function formatLastUpdate(realResults) {
+  if (!realResults || !realResults.lastUpdated) return "just now";
+  const d = new Date(realResults.lastUpdated.seconds * 1000);
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) +
+    " · " + d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// Start loading
+loadLeaderboard();
+</script>
+
+</body>
+</html>
