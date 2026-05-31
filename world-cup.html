@@ -680,6 +680,65 @@
   .roster-panel.is-open .roster-panel-body { max-height: 4000px; }
   .roster-panel-inner { padding: 18px; }
 
+  /* === RULES PANEL === */
+  .rules-panel {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    margin-bottom: 20px;
+  }
+  .rules-panel-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg);
+  }
+  .rules-panel-header:hover { background: #e8e4d8; }
+  .rules-panel-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .rules-panel-toggle {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    color: var(--ink);
+    line-height: 1;
+    transition: transform 0.3s;
+  }
+  .rules-panel.is-open .rules-panel-toggle { transform: rotate(180deg); }
+  .rules-panel-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .rules-panel.is-open .rules-panel-body { max-height: 2000px; }
+  .rules-panel-inner { padding: 20px; }
+  .rules-section-text {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .rules-section-text strong { font-weight: 600; }
+  .rules-list {
+    margin: 6px 0 14px 22px;
+    padding: 0;
+  }
+  .rules-list li {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
   .roster-team-control {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -979,6 +1038,257 @@
     color: var(--accent);
   }
 
+  /* === GROUP STAGE ODDS === */
+  .tab-explainer {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+    font-style: italic;
+  }
+  .tab-explainer strong {
+    color: var(--ink);
+    font-weight: 600;
+    font-style: normal;
+  }
+  .groups-odds-results { display: none; }
+  .groups-odds-results.is-visible { display: block; }
+  .groups-odds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 18px;
+  }
+  .group-odds-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 20px 18px;
+  }
+  .group-odds-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .group-odds-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .group-odds-table th {
+    padding: 6px 4px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .group-odds-table th:first-child { text-align: left; }
+  .group-odds-table td {
+    padding: 8px 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    text-align: center;
+    border-bottom: 1px solid var(--rule);
+  }
+  .group-odds-table tr:last-child td { border-bottom: none; }
+  .group-odds-table td.team-cell {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+    text-align: left;
+  }
+  .group-odds-table td.pct-1st { color: var(--accent); font-weight: 600; }
+  .group-odds-table td.pct-elim { color: var(--ink-soft); }
+
+  /* === BRACKET PREDICTION === */
+  .bracket-prediction-empty { display: block; padding: 20px 0; }
+  .bracket-prediction-empty.hide { display: none; }
+  .bracket-prediction-results { display: none; }
+  .bracket-prediction-results.is-visible { display: block; }
+  .bracket-round-section { margin-bottom: 28px; }
+  .bracket-prediction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+  }
+  .bracket-pred-match {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .bracket-pred-match:hover {
+    border-color: var(--ink);
+    background: #fffdf6;
+  }
+  .bracket-pred-match.is-expanded {
+    border-color: var(--accent);
+    background: #fff7f0;
+  }
+  .bracket-pred-match-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-soft);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .bracket-pred-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+  }
+  .bracket-pred-row.favorite {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .bracket-pred-row.underdog {
+    color: var(--ink-soft);
+  }
+  .bracket-pred-row .team-name { flex: 1; }
+  .bracket-pred-row .team-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .bracket-pred-detail {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--ink-soft);
+    display: none;
+  }
+  .bracket-pred-match.is-expanded .bracket-pred-detail { display: block; }
+  .bracket-pred-detail .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .bracket-pred-detail .detail-row .label { color: var(--ink-soft); }
+  .bracket-pred-detail .detail-row .val { color: var(--ink); font-weight: 600; }
+  .bracket-pred-detail .detail-section {
+    margin-top: 10px;
+  }
+  .bracket-pred-detail .detail-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-soft);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+
+  /* === SUBMIT BRACKET CTA === */
+  .bracket-cta-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 50px 30px 40px;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .bracket-cta-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+  }
+  .bracket-cta-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 600;
+    color: var(--paper);
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+  .bracket-cta-sub {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: var(--paper);
+    opacity: 0.82;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .bracket-cta-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+    padding: 22px 14px;
+    border-top: 1px solid rgba(196, 167, 106, 0.3);
+    border-bottom: 1px solid rgba(196, 167, 106, 0.3);
+  }
+  .bracket-stat {
+    text-align: center;
+  }
+  .bracket-stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .bracket-stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--paper);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .bracket-cta-btn {
+    display: inline-block;
+    padding: 16px 36px;
+    background: var(--gold);
+    color: var(--ink);
+    border: 1.5px solid var(--gold);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: all 0.2s;
+    margin-bottom: 22px;
+  }
+  .bracket-cta-btn:hover {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+  }
+  .bracket-cta-note {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--paper);
+    opacity: 0.7;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .bracket-cta-note strong {
+    color: var(--gold);
+    font-weight: 600;
+    font-style: normal;
+  }
+
   /* === METHODOLOGY === */
   .methodology {
     background: var(--paper);
@@ -1044,8 +1354,10 @@
 <div class="tabs-wrap">
   <div class="tabs">
     <button class="tab is-active" data-tab="match">Pick a Matchup</button>
-    <button class="tab" data-tab="tournament">Run the Whole Cup</button>
-    <button class="tab" data-tab="predictor">Run It a Thousand Times</button>
+    <button class="tab" data-tab="groups">Group Stage Odds</button>
+    <button class="tab" data-tab="bracket">Bracket Prediction</button>
+    <button class="tab" data-tab="champion">Champion Odds</button>
+    <button class="tab" data-tab="submit">Submit Your Bracket</button>
   </div>
 </div>
 
@@ -1135,32 +1447,10 @@
 </div>
 
 <!-- TOURNAMENT SIMULATOR TAB -->
-<div class="tab-content" id="tab-tournament">
-  <div class="tournament-control">
-    <p class="tournament-intro">Run the whole World Cup. Real bracket, all 48 teams, group stage through the final. Hit run and see who ends up lifting the trophy. <strong>Every run is different. Run it a few times for fun.</strong></p>
-    <button class="run-tournament-btn" id="runTournamentBtn">Run the whole tournament</button>
-  </div>
-
-  <div class="tournament-results" id="tournamentResults">
-    <div class="bracket-section-title">The groups</div>
-    <div class="groups-grid" id="groupsGrid"></div>
-
-    <div class="bracket-section">
-      <div class="bracket-section-title">The knockouts</div>
-      <div id="knockoutBracket"></div>
-    </div>
-
-    <div class="champion-card" id="championCard">
-      <div class="champion-label">🏆 Your champion</div>
-      <div class="champion-name" id="championName"></div>
-    </div>
-  </div>
-</div>
-
-<!-- PREDICTOR TAB (1000+ sims) -->
-<div class="tab-content" id="tab-predictor">
-  <div class="tournament-control">
-    <p class="tournament-intro">One tournament is random. A thousand starts to look like a real prediction. Pick a mode below, hit run, and let it cook for a bit. <strong>Want to see what happens if a star is out? Open the roster panel below and toggle them.</strong></p>
+<!-- GROUP STAGE ODDS TAB -->
+<div class="tab-content" id="tab-groups">
+  <div class="tournament-control" id="globalSimControl">
+    <p class="tournament-intro">All three prediction tabs (this one, the Bracket, and Champion Odds) use the same simulation. <strong>Hit run once. Then click between the tabs to explore the data.</strong></p>
 
     <div class="roster-panel" id="rosterPanel">
       <div class="roster-panel-header" id="rosterPanelHeader">
@@ -1204,6 +1494,85 @@
     </div>
   </div>
 
+  <div class="rules-panel" id="rulesPanel">
+    <div class="rules-panel-header" id="rulesPanelHeader">
+      <span class="rules-panel-title">How does the group stage work? Tap to read</span>
+      <span class="rules-panel-toggle">▾</span>
+    </div>
+    <div class="rules-panel-body">
+      <div class="rules-panel-inner">
+        <p class="rules-section-text"><strong>The basics.</strong> 48 teams. 12 groups of 4. Each team plays the other 3 in their group, so every team gets 3 matches. Win = 3 points. Draw = 1 point. Loss = 0.</p>
+
+        <p class="rules-section-text"><strong>Who advances?</strong> Top 2 from every group go through automatically (that's 24 teams). Then the 8 best 3rd-place teams across all 12 groups also advance. So 32 teams total move to the Round of 32. The 4 worst 3rd-place teams and all 12 last-place teams go home.</p>
+
+        <p class="rules-section-text"><strong>If two teams are tied on points.</strong> FIFA goes down this list until someone wins:</p>
+        <ol class="rules-list">
+          <li>Head-to-head result (who won when they played each other)</li>
+          <li>Head-to-head goal difference</li>
+          <li>Head-to-head goals scored</li>
+          <li>Goal difference across all group games</li>
+          <li>Most goals scored across all group games</li>
+          <li>Fewest yellow and red cards (fair play score)</li>
+          <li>FIFA world ranking before the tournament</li>
+        </ol>
+
+        <p class="rules-section-text"><strong>For the 8 best 3rd-place teams</strong> across different groups, FIFA can't use head-to-head (they didn't play each other), so they rank them by: points → goal difference → goals scored → fair play → FIFA ranking.</p>
+
+        <p class="rules-section-text" style="margin-top: 14px; font-style: italic; color: var(--ink-soft);">In this predictor I use a simplified version (points → goal difference → goals scored) for the tiebreakers. Real FIFA might break a tie differently in some edge cases, but for the simulations it barely matters.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="groups-odds-results" id="groupsOddsResults">
+    <div class="bracket-section-title">Who advances · per group</div>
+    <p class="tab-explainer">For each team, the chance of finishing 1st, 2nd, advancing as a top third-place team, or getting eliminated.</p>
+    <div class="groups-odds-grid" id="groupsOddsGrid"></div>
+  </div>
+</div>
+
+<!-- BRACKET PREDICTION TAB -->
+<div class="tab-content" id="tab-bracket">
+  <div class="bracket-prediction-empty" id="bracketEmpty">
+    <p class="tab-explainer">Head over to the <strong>Group Stage Odds</strong> tab and hit the run button. Once it finishes, come back here to see the bracket prediction.</p>
+  </div>
+
+  <div class="bracket-prediction-results" id="bracketPredictionResults">
+    <div class="bracket-section-title">Most likely path through the bracket</div>
+    <p class="tab-explainer">For each match, this shows the two most likely teams to be there, who's favored, and the % chance. <strong>Tap any match to see the full breakdown.</strong></p>
+
+    <div class="bracket-round-section">
+      <div class="bracket-round-label">Round of 32</div>
+      <div class="bracket-prediction-grid" id="bracketR32"></div>
+    </div>
+
+    <div class="bracket-round-section">
+      <div class="bracket-round-label">Round of 16</div>
+      <div class="bracket-prediction-grid" id="bracketR16"></div>
+    </div>
+
+    <div class="bracket-round-section">
+      <div class="bracket-round-label">Quarterfinals</div>
+      <div class="bracket-prediction-grid" id="bracketQF"></div>
+    </div>
+
+    <div class="bracket-round-section">
+      <div class="bracket-round-label">Semifinals</div>
+      <div class="bracket-prediction-grid" id="bracketSF"></div>
+    </div>
+
+    <div class="bracket-round-section">
+      <div class="bracket-round-label">Final</div>
+      <div class="bracket-prediction-grid" id="bracketFinal"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAMPION ODDS TAB -->
+<div class="tab-content" id="tab-champion">
+  <div class="bracket-prediction-empty" id="championEmpty">
+    <p class="tab-explainer">Head over to the <strong>Group Stage Odds</strong> tab and hit the run button. Once it finishes, come back here to see champion probabilities.</p>
+  </div>
+
   <div class="predictor-results" id="predictorResults">
     <div class="bracket-section-title">Who probably wins it · <span id="simCount"></span> tries</div>
     <div class="champ-table-wrap">
@@ -1217,6 +1586,34 @@
 
     <div class="bracket-section-title" style="margin-top: 36px;">Most likely Final matchups</div>
     <div class="finals-list" id="finalsList"></div>
+  </div>
+</div>
+
+<!-- SUBMIT YOUR BRACKET TAB -->
+<div class="tab-content" id="tab-submit">
+  <div class="bracket-cta-card">
+    <div class="bracket-cta-icon">🏆</div>
+    <h2 class="bracket-cta-title">Think you can do better?</h2>
+    <p class="bracket-cta-sub">Fill out your own bracket. Pick group winners, runners-up, and every knockout match all the way to the trophy. Compete against friends as the tournament plays out.</p>
+
+    <div class="bracket-cta-stats">
+      <div class="bracket-stat">
+        <div class="bracket-stat-num">55</div>
+        <div class="bracket-stat-label">total picks</div>
+      </div>
+      <div class="bracket-stat">
+        <div class="bracket-stat-num">208</div>
+        <div class="bracket-stat-label">max points</div>
+      </div>
+      <div class="bracket-stat">
+        <div class="bracket-stat-num">5 min</div>
+        <div class="bracket-stat-label">to fill out</div>
+      </div>
+    </div>
+
+    <a href="bracket-challenge.html" class="bracket-cta-btn">Start your bracket →</a>
+
+    <p class="bracket-cta-note">Pick your bracket once, share the link with friends, see who's smartest about the World Cup. <strong>Once you submit, your picks are locked.</strong></p>
   </div>
 </div>
 
@@ -2243,18 +2640,6 @@ function renderBracket(knockout) {
   });
 }
 
-document.getElementById("runTournamentBtn").addEventListener("click", () => {
-  const standings = simulateGroupStage();
-  const adv = getAdvancingTeams(standings);
-  const knockout = simulateKnockout(adv);
-
-  renderGroups(standings);
-  renderBracket(knockout);
-  document.getElementById("championName").textContent = knockout.champion;
-  document.getElementById("tournamentResults").classList.add("is-visible");
-  document.getElementById("tournamentResults").scrollIntoView({ behavior: "smooth", block: "start" });
-});
-
 // =====================================================
 // PREDICTOR - run hundreds/thousands of sims and aggregate
 // =====================================================
@@ -2275,6 +2660,18 @@ rosterPanelHeader.addEventListener("click", () => {
   rosterPanelHeader.querySelector(".roster-panel-title").textContent =
     isOpen ? "Mess with the rosters · Tap to close" : "Mess with the rosters · Tap to open";
 });
+
+// Rules panel toggle
+const rulesPanel = document.getElementById("rulesPanel");
+const rulesPanelHeader = document.getElementById("rulesPanelHeader");
+if (rulesPanel && rulesPanelHeader) {
+  rulesPanelHeader.addEventListener("click", () => {
+    rulesPanel.classList.toggle("is-open");
+    const isOpen = rulesPanel.classList.contains("is-open");
+    rulesPanelHeader.querySelector(".rules-panel-title").textContent =
+      isOpen ? "How does the group stage work? Tap to close" : "How does the group stage work? Tap to read";
+  });
+}
 
 // Populate team dropdown - only teams that have star players defined
 function populateRosterTeamSelect() {
@@ -2383,14 +2780,28 @@ function runOneTournament() {
   const standings = simulateGroupStage();
   const adv = getAdvancingTeams(standings);
 
-  // Build set of advancing teams (top 2 from each group + 8 best 3rds)
+  // Build set of advancing teams + track each team's group position
   const advancingTeams = new Set();
+  const groupPositions = {};  // team -> "1st" | "2nd" | "3rd-adv" | "eliminated"
+
   for (const g of Object.keys(adv.groupResults)) {
     advancingTeams.add(adv.groupResults[g].winner);
     advancingTeams.add(adv.groupResults[g].runnerUp);
+    groupPositions[adv.groupResults[g].winner] = "1st";
+    groupPositions[adv.groupResults[g].runnerUp] = "2nd";
+    // 4th place teams are eliminated (the bottom team in each group)
+    groupPositions[standings[g][3].team] = "eliminated";
+    // 3rd place: starts as eliminated, will be updated if advancing
+    if (!groupPositions[standings[g][2].team]) {
+      groupPositions[standings[g][2].team] = "eliminated";
+    }
   }
+  // Mark advancing third-place teams
   for (const team of Object.values(adv.thirdByGroup)) {
-    if (team) advancingTeams.add(team);
+    if (team) {
+      advancingTeams.add(team);
+      groupPositions[team] = "3rd-adv";
+    }
   }
 
   const knockout = simulateKnockout(adv);
@@ -2400,6 +2811,9 @@ function runOneTournament() {
   for (const team of Object.keys(TEAMS)) {
     reached[team] = { group: true, r32: advancingTeams.has(team), r16: false, qf: false, sf: false, final: false, champion: false };
   }
+
+  // Track bracket matches - for each match id, store both teams and the winner
+  const bracketMatches = {};
 
   // Walk through knockout rounds to track progression
   for (const round of knockout.rounds) {
@@ -2413,30 +2827,50 @@ function runOneTournament() {
     }
   }
 
-  // Identify finalists (both teams in the final, not just the winner)
+  // Identify finalists
   const finalMatch = knockout.rounds[knockout.rounds.length - 1].matches[0];
   reached[finalMatch.teamA].final = true;
   reached[finalMatch.teamB].final = true;
 
+  // Build bracket match data using R32 match ordering (16 matches in R32, 8 in R16, etc.)
+  // Each round in knockout.rounds has matches in fixed positional order
+  // Match position is consistent across simulations because the bracket structure is fixed
+  knockout.rounds.forEach(round => {
+    round.matches.forEach((m, i) => {
+      const matchKey = `${round.name}::${i}`;
+      bracketMatches[matchKey] = {
+        teamA: m.teamA,
+        teamB: m.teamB,
+        winner: m.winner
+      };
+    });
+  });
+
   return {
     champion: knockout.champion,
     finalists: [finalMatch.teamA, finalMatch.teamB].sort(),
-    reached
+    reached,
+    groupPositions,
+    bracketMatches
   };
 }
 
 // Run N simulations with progress callback
 async function runSimulations(numSims, onProgress) {
   const championCounts = {};
-  const finalistCounts = {};  // key: "teamA__teamB" (sorted alphabetically)
-  const survival = {};        // team -> { r32: count, r16: count, qf: count, sf: count, final: count, champion: count }
+  const finalistCounts = {};
+  const survival = {};
+  // Group position counts: team -> { "1st": n, "2nd": n, "3rd-adv": n, "eliminated": n }
+  const groupPositionCounts = {};
+  // Bracket match data: matchKey -> { teamA_appearances: {team: count}, teamB_appearances: {team: count}, winner_when_present: {team: {wins: n, total: n}} }
+  const bracketData = {};
 
   for (const team of Object.keys(TEAMS)) {
     championCounts[team] = 0;
     survival[team] = { r32: 0, r16: 0, qf: 0, sf: 0, final: 0, champion: 0 };
+    groupPositionCounts[team] = { "1st": 0, "2nd": 0, "3rd-adv": 0, "eliminated": 0 };
   }
 
-  // Use setTimeout chunks so UI can update
   const BATCH = 25;
   for (let i = 0; i < numSims; i += BATCH) {
     const batchEnd = Math.min(i + BATCH, numSims);
@@ -2456,13 +2890,34 @@ async function runSimulations(numSims, onProgress) {
         if (r.final) survival[team].final++;
         if (r.champion) survival[team].champion++;
       }
+
+      // Aggregate group positions
+      for (const team in result.groupPositions) {
+        const pos = result.groupPositions[team];
+        if (groupPositionCounts[team]) {
+          groupPositionCounts[team][pos] = (groupPositionCounts[team][pos] || 0) + 1;
+        }
+      }
+
+      // Aggregate bracket match data
+      for (const matchKey in result.bracketMatches) {
+        const m = result.bracketMatches[matchKey];
+        if (!bracketData[matchKey]) {
+          bracketData[matchKey] = {
+            matchups: {},  // "teamA__teamB" -> count
+            winners: {}    // team -> wins
+          };
+        }
+        const matchupKey = [m.teamA, m.teamB].sort().join("__");
+        bracketData[matchKey].matchups[matchupKey] = (bracketData[matchKey].matchups[matchupKey] || 0) + 1;
+        bracketData[matchKey].winners[m.winner] = (bracketData[matchKey].winners[m.winner] || 0) + 1;
+      }
     }
     onProgress(batchEnd, numSims);
-    // Yield to browser so it can repaint
     await new Promise(r => setTimeout(r, 0));
   }
 
-  return { championCounts, finalistCounts, survival, numSims };
+  return { championCounts, finalistCounts, survival, groupPositionCounts, bracketData, numSims };
 }
 
 function renderChampTable(championCounts, numSims) {
@@ -2558,14 +3013,20 @@ document.getElementById("runPredictorBtn").addEventListener("click", async () =>
   const progressText = document.getElementById("progressText");
   const progressFill = document.getElementById("progressFill");
   const resultsEl = document.getElementById("predictorResults");
+  const groupsResults = document.getElementById("groupsOddsResults");
+  const bracketResults = document.getElementById("bracketPredictionResults");
+  const bracketEmpty = document.getElementById("bracketEmpty");
+  const championEmpty = document.getElementById("championEmpty");
 
   btn.disabled = true;
   btn.textContent = "Cooking...";
   resultsEl.classList.remove("is-visible");
+  groupsResults.classList.remove("is-visible");
+  bracketResults.classList.remove("is-visible");
   progressEl.classList.add("is-visible");
 
   const startTime = Date.now();
-  const { championCounts, finalistCounts, survival, numSims } = await runSimulations(
+  const simData = await runSimulations(
     predictorSimCount,
     (current, total) => {
       const pct = (current / total) * 100;
@@ -2577,20 +3038,200 @@ document.getElementById("runPredictorBtn").addEventListener("click", async () =>
     }
   );
 
+  const { championCounts, finalistCounts, survival, groupPositionCounts, bracketData, numSims } = simData;
+
   const totalTime = ((Date.now() - startTime) / 1000).toFixed(1);
-  progressText.textContent = `Done in ${totalTime}s · ${numSims.toLocaleString()} tournaments cooked`;
+  progressText.textContent = `Done in ${totalTime}s · ${numSims.toLocaleString()} tournaments cooked · check the other tabs`;
   progressFill.style.width = "100%";
 
+  // Populate Champion Odds tab
   document.getElementById("simCount").textContent = numSims.toLocaleString();
   renderChampTable(championCounts, numSims);
   renderSurvivalTable(survival, championCounts, numSims);
   renderFinalsList(finalistCounts, numSims);
-
   resultsEl.classList.add("is-visible");
+  championEmpty.classList.add("hide");
+
+  // Populate Group Stage Odds tab
+  renderGroupOdds(groupPositionCounts, numSims);
+  groupsResults.classList.add("is-visible");
+
+  // Populate Bracket Prediction tab
+  renderBracketPrediction(bracketData, numSims);
+  bracketResults.classList.add("is-visible");
+  bracketEmpty.classList.add("hide");
+
   btn.disabled = false;
   btn.textContent = `Run it ${predictorSimCount.toLocaleString()} times`;
-  resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
 });
+
+// =====================================================
+// RENDER GROUP STAGE ODDS
+// =====================================================
+function renderGroupOdds(groupPositionCounts, numSims) {
+  const grid = document.getElementById("groupsOddsGrid");
+  grid.innerHTML = "";
+
+  // Build per-group list of teams
+  const groupTeams = {};
+  for (const team of Object.keys(TEAMS)) {
+    const g = TEAMS[team].group;
+    if (!groupTeams[g]) groupTeams[g] = [];
+    groupTeams[g].push(team);
+  }
+
+  for (const groupName of Object.keys(groupTeams).sort()) {
+    const teams = groupTeams[groupName];
+    // Sort teams by 1st place probability (then by 2nd, then by 3rd-adv)
+    teams.sort((a, b) => {
+      const aPct = groupPositionCounts[a]["1st"] || 0;
+      const bPct = groupPositionCounts[b]["1st"] || 0;
+      if (bPct !== aPct) return bPct - aPct;
+      const a2 = groupPositionCounts[a]["2nd"] || 0;
+      const b2 = groupPositionCounts[b]["2nd"] || 0;
+      return b2 - a2;
+    });
+
+    const card = document.createElement("div");
+    card.className = "group-odds-card";
+    let html = `<div class="group-odds-title">Group ${groupName}</div>`;
+    html += `<table class="group-odds-table">
+      <thead><tr>
+        <th>Team</th>
+        <th>1st</th>
+        <th>2nd</th>
+        <th>3rd ↑</th>
+        <th>Out</th>
+      </tr></thead>
+      <tbody>`;
+    teams.forEach(team => {
+      const p = groupPositionCounts[team];
+      const pct1 = ((p["1st"] || 0) / numSims * 100);
+      const pct2 = ((p["2nd"] || 0) / numSims * 100);
+      const pct3 = ((p["3rd-adv"] || 0) / numSims * 100);
+      const pctOut = ((p["eliminated"] || 0) / numSims * 100);
+      html += `<tr>
+        <td class="team-cell">${team}</td>
+        <td class="pct-1st">${pct1.toFixed(0)}%</td>
+        <td>${pct2.toFixed(0)}%</td>
+        <td>${pct3.toFixed(0)}%</td>
+        <td class="pct-elim">${pctOut.toFixed(0)}%</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    card.innerHTML = html;
+    grid.appendChild(card);
+  }
+}
+
+// =====================================================
+// RENDER BRACKET PREDICTION
+// =====================================================
+function renderBracketPrediction(bracketData, numSims) {
+  const roundConfig = [
+    { name: "Round of 32", containerId: "bracketR32" },
+    { name: "Round of 16", containerId: "bracketR16" },
+    { name: "Quarterfinals", containerId: "bracketQF" },
+    { name: "Semifinals", containerId: "bracketSF" },
+    { name: "Final", containerId: "bracketFinal" }
+  ];
+
+  roundConfig.forEach(round => {
+    const container = document.getElementById(round.containerId);
+    container.innerHTML = "";
+
+    // Find all matchKeys for this round
+    const matchKeys = Object.keys(bracketData)
+      .filter(k => k.startsWith(round.name + "::"))
+      .sort((a, b) => parseInt(a.split("::")[1]) - parseInt(b.split("::")[1]));
+
+    matchKeys.forEach((matchKey, idx) => {
+      const data = bracketData[matchKey];
+
+      // Count appearances of each team across all sim runs of this match
+      const teamAppearances = {};
+      for (const mk in data.matchups) {
+        const teams = mk.split("__");
+        const count = data.matchups[mk];
+        teams.forEach(t => {
+          teamAppearances[t] = (teamAppearances[t] || 0) + count;
+        });
+      }
+
+      // Top 2 teams by appearance
+      const topTeams = Object.entries(teamAppearances)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 2);
+
+      if (topTeams.length < 2) return;
+
+      const teamA = topTeams[0][0];
+      const teamB = topTeams[1][0];
+      const apptsA = topTeams[0][1] / numSims * 100;
+      const apptsB = topTeams[1][1] / numSims * 100;
+
+      // Wins for each top team
+      const winsA = data.winners[teamA] || 0;
+      const winsB = data.winners[teamB] || 0;
+
+      // How often this specific matchup occurs
+      const matchupKey = [teamA, teamB].sort().join("__");
+      const matchupCount = data.matchups[matchupKey] || 0;
+      const matchupPct = matchupCount / numSims * 100;
+      // When this matchup happens, who wins?
+      // We need to count wins within this specific matchup
+      // Simpler approach: use overall win counts for these teams in this slot
+      // Calculate the win share within this slot
+      const totalWinsInSlot = Object.values(data.winners).reduce((sum, w) => sum + w, 0);
+      const winShareA = totalWinsInSlot > 0 ? (winsA / totalWinsInSlot * 100) : 0;
+      const winShareB = totalWinsInSlot > 0 ? (winsB / totalWinsInSlot * 100) : 0;
+
+      // Top 3 most likely matchups for this slot
+      const topMatchups = Object.entries(data.matchups)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([mk, count]) => {
+          const ts = mk.split("__");
+          return { teams: ts, pct: count / numSims * 100 };
+        });
+
+      const matchDiv = document.createElement("div");
+      matchDiv.className = "bracket-pred-match";
+
+      let html = `<div class="bracket-pred-match-id">${round.name} · Match ${idx + 1}</div>`;
+      const favClass = winShareA >= winShareB ? "favorite" : "underdog";
+      const ugClass = winShareA >= winShareB ? "underdog" : "favorite";
+      html += `<div class="bracket-pred-row ${favClass}">
+        <span class="team-name">${teamA}</span>
+        <span class="team-pct">${apptsA.toFixed(0)}%</span>
+      </div>`;
+      html += `<div class="bracket-pred-row ${ugClass}">
+        <span class="team-name">${teamB}</span>
+        <span class="team-pct">${apptsB.toFixed(0)}%</span>
+      </div>`;
+
+      // Expanded detail
+      html += `<div class="bracket-pred-detail">`;
+      html += `<div class="detail-section">
+        <div class="detail-section-title">If they meet, who wins</div>
+        <div class="detail-row"><span class="label">${teamA}</span><span class="val">${winShareA.toFixed(0)}%</span></div>
+        <div class="detail-row"><span class="label">${teamB}</span><span class="val">${winShareB.toFixed(0)}%</span></div>
+      </div>`;
+      html += `<div class="detail-section">
+        <div class="detail-section-title">Top matchups for this slot</div>`;
+      topMatchups.forEach(mu => {
+        html += `<div class="detail-row"><span class="label">${mu.teams[0]} vs ${mu.teams[1]}</span><span class="val">${mu.pct.toFixed(1)}%</span></div>`;
+      });
+      html += `</div></div>`;
+
+      matchDiv.innerHTML = html;
+      matchDiv.addEventListener("click", () => {
+        matchDiv.classList.toggle("is-expanded");
+      });
+      container.appendChild(matchDiv);
+    });
+  });
+}
 
 // Initial render
 populateTeamSelects();

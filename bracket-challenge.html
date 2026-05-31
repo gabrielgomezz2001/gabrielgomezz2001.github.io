@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 World Cup Bracket Challenge - Gabriel Gomez</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #faf8f3;
+    --bg: #f0ede4;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --accent: #8b0000;
+    --gold: #c4a76a;
+    --rule: #d8d3c2;
+    --green: #2e7d32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .topnav {
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-left { display: flex; align-items: center; gap: 14px; }
+  .gg-logo {
+    width: 38px; height: 38px;
+    border: 1.5px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-back {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+  .nav-back:hover { color: var(--accent); }
+
+  .hero {
+    padding: 50px 24px 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--ink-soft);
+    max-width: 720px;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  /* === STEP TRACKER === */
+  .step-tracker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px 0 40px;
+    padding: 16px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    gap: 8px;
+    overflow-x: auto;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    opacity: 0.45;
+    transition: opacity 0.2s;
+  }
+  .step.is-active { opacity: 1; }
+  .step.is-complete { opacity: 1; }
+  .step-num {
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-soft);
+  }
+  .step.is-active .step-num { border-color: var(--accent); color: var(--accent); background: #fff7f0; }
+  .step.is-complete .step-num {
+    background: var(--green);
+    color: var(--paper);
+    border-color: var(--green);
+  }
+  .step-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .step.is-active .step-label { color: var(--accent); }
+  .step.is-complete .step-label { color: var(--ink); }
+
+  /* === STEP SECTION === */
+  .step-section {
+    display: none;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 28px 24px;
+    margin-bottom: 24px;
+  }
+  .step-section.is-active { display: block; }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .section-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .section-sub strong { color: var(--ink); font-weight: 600; }
+
+  /* === STEP 1: NAME ENTRY === */
+  .name-form {
+    display: grid;
+    gap: 16px;
+    max-width: 460px;
+  }
+  .form-field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .form-field input {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 0;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-field input:focus {
+    outline: none;
+    background: #fff7f0;
+  }
+  .form-field-help {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* === STEP 2: GROUPS === */
+  .groups-pick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  .group-pick-card {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 18px 16px;
+  }
+  .group-pick-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .group-pick-row {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .group-pick-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .group-pick-label.first { color: var(--accent); }
+  .group-pick-row select {
+    width: 100%;
+    padding: 9px 10px;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M5%207L0%200h10z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 9px;
+    padding-right: 24px;
+  }
+  .group-pick-row select.has-pick {
+    background-color: #fff7f0;
+    border-color: var(--accent);
+  }
+
+  /* === STEP 3: KNOCKOUT === */
+  .knockout-round-section {
+    margin-bottom: 28px;
+  }
+  .knockout-round-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .knockout-round-helper {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+  .knockout-locked {
+    background: var(--bg);
+    border: 1px dashed var(--rule);
+    padding: 16px;
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .knockout-matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+  }
+  .knockout-match {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 12px 14px;
+  }
+  .knockout-match-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .knockout-pick-option {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    margin-bottom: 4px;
+    background: var(--paper);
+    border: 1.5px solid var(--rule);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .knockout-pick-option:hover {
+    border-color: var(--ink);
+  }
+  .knockout-pick-option.is-picked {
+    border-color: var(--accent);
+    background: #fff7f0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .knockout-pick-option.is-picked::before {
+    content: "✓ ";
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+
+  /* === STEP 4: REVIEW === */
+  .review-grid {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  .review-section {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 18px;
+  }
+  .review-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .review-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
+  }
+  .review-row:last-child { border-bottom: none; }
+  .review-row .label {
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .review-row .val {
+    font-weight: 500;
+  }
+  .review-row .val.accent { color: var(--accent); font-weight: 600; }
+
+  .champion-pick-display {
+    background: var(--gold);
+    color: var(--ink);
+    padding: 20px;
+    text-align: center;
+    margin-top: 18px;
+  }
+  .champion-pick-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .champion-pick-name {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .submit-warning {
+    background: #fff7f0;
+    border: 1.5px solid var(--accent);
+    padding: 14px 16px;
+    margin: 20px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .submit-warning strong { color: var(--accent); }
+
+  /* === NAVIGATION BUTTONS === */
+  .step-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .nav-btn {
+    padding: 14px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 0;
+  }
+  .nav-btn-primary {
+    background: var(--accent);
+    color: var(--paper);
+    border: 1.5px solid var(--accent);
+  }
+  .nav-btn-primary:hover { background: #6e0000; border-color: #6e0000; }
+  .nav-btn-primary:disabled {
+    background: var(--ink-soft);
+    border-color: var(--ink-soft);
+    cursor: not-allowed;
+  }
+  .nav-btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+  }
+  .nav-btn-secondary:hover { background: var(--ink); color: var(--paper); }
+
+  /* === SUCCESS STATE === */
+  .success-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 28px;
+    text-align: center;
+  }
+  .success-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  .success-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--paper);
+  }
+  .success-message {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    color: var(--paper);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    opacity: 0.85;
+  }
+  .success-note {
+    background: rgba(196, 167, 106, 0.15);
+    border: 1px solid var(--gold);
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+  }
+
+  .progress-counter {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    font-weight: 600;
+    margin-left: 10px;
+  }
+  .progress-counter.is-complete {
+    background: var(--green);
+    color: var(--paper);
+    border-color: var(--green);
+  }
+
+  footer {
+    padding: 28px 20px;
+    text-align: center;
+    border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 30px;
+  }
+  footer strong { color: var(--ink); font-weight: 600; }
+
+  /* === CONFIRMATION OVERLAY === */
+  .confirm-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 26, 26, 0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .confirm-overlay.is-visible { display: flex; }
+  .confirm-box {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    padding: 36px 28px 28px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+  }
+  .confirm-icon {
+    font-size: 42px;
+    margin-bottom: 14px;
+  }
+  .confirm-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .confirm-message {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .confirm-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 480px) {
+    .confirm-actions { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-left">
+    <a href="index.html" class="gg-logo">GG</a>
+    <a href="index.html" class="nav-back">< Back to portfolio</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-label">Just for fun · 2026 World Cup</div>
+  <h1>Bracket Challenge. <em>Pick the whole tournament.</em></h1>
+  <p class="hero-sub">Pick who wins each group, who comes second, and every single knockout match. Submit your bracket and see how you stack up against everyone else as the tournament unfolds. Last one with the most points wins bragging rights.</p>
+</section>
+
+<div class="container">
+
+  <div class="step-tracker">
+    <div class="step is-active" data-step="1"><div class="step-num">1</div><span class="step-label">Your name</span></div>
+    <div class="step" data-step="2"><div class="step-num">2</div><span class="step-label">Group stage</span></div>
+    <div class="step" data-step="3"><div class="step-num">3</div><span class="step-label">Knockouts</span></div>
+    <div class="step" data-step="4"><div class="step-num">4</div><span class="step-label">Review & submit</span></div>
+  </div>
+
+  <!-- STEP 1: NAME -->
+  <div class="step-section is-active" data-section="1">
+    <h2 class="section-title">Who are you?</h2>
+    <p class="section-sub">Enter your name so people can see you on the leaderboard. <strong>This locks once you submit your bracket</strong>, so pick a name you're cool with.</p>
+
+    <div class="name-form">
+      <div class="form-field">
+        <label>Your name</label>
+        <input type="text" id="userName" placeholder="e.g. Gabriel G." maxlength="40">
+        <div class="form-field-help">First name + last initial works best. Max 40 characters.</div>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <div></div>
+      <button class="nav-btn nav-btn-primary" id="step1Next">Next: Pick the groups -></button>
+    </div>
+  </div>
+
+  <!-- STEP 2: GROUP STAGE -->
+  <div class="step-section" data-section="2">
+    <h2 class="section-title">Pick the group stage <span class="progress-counter" id="groupProgress">0 / 12</span></h2>
+    <p class="section-sub">For each group, pick who you think will finish <strong>1st</strong> (group winner) and <strong>2nd</strong> (runner-up). Both spots are worth 1 point each if correct.</p>
+
+    <div class="groups-pick-grid" id="groupsPickGrid"></div>
+
+    <div class="step-nav">
+      <button class="nav-btn nav-btn-secondary" id="step2Back"><- Back</button>
+      <button class="nav-btn nav-btn-primary" id="step2Next" disabled>Next: Pick the knockouts -></button>
+    </div>
+  </div>
+
+  <!-- STEP 3: KNOCKOUTS -->
+  <div class="step-section" data-section="3">
+    <h2 class="section-title">Pick the knockout rounds <span class="progress-counter" id="knockoutProgress">0 / 31</span></h2>
+    <p class="section-sub">For each match, click who you think will win. <strong>Higher rounds are worth more points</strong>: R32 = 2 pts, R16 = 4 pts, QF = 8 pts, SF = 16 pts, Final = 32 pts.</p>
+
+    <div class="knockout-round-section">
+      <div class="knockout-round-title">Round of 32 · 2 pts each</div>
+      <div class="knockout-round-helper">Match-ups based on your group picks above.</div>
+      <div class="knockout-matches-grid" id="r32Grid"></div>
+    </div>
+
+    <div class="knockout-round-section">
+      <div class="knockout-round-title">Round of 16 · 4 pts each</div>
+      <div id="r16Container">
+        <div class="knockout-locked">Pick the Round of 32 first - this round unlocks once those are done.</div>
+      </div>
+    </div>
+
+    <div class="knockout-round-section">
+      <div class="knockout-round-title">Quarterfinals · 8 pts each</div>
+      <div id="qfContainer">
+        <div class="knockout-locked">Pick the Round of 16 first - this round unlocks once those are done.</div>
+      </div>
+    </div>
+
+    <div class="knockout-round-section">
+      <div class="knockout-round-title">Semifinals · 16 pts each</div>
+      <div id="sfContainer">
+        <div class="knockout-locked">Pick the Quarterfinals first - this round unlocks once those are done.</div>
+      </div>
+    </div>
+
+    <div class="knockout-round-section">
+      <div class="knockout-round-title">Final · 32 pts</div>
+      <div id="finalContainer">
+        <div class="knockout-locked">Pick the Semifinals first - this round unlocks once those are done.</div>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="nav-btn nav-btn-secondary" id="step3Back"><- Back</button>
+      <button class="nav-btn nav-btn-primary" id="step3Next" disabled>Next: Review your bracket -></button>
+    </div>
+  </div>
+
+  <!-- STEP 4: REVIEW & SUBMIT -->
+  <div class="step-section" data-section="4">
+    <h2 class="section-title">Review your bracket</h2>
+    <p class="section-sub">This is your bracket. <strong>Once you submit, you cannot change it.</strong> Make sure everything looks right.</p>
+
+    <div class="review-grid" id="reviewGrid"></div>
+
+    <div class="champion-pick-display" id="championPickDisplay">
+      <div class="champion-pick-label">🏆 Your champion pick</div>
+      <div class="champion-pick-name" id="championPickName">--</div>
+    </div>
+
+    <div class="submit-warning">
+      <strong>Heads up:</strong> Submitting locks your bracket forever. You won't be able to edit or resubmit. Make sure you're happy with all your picks before clicking submit.
+    </div>
+
+    <div class="step-nav">
+      <button class="nav-btn nav-btn-secondary" id="step4Back"><- Back to edit</button>
+      <button class="nav-btn nav-btn-primary" id="submitBtn">Submit my bracket</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="step-section" data-section="success">
+    <div class="success-card">
+      <div class="success-icon">🎯</div>
+      <div class="success-title">Bracket submitted!</div>
+      <div class="success-message">Your picks are locked in. As the World Cup unfolds, the leaderboard will update with your score in real time.</div>
+      <div class="success-note">PREVIEW MODE · Leaderboard coming in next update</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- INLINE CONFIRMATION OVERLAY -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+    <h3 class="confirm-title">Ready to submit?</h3>
+    <p class="confirm-message">Once you submit, your bracket is locked. You won't be able to change any picks after this.</p>
+    <div class="confirm-actions">
+      <button class="nav-btn nav-btn-secondary" id="confirmCancelBtn">Wait, let me check</button>
+      <button class="nav-btn nav-btn-primary" id="confirmSubmitBtn">Yes, lock it in</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><strong>Gabriel Gomez</strong> · World Cup Bracket Challenge · Just a soccer fan thing</p>
+</footer>
+
+<script>
+// =====================================================
+// TEAMS - all 48 teams with group assignments
+// =====================================================
+const TEAMS = {
+  // Group A
+  "Mexico": "A", "South Korea": "A", "South Africa": "A", "Czechia": "A",
+  // Group B
+  "Switzerland": "B", "Canada": "B", "Bosnia-Herzegovina": "B", "Qatar": "B",
+  // Group C
+  "Brazil": "C", "Morocco": "C", "Scotland": "C", "Haiti": "C",
+  // Group D
+  "United States": "D", "Türkiye": "D", "Paraguay": "D", "Australia": "D",
+  // Group E
+  "Germany": "E", "Ecuador": "E", "Ivory Coast": "E", "Curaçao": "E",
+  // Group F
+  "Netherlands": "F", "Japan": "F", "Sweden": "F", "Tunisia": "F",
+  // Group G
+  "Belgium": "G", "Egypt": "G", "Iran": "G", "New Zealand": "G",
+  // Group H
+  "Spain": "H", "Uruguay": "H", "Cape Verde": "H", "Saudi Arabia": "H",
+  // Group I
+  "France": "I", "Norway": "I", "Senegal": "I", "Iraq": "I",
+  // Group J
+  "Argentina": "J", "Algeria": "J", "Austria": "J", "Jordan": "J",
+  // Group K
+  "Portugal": "K", "Colombia": "K", "Uzbekistan": "K", "Congo DR": "K",
+  // Group L
+  "Croatia": "L", "England": "L", "Ghana": "L", "Panama": "L"
+};
+
+// Build per-group team lists
+const GROUPS = {};
+for (const team of Object.keys(TEAMS)) {
+  const g = TEAMS[team];
+  if (!GROUPS[g]) GROUPS[g] = [];
+  GROUPS[g].push(team);
+}
+
+// =====================================================
+// USER PICKS STATE
+// =====================================================
+const userPicks = {
+  name: "",
+  groups: {},  // { "A": { winner: "Mexico", runnerUp: "South Korea" }, ... }
+  knockouts: {}  // { "r32-0": "Switzerland", "r16-0": "...", ... }
+};
+
+// =====================================================
+// STEP NAVIGATION
+// =====================================================
+function goToStep(stepNum) {
+  // Hide all sections
+  document.querySelectorAll(".step-section").forEach(s => s.classList.remove("is-active"));
+
+  if (stepNum === "success") {
+    // Show success section
+    const successSection = document.querySelector('[data-section="success"]');
+    if (successSection) {
+      successSection.classList.add("is-active");
+    }
+    // Hide step tracker on success
+    const tracker = document.querySelector(".step-tracker");
+    if (tracker) tracker.style.display = "none";
+    // Scroll to top
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  // Show step tracker for non-success steps
+  const tracker = document.querySelector(".step-tracker");
+  if (tracker) tracker.style.display = "";
+
+  // Update tracker step states
+  document.querySelectorAll(".step").forEach(s => {
+    s.classList.remove("is-active");
+    s.classList.remove("is-complete");
+  });
+
+  const targetSection = document.querySelector(`[data-section="${stepNum}"]`);
+  if (targetSection) targetSection.classList.add("is-active");
+
+  // Update step tracker
+  document.querySelectorAll(".step").forEach(s => {
+    const n = parseInt(s.dataset.step);
+    if (n < stepNum) s.classList.add("is-complete");
+    if (n === stepNum) s.classList.add("is-active");
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// =====================================================
+// STEP 1: NAME
+// =====================================================
+document.getElementById("step1Next").addEventListener("click", () => {
+  const name = document.getElementById("userName").value.trim();
+  if (!name) {
+    alert("Please enter your name first.");
+    return;
+  }
+  if (name.length < 2) {
+    alert("Name needs to be at least 2 characters.");
+    return;
+  }
+  userPicks.name = name;
+  renderGroupsStep();
+  goToStep(2);
+});
+
+// =====================================================
+// STEP 2: GROUPS
+// =====================================================
+function renderGroupsStep() {
+  const grid = document.getElementById("groupsPickGrid");
+  grid.innerHTML = "";
+
+  for (const groupName of Object.keys(GROUPS).sort()) {
+    const teams = GROUPS[groupName];
+    const card = document.createElement("div");
+    card.className = "group-pick-card";
+
+    let html = `<div class="group-pick-title">Group ${groupName}</div>`;
+
+    // 1st place selector
+    html += `<div class="group-pick-row">
+      <span class="group-pick-label first">1st</span>
+      <select data-group="${groupName}" data-pos="winner">
+        <option value="">Pick winner...</option>
+        ${teams.map(t => `<option value="${t}">${t}</option>`).join("")}
+      </select>
+    </div>`;
+
+    // 2nd place selector
+    html += `<div class="group-pick-row">
+      <span class="group-pick-label">2nd</span>
+      <select data-group="${groupName}" data-pos="runnerUp">
+        <option value="">Pick runner-up...</option>
+        ${teams.map(t => `<option value="${t}">${t}</option>`).join("")}
+      </select>
+    </div>`;
+
+    card.innerHTML = html;
+    grid.appendChild(card);
+  }
+
+  // Wire up selects
+  grid.querySelectorAll("select").forEach(sel => {
+    sel.addEventListener("change", (e) => {
+      const group = e.target.dataset.group;
+      const pos = e.target.dataset.pos;
+      const team = e.target.value;
+      if (!userPicks.groups[group]) userPicks.groups[group] = {};
+      userPicks.groups[group][pos] = team;
+
+      // Check for duplicate (winner == runnerUp)
+      const wp = userPicks.groups[group];
+      if (wp.winner && wp.runnerUp && wp.winner === wp.runnerUp) {
+        alert("1st and 2nd place can't be the same team. Pick different ones.");
+        e.target.value = "";
+        delete userPicks.groups[group][pos];
+        sel.classList.remove("has-pick");
+        updateGroupProgress();
+        return;
+      }
+
+      // Update styling
+      if (team) sel.classList.add("has-pick");
+      else sel.classList.remove("has-pick");
+
+      // Disable the selected team in the OTHER dropdown for this group
+      updateGroupDuplicateBlocking(group);
+
+      updateGroupProgress();
+    });
+  });
+}
+
+function updateGroupDuplicateBlocking(group) {
+  // For both selects in this group, disable the option that's selected in the OTHER select
+  const selects = document.querySelectorAll(`select[data-group="${group}"]`);
+  const picks = userPicks.groups[group] || {};
+  selects.forEach(sel => {
+    const otherPos = sel.dataset.pos === "winner" ? "runnerUp" : "winner";
+    const otherPick = picks[otherPos];
+    sel.querySelectorAll("option").forEach(opt => {
+      if (opt.value && opt.value === otherPick) opt.disabled = true;
+      else opt.disabled = false;
+    });
+  });
+}
+
+function updateGroupProgress() {
+  let complete = 0;
+  for (const g of Object.keys(GROUPS)) {
+    const p = userPicks.groups[g];
+    if (p && p.winner && p.runnerUp) complete++;
+  }
+  const counter = document.getElementById("groupProgress");
+  counter.textContent = `${complete} / 12`;
+  if (complete === 12) {
+    counter.classList.add("is-complete");
+    document.getElementById("step2Next").disabled = false;
+  } else {
+    counter.classList.remove("is-complete");
+    document.getElementById("step2Next").disabled = true;
+  }
+}
+
+document.getElementById("step2Back").addEventListener("click", () => goToStep(1));
+document.getElementById("step2Next").addEventListener("click", () => {
+  renderKnockoutR32();
+  goToStep(3);
+});
+
+// =====================================================
+// STEP 3: KNOCKOUTS - bracket structure follows the actual 2026 FIFA bracket
+// =====================================================
+// The R32 matchups (based on actual 2026 bracket from FIFA)
+// Each entry tells us which teams (by group + position) play each other
+// Format: { id: 0, teamA_source: "B-2", teamB_source: "A-2" }
+// where "B-2" means Group B runner-up, "A-1" means Group A winner, "3-X" means a 3rd place
+// For 3rd-place teams we'll simplify: user picks from a list when they get there
+//
+// FIFA's actual R32 matchups (16 total):
+const R32_STRUCTURE = [
+  { id: 0,  a: "B-2", b: "A-2",  label: "M73" },
+  { id: 1,  a: "E-1", b: "3rd",  label: "M74" },
+  { id: 2,  a: "F-1", b: "C-2",  label: "M75" },
+  { id: 3,  a: "C-1", b: "F-2",  label: "M76" },
+  { id: 4,  a: "I-1", b: "3rd",  label: "M77" },
+  { id: 5,  a: "E-2", b: "I-2",  label: "M78" },
+  { id: 6,  a: "A-1", b: "3rd",  label: "M79" },
+  { id: 7,  a: "L-1", b: "3rd",  label: "M80" },
+  { id: 8,  a: "D-1", b: "3rd",  label: "M81" },
+  { id: 9,  a: "G-1", b: "3rd",  label: "M82" },
+  { id: 10, a: "K-2", b: "L-2",  label: "M83" },
+  { id: 11, a: "H-1", b: "J-2",  label: "M84" },
+  { id: 12, a: "B-1", b: "3rd",  label: "M85" },
+  { id: 13, a: "J-1", b: "H-2",  label: "M86" },
+  { id: 14, a: "K-1", b: "3rd",  label: "M87" },
+  { id: 15, a: "D-2", b: "G-2",  label: "M88" }
+];
+
+// R16 bracket pairings: which R32 match winners feed which R16 slots
+const R16_PAIRS = [
+  { id: 0, fromA: 1, fromB: 4 },
+  { id: 1, fromA: 0, fromB: 2 },
+  { id: 2, fromA: 3, fromB: 5 },
+  { id: 3, fromA: 6, fromB: 7 },
+  { id: 4, fromA: 10, fromB: 11 },
+  { id: 5, fromA: 8, fromB: 9 },
+  { id: 6, fromA: 13, fromB: 15 },
+  { id: 7, fromA: 12, fromB: 14 }
+];
+const QF_PAIRS = [
+  { id: 0, fromA: 0, fromB: 1 },
+  { id: 1, fromA: 4, fromB: 5 },
+  { id: 2, fromA: 2, fromB: 3 },
+  { id: 3, fromA: 6, fromB: 7 }
+];
+const SF_PAIRS = [
+  { id: 0, fromA: 0, fromB: 1 },
+  { id: 1, fromA: 2, fromB: 3 }
+];
+
+function resolveTeam(source) {
+  // "A-1" = Group A winner; "B-2" = Group B runner-up; "3rd" = user-pickable third place
+  if (source === "3rd") return null;
+  const [group, pos] = source.split("-");
+  const picks = userPicks.groups[group];
+  if (!picks) return null;
+  return pos === "1" ? picks.winner : picks.runnerUp;
+}
+
+function renderKnockoutR32() {
+  const grid = document.getElementById("r32Grid");
+  grid.innerHTML = "";
+
+  // Get list of all teams the user didn't pick as 1st or 2nd in any group
+  // These are the candidates for "3rd place" slots (the user picks one per 3rd slot)
+  const allPicked = new Set();
+  for (const g of Object.values(userPicks.groups)) {
+    if (g.winner) allPicked.add(g.winner);
+    if (g.runnerUp) allPicked.add(g.runnerUp);
+  }
+  const thirdPlaceCandidates = Object.keys(TEAMS).filter(t => !allPicked.has(t));
+
+  R32_STRUCTURE.forEach(match => {
+    const teamA = resolveTeam(match.a);
+    const teamBResolved = resolveTeam(match.b);
+
+    const div = document.createElement("div");
+    div.className = "knockout-match";
+    let html = `<div class="knockout-match-id">${match.label}</div>`;
+
+    // Team A side - always a known team
+    html += `<div class="knockout-pick-option" data-match="r32-${match.id}" data-team="${teamA}">${teamA}</div>`;
+
+    // Team B side - either resolved team OR a third-place dropdown
+    if (teamBResolved) {
+      html += `<div class="knockout-pick-option" data-match="r32-${match.id}" data-team="${teamBResolved}">${teamBResolved}</div>`;
+    } else {
+      // 3rd place: render as a dropdown
+      html += `<select data-match="r32-${match.id}" data-thirdpick="true" class="third-place-select" style="width:100%; padding:9px 10px; font-family:'Fraunces',serif; font-size:13px; color:var(--ink); background:var(--paper); border:1.5px solid var(--rule); border-radius:0; cursor:pointer; -webkit-appearance:none; appearance:none; margin-top:4px;">
+        <option value="">Pick a 3rd-place team...</option>
+        ${thirdPlaceCandidates.map(t => `<option value="${t}">${t} (Group ${TEAMS[t]})</option>`).join("")}
+      </select>`;
+    }
+
+    div.innerHTML = html;
+    grid.appendChild(div);
+  });
+
+  // Wire up clicks for non-third-place options
+  grid.querySelectorAll(".knockout-pick-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      const matchKey = opt.dataset.match;
+      const team = opt.dataset.team;
+      // Find sibling options in same match and unmark them
+      grid.querySelectorAll(`.knockout-pick-option[data-match="${matchKey}"]`).forEach(o => o.classList.remove("is-picked"));
+      opt.classList.add("is-picked");
+      userPicks.knockouts[matchKey] = team;
+      updateKnockoutProgress();
+      tryRenderNextRound();
+    });
+  });
+
+  // Wire up third place selects
+  grid.querySelectorAll("select[data-thirdpick]").forEach(sel => {
+    sel.addEventListener("change", (e) => {
+      const matchKey = sel.dataset.match;
+      const team = sel.value;
+      if (!team) {
+        delete userPicks.knockouts[matchKey];
+        updateKnockoutProgress();
+        tryRenderNextRound();
+        return;
+      }
+      // For now, the 3rd-place dropdown is just selecting which team is in this slot
+      // The winner pick is automatically the chosen team (since opponent is on the other side)
+      // We store BOTH the chosen 3rd-place team identity AND the winner pick
+      userPicks.knockouts[matchKey + "_third"] = team;
+      // After picking the 3rd-place team, prompt the user to also pick the winner
+      // Re-render this specific match to show the new winner pick option
+      reRenderR32Match(matchKey, team);
+      updateKnockoutProgress();
+      tryRenderNextRound();
+    });
+  });
+}
+
+function reRenderR32Match(matchKey, thirdPlaceTeam) {
+  const matchId = parseInt(matchKey.split("-")[1]);
+  const match = R32_STRUCTURE[matchId];
+  const teamA = resolveTeam(match.a);
+
+  // Find the existing match div and replace it
+  const grid = document.getElementById("r32Grid");
+  const matches = grid.querySelectorAll(".knockout-match");
+  const targetDiv = matches[matchId];
+
+  let html = `<div class="knockout-match-id">${match.label}</div>`;
+  html += `<div class="knockout-pick-option ${userPicks.knockouts[matchKey] === teamA ? 'is-picked' : ''}" data-match="r32-${matchId}" data-team="${teamA}">${teamA}</div>`;
+  html += `<div class="knockout-pick-option ${userPicks.knockouts[matchKey] === thirdPlaceTeam ? 'is-picked' : ''}" data-match="r32-${matchId}" data-team="${thirdPlaceTeam}">${thirdPlaceTeam}</div>`;
+  html += `<button onclick="resetThirdPlace('${matchKey}')" style="margin-top:6px; padding:4px 8px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; background:transparent; color:var(--ink-soft); border:1px solid var(--rule); cursor:pointer;">change 3rd-place pick</button>`;
+
+  targetDiv.innerHTML = html;
+
+  // Re-wire clicks
+  targetDiv.querySelectorAll(".knockout-pick-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      const team = opt.dataset.team;
+      targetDiv.querySelectorAll(`.knockout-pick-option`).forEach(o => o.classList.remove("is-picked"));
+      opt.classList.add("is-picked");
+      userPicks.knockouts[matchKey] = team;
+      updateKnockoutProgress();
+      tryRenderNextRound();
+    });
+  });
+}
+
+window.resetThirdPlace = function(matchKey) {
+  delete userPicks.knockouts[matchKey + "_third"];
+  delete userPicks.knockouts[matchKey];
+  renderKnockoutR32();
+  updateKnockoutProgress();
+};
+
+function tryRenderNextRound() {
+  // R16 unlocks when all 16 R32 picks made
+  const r32Done = R32_STRUCTURE.every(m => userPicks.knockouts[`r32-${m.id}`]);
+  if (r32Done) {
+    renderR16();
+  } else {
+    document.getElementById("r16Container").innerHTML = `<div class="knockout-locked">Pick the Round of 32 first - this round unlocks once those are done.</div>`;
+    document.getElementById("qfContainer").innerHTML = `<div class="knockout-locked">Pick the Round of 16 first - this round unlocks once those are done.</div>`;
+    document.getElementById("sfContainer").innerHTML = `<div class="knockout-locked">Pick the Quarterfinals first - this round unlocks once those are done.</div>`;
+    document.getElementById("finalContainer").innerHTML = `<div class="knockout-locked">Pick the Semifinals first - this round unlocks once those are done.</div>`;
+  }
+}
+
+function renderRoundGeneric(containerId, prefix, pairs, sourcePrefix, label) {
+  const container = document.getElementById(containerId);
+  let html = `<div class="knockout-matches-grid">`;
+
+  pairs.forEach(pair => {
+    const teamA = userPicks.knockouts[`${sourcePrefix}-${pair.fromA}`];
+    const teamB = userPicks.knockouts[`${sourcePrefix}-${pair.fromB}`];
+    if (!teamA || !teamB) return;
+
+    html += `<div class="knockout-match">
+      <div class="knockout-match-id">${label} match ${pair.id + 1}</div>
+      <div class="knockout-pick-option ${userPicks.knockouts[`${prefix}-${pair.id}`] === teamA ? 'is-picked' : ''}" data-match="${prefix}-${pair.id}" data-team="${teamA}">${teamA}</div>
+      <div class="knockout-pick-option ${userPicks.knockouts[`${prefix}-${pair.id}`] === teamB ? 'is-picked' : ''}" data-match="${prefix}-${pair.id}" data-team="${teamB}">${teamB}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  container.innerHTML = html;
+
+  container.querySelectorAll(".knockout-pick-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      const matchKey = opt.dataset.match;
+      const team = opt.dataset.team;
+      container.querySelectorAll(`.knockout-pick-option[data-match="${matchKey}"]`).forEach(o => o.classList.remove("is-picked"));
+      opt.classList.add("is-picked");
+      userPicks.knockouts[matchKey] = team;
+      updateKnockoutProgress();
+
+      // Clear later rounds since they depend on this
+      if (prefix === "r16") {
+        clearLaterRounds("qf");
+        renderQF();
+      } else if (prefix === "qf") {
+        clearLaterRounds("sf");
+        renderSF();
+      } else if (prefix === "sf") {
+        clearLaterRounds("final");
+        renderFinal();
+      }
+    });
+  });
+}
+
+function clearLaterRounds(fromRound) {
+  const roundOrder = ["r16", "qf", "sf", "final"];
+  const startIdx = roundOrder.indexOf(fromRound);
+  if (startIdx === -1) return;
+  for (let i = startIdx; i < roundOrder.length; i++) {
+    const prefix = roundOrder[i];
+    Object.keys(userPicks.knockouts).forEach(k => {
+      if (k.startsWith(prefix + "-")) delete userPicks.knockouts[k];
+    });
+  }
+}
+
+function renderR16() {
+  renderRoundGeneric("r16Container", "r16", R16_PAIRS, "r32", "R16");
+  // Also try to render QF
+  const r16Done = R16_PAIRS.every(p => userPicks.knockouts[`r16-${p.id}`]);
+  if (r16Done) renderQF();
+}
+
+function renderQF() {
+  renderRoundGeneric("qfContainer", "qf", QF_PAIRS, "r16", "QF");
+  const qfDone = QF_PAIRS.every(p => userPicks.knockouts[`qf-${p.id}`]);
+  if (qfDone) renderSF();
+}
+
+function renderSF() {
+  renderRoundGeneric("sfContainer", "sf", SF_PAIRS, "qf", "SF");
+  const sfDone = SF_PAIRS.every(p => userPicks.knockouts[`sf-${p.id}`]);
+  if (sfDone) renderFinal();
+}
+
+function renderFinal() {
+  const teamA = userPicks.knockouts["sf-0"];
+  const teamB = userPicks.knockouts["sf-1"];
+  if (!teamA || !teamB) return;
+  const container = document.getElementById("finalContainer");
+  container.innerHTML = `<div class="knockout-matches-grid">
+    <div class="knockout-match">
+      <div class="knockout-match-id">The Final</div>
+      <div class="knockout-pick-option ${userPicks.knockouts["final-0"] === teamA ? 'is-picked' : ''}" data-match="final-0" data-team="${teamA}">${teamA}</div>
+      <div class="knockout-pick-option ${userPicks.knockouts["final-0"] === teamB ? 'is-picked' : ''}" data-match="final-0" data-team="${teamB}">${teamB}</div>
+    </div>
+  </div>`;
+  container.querySelectorAll(".knockout-pick-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      const team = opt.dataset.team;
+      container.querySelectorAll(`.knockout-pick-option`).forEach(o => o.classList.remove("is-picked"));
+      opt.classList.add("is-picked");
+      userPicks.knockouts["final-0"] = team;
+      updateKnockoutProgress();
+    });
+  });
+}
+
+function updateKnockoutProgress() {
+  // Count actual match picks (not the _third helper keys)
+  let count = 0;
+  for (const k of Object.keys(userPicks.knockouts)) {
+    if (k.includes("_third")) continue;
+    if (userPicks.knockouts[k]) count++;
+  }
+  const counter = document.getElementById("knockoutProgress");
+  counter.textContent = `${count} / 31`;
+  if (count === 31) {
+    counter.classList.add("is-complete");
+    document.getElementById("step3Next").disabled = false;
+  } else {
+    counter.classList.remove("is-complete");
+    document.getElementById("step3Next").disabled = true;
+  }
+}
+
+document.getElementById("step3Back").addEventListener("click", () => goToStep(2));
+document.getElementById("step3Next").addEventListener("click", () => {
+  renderReviewStep();
+  goToStep(4);
+});
+
+// =====================================================
+// STEP 4: REVIEW
+// =====================================================
+function renderReviewStep() {
+  const grid = document.getElementById("reviewGrid");
+  grid.innerHTML = "";
+
+  // Group stage section
+  const groupSection = document.createElement("div");
+  groupSection.className = "review-section";
+  let groupHtml = `<div class="review-section-title">Group stage (24 picks)</div>`;
+  for (const g of Object.keys(GROUPS).sort()) {
+    const p = userPicks.groups[g];
+    groupHtml += `<div class="review-row">
+      <span class="label">Group ${g} 1st</span>
+      <span class="val accent">${p.winner}</span>
+    </div>
+    <div class="review-row">
+      <span class="label">Group ${g} 2nd</span>
+      <span class="val">${p.runnerUp}</span>
+    </div>`;
+  }
+  groupSection.innerHTML = groupHtml;
+  grid.appendChild(groupSection);
+
+  // R32 picks
+  const r32Section = document.createElement("div");
+  r32Section.className = "review-section";
+  let r32Html = `<div class="review-section-title">Round of 32 (16 picks)</div>`;
+  R32_STRUCTURE.forEach(match => {
+    const winner = userPicks.knockouts[`r32-${match.id}`];
+    r32Html += `<div class="review-row">
+      <span class="label">${match.label}</span>
+      <span class="val">${winner}</span>
+    </div>`;
+  });
+  r32Section.innerHTML = r32Html;
+  grid.appendChild(r32Section);
+
+  // R16
+  const r16Section = document.createElement("div");
+  r16Section.className = "review-section";
+  let r16Html = `<div class="review-section-title">Round of 16 (8 picks)</div>`;
+  R16_PAIRS.forEach(p => {
+    const winner = userPicks.knockouts[`r16-${p.id}`];
+    r16Html += `<div class="review-row">
+      <span class="label">R16 #${p.id + 1}</span>
+      <span class="val">${winner}</span>
+    </div>`;
+  });
+  r16Section.innerHTML = r16Html;
+  grid.appendChild(r16Section);
+
+  // QF, SF, Final combined
+  const lateSection = document.createElement("div");
+  lateSection.className = "review-section";
+  let lateHtml = `<div class="review-section-title">Quarters, Semis, Final</div>`;
+  QF_PAIRS.forEach(p => {
+    lateHtml += `<div class="review-row">
+      <span class="label">QF #${p.id + 1}</span>
+      <span class="val">${userPicks.knockouts[`qf-${p.id}`]}</span>
+    </div>`;
+  });
+  SF_PAIRS.forEach(p => {
+    lateHtml += `<div class="review-row">
+      <span class="label">SF #${p.id + 1}</span>
+      <span class="val">${userPicks.knockouts[`sf-${p.id}`]}</span>
+    </div>`;
+  });
+  lateHtml += `<div class="review-row">
+    <span class="label">FINAL</span>
+    <span class="val accent">${userPicks.knockouts["final-0"]}</span>
+  </div>`;
+  lateSection.innerHTML = lateHtml;
+  grid.appendChild(lateSection);
+
+  // Champion
+  document.getElementById("championPickName").textContent = userPicks.knockouts["final-0"];
+}
+
+document.getElementById("step4Back").addEventListener("click", () => goToStep(3));
+
+document.getElementById("submitBtn").addEventListener("click", () => {
+  // Show the inline confirmation overlay (no browser confirm dialog)
+  document.getElementById("confirmOverlay").classList.add("is-visible");
+  document.body.style.overflow = "hidden";
+});
+
+document.getElementById("confirmCancelBtn").addEventListener("click", () => {
+  document.getElementById("confirmOverlay").classList.remove("is-visible");
+  document.body.style.overflow = "";
+});
+
+document.getElementById("confirmSubmitBtn").addEventListener("click", () => {
+  // Hide the overlay
+  document.getElementById("confirmOverlay").classList.remove("is-visible");
+  document.body.style.overflow = "";
+
+  // Log the submission (Stage 2 will send to Firebase)
+  console.log("=== BRACKET SUBMITTED ===");
+  console.log("Name:", userPicks.name);
+  console.log("Groups:", userPicks.groups);
+  console.log("Knockouts:", userPicks.knockouts);
+  console.log("Champion:", userPicks.knockouts["final-0"]);
+
+  // Show success screen
+  goToStep("success");
+});
+
+</script>
+
+</body>
+</html>
