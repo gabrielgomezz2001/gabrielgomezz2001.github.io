@@ -197,6 +197,12 @@
   .venue-selector {
     margin-bottom: 22px;
   }
+  .scenario-picker { margin-bottom: 14px; }
+  .knockout-scenarios {
+    margin-bottom: 22px;
+    display: none;
+  }
+  .knockout-scenarios.is-visible { display: block; }
   .venue-selector-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
@@ -428,14 +434,37 @@
     font-weight: 500;
     color: var(--paper);
   }
-  .result-story {
+  .result-likely {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(196, 167, 106, 0.3);
+  }
+  .result-likely-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .result-likely-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
     font-family: 'Fraunces', serif;
-    font-size: 15px;
-    line-height: 1.7;
+    font-size: 14px;
     color: var(--paper);
   }
-  .result-story p { margin-bottom: 10px; }
-  .result-story em { color: var(--gold); font-style: italic; }
+  .result-likely-row.top {
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .result-likely-row .freq {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 600;
+  }
   .result-replay {
     display: block;
     width: 100%;
@@ -1035,12 +1064,20 @@
       </div>
     </div>
 
-    <div class="venue-selector">
-      <span class="venue-selector-label">Venue advantage</span>
+    <div class="scenario-picker">
+      <span class="venue-selector-label">Match type</span>
       <div class="venue-buttons">
-        <button class="venue-btn is-active" data-venue="neutral">Neutral</button>
-        <button class="venue-btn" data-venue="a">Team A home</button>
-        <button class="venue-btn" data-venue="b">Team B home</button>
+        <button class="venue-btn is-active" data-type="group">Group Stage</button>
+        <button class="venue-btn" data-type="knockout">Knockout</button>
+      </div>
+    </div>
+
+    <div class="knockout-scenarios" id="knockoutScenarios">
+      <span class="venue-selector-label">What if the match...</span>
+      <div class="venue-buttons">
+        <button class="venue-btn is-active" data-scenario="90">Ends in 90 min</button>
+        <button class="venue-btn" data-scenario="et">Goes to extra time</button>
+        <button class="venue-btn" data-scenario="pens">Goes to penalties</button>
       </div>
     </div>
 
@@ -1062,7 +1099,7 @@
   </div>
 
   <div class="result-card" id="resultCard">
-    <div class="result-label">Final whistle</div>
+    <div class="result-label" id="resultLabel">Final whistle</div>
     <div class="result-score-row">
       <div class="result-team left" id="resultTeamA"></div>
       <div class="result-score" id="resultScore"></div>
@@ -1075,7 +1112,7 @@
         <div class="prob-val" id="probA">--</div>
       </div>
       <div class="prob-cell">
-        <div class="prob-label">Draw (90 min)</div>
+        <div class="prob-label" id="probLabelDraw">Draw</div>
         <div class="prob-val" id="probDraw">--</div>
       </div>
       <div class="prob-cell">
@@ -1083,16 +1120,17 @@
         <div class="prob-val" id="probB">--</div>
       </div>
     </div>
-    <div class="result-story" id="resultStory"></div>
+    <div class="result-likely" id="resultLikely"></div>
     <button class="result-replay" id="replayBtn">↻ Run it again</button>
   </div>
 
   <div class="methodology">
     <div class="methodology-title">How this works (kinda)</div>
-    <p><strong>Team strength:</strong> Each team has a real Elo rating. Stronger team gets more goals on average. Pretty simple.</p>
-    <p><strong>Star players:</strong> When a big name is out, their team gets weaker. Messi out drops Argentina a lot. Ronaldo out drops Portugal less because the squad is deeper. Late sub means half the impact.</p>
-    <p><strong>Match flow:</strong> Goals get rolled using probability math. If tied at 90 in knockouts, extra time. Still tied, penalties. Penalty success rates loosely based on how strong each team is.</p>
-    <p>This is for fun. Run the same match twice and you'll get different results because of randomness. <em>That's kind of the point.</em></p>
+    <p><strong>What's an Elo rating?</strong> Just a number that says how good a team is. Originally invented for chess ratings back in the 60s, then borrowed by soccer. Higher number = stronger team. Spain has 2171. Qatar has 1450. The bigger the gap, the more lopsided the matchup. When two teams play, the result updates both of their ratings (winner gains points, loser drops).</p>
+    <p><strong>How the score gets predicted.</strong> First, the Elo gap between the two teams sets how many goals each one is expected to score on average. Stronger team gets more expected goals. Then I roll random numbers based on those averages. Sometimes Argentina scores 4 against Qatar. Sometimes 2. But on average across many matches, it's around what their Elo predicts.</p>
+    <p><strong>Star players:</strong> When a big name is out, their team's Elo drops. Messi out drops Argentina a lot. Ronaldo out drops Portugal less because their squad is deeper. Late sub means half the impact.</p>
+    <p><strong>Full time vs extra time vs penalties.</strong> Full time is the regular 90 minutes. If a knockout match is tied after that, it goes to 30 more minutes (extra time). If still tied, penalty shootout. The probability you see at the top of the result tells you the chances of each outcome happening in regulation. Penalty shootouts are roughly a coin flip, with a tiny edge to the slightly stronger team.</p>
+    <p>Same matchup run twice gives different results because of randomness. <em>That's kind of the point.</em> Run it 1,000 times in the predictor tab to see the real chances.</p>
   </div>
 </div>
 
@@ -1534,50 +1572,9 @@ function simulateMatch(teamA, teamB, playerStatuses, venue, isKnockout = false) 
   };
 }
 
-// Generate a narrative story from match result
-function generateStory(result) {
-  const { teamA, teamB, goalsA, goalsB, timeline, extraTime, penalties, penWinner } = result;
-  const paragraphs = [];
-
-  if (timeline.length === 0) {
-    paragraphs.push(`A tight, low-scoring affair. Neither ${teamA} nor ${teamB} could break the deadlock. Both defenses held strong throughout 90 minutes.`);
-  } else {
-    let opening;
-    const firstGoal = timeline[0];
-    if (firstGoal.minute < 20) {
-      opening = `${firstGoal.team} struck early, scoring in the ${firstGoal.minute}th minute to take an early lead.`;
-    } else if (firstGoal.minute < 45) {
-      opening = `After a cagey opening, ${firstGoal.team} broke through in the ${firstGoal.minute}th minute.`;
-    } else {
-      opening = `A goalless first half until ${firstGoal.team} found the breakthrough in the ${firstGoal.minute}th minute.`;
-    }
-    paragraphs.push(opening);
-
-    if (timeline.length > 1) {
-      const events = timeline.slice(1).map(e => `${e.team} scored at ${e.minute}'`).join(", ");
-      paragraphs.push(`The match opened up: ${events}.`);
-    }
-  }
-
-  if (penalties) {
-    paragraphs.push(`The match went to penalties after extra time failed to separate the sides. <em>${penWinner} held their nerve to win the shootout.</em>`);
-  } else if (extraTime) {
-    paragraphs.push(`Extra time was required to decide the winner.`);
-  } else if (goalsA > goalsB) {
-    paragraphs.push(`<em>${teamA} secured the win, ${goalsA}-${goalsB}.</em>`);
-  } else if (goalsB > goalsA) {
-    paragraphs.push(`<em>${teamB} secured the win, ${goalsB}-${goalsA}.</em>`);
-  } else {
-    paragraphs.push(`The match ended in a ${goalsA}-${goalsB} draw.`);
-  }
-
-  return paragraphs.map(p => `<p>${p}</p>`).join("");
-}
-
 // =====================================================
 // UI - MATCH SIMULATOR
 // =====================================================
-let currentVenue = "neutral";
 const playerStatuses = {};
 
 function populateTeamSelects() {
@@ -1650,6 +1647,7 @@ function showResult(result) {
   const teamBEl = document.getElementById("resultTeamB");
   const scoreEl = document.getElementById("resultScore");
   const noteEl = document.getElementById("resultNote");
+  const labelEl = document.getElementById("resultLabel");
 
   const winnerIsA = result.penalties ? result.penWinner === result.teamA : result.goalsA > result.goalsB;
   const winnerIsB = result.penalties ? result.penWinner === result.teamB : result.goalsB > result.goalsA;
@@ -1660,9 +1658,10 @@ function showResult(result) {
   teamBEl.className = `result-team right${winnerIsB ? ' is-winner' : ''}`;
 
   scoreEl.textContent = `${result.goalsA} - ${result.goalsB}`;
+  labelEl.textContent = result.scenarioLabel || "Final whistle";
 
   if (result.penalties) {
-    noteEl.textContent = `After penalties · ${result.penWinner} wins shootout`;
+    noteEl.textContent = `Penalty shootout · ${result.penWinner} wins`;
   } else if (result.extraTime) {
     noteEl.textContent = `After extra time`;
   } else if (result.goalsA === result.goalsB) {
@@ -1671,19 +1670,194 @@ function showResult(result) {
     noteEl.textContent = `Full time`;
   }
 
-  document.getElementById("probLabelA").textContent = `${result.teamA} win`;
-  document.getElementById("probLabelB").textContent = `${result.teamB} win`;
+  // Build probability labels based on scenario
+  let labelA = `${result.teamA} win`;
+  let labelB = `${result.teamB} win`;
+  let labelDraw = "Draw";
+  let probDrawValue = result.probDraw;
+  if (result.scenario === "et") {
+    labelA = `${result.teamA} ET win`;
+    labelB = `${result.teamB} ET win`;
+    labelDraw = "Still tied after ET";
+  } else if (result.scenario === "pens") {
+    labelA = `${result.teamA} shootout`;
+    labelB = `${result.teamB} shootout`;
+    labelDraw = "-";
+    probDrawValue = 0;
+  } else if (result.scenario === "90") {
+    labelDraw = "Cannot draw";
+    probDrawValue = 0;
+  }
+
+  document.getElementById("probLabelA").textContent = labelA;
+  document.getElementById("probLabelB").textContent = labelB;
+  document.getElementById("probLabelDraw").textContent = labelDraw;
   document.getElementById("probA").textContent = Math.round(result.probA * 100) + "%";
   document.getElementById("probB").textContent = Math.round(result.probB * 100) + "%";
-  document.getElementById("probDraw").textContent = Math.round(result.probDraw * 100) + "%";
+  document.getElementById("probDraw").textContent = probDrawValue > 0 ? Math.round(probDrawValue * 100) + "%" : "-";
 
-  document.getElementById("resultStory").innerHTML = generateStory(result);
+  // Render most likely scores
+  const likelyEl = document.getElementById("resultLikely");
+  if (result.likelyScores && result.likelyScores.length > 0) {
+    let html = `<div class="result-likely-title">Most likely scores · from 5,000 sims</div>`;
+    result.likelyScores.forEach((s, i) => {
+      const cls = i === 0 ? "result-likely-row top" : "result-likely-row";
+      const scoreText = s.scoreText;
+      html += `<div class="${cls}"><span>${scoreText}</span><span class="freq">${s.pct.toFixed(1)}%</span></div>`;
+    });
+    likelyEl.innerHTML = html;
+    likelyEl.style.display = "block";
+  } else {
+    likelyEl.style.display = "none";
+  }
 
   card.classList.add("is-visible");
   card.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+// === MATCH SIMULATOR STATE ===
+let currentMatchType = "group";      // "group" or "knockout"
+let currentScenario = "90";          // "90" / "et" / "pens" (only used in knockout)
 let lastMatchSetup = null;
+
+// Run Monte Carlo for the chosen scenario - returns aggregate result
+function runMatchupSims(teamA, teamB, playerStatuses, matchType, scenario, numSims = 5000) {
+  let winsA = 0, winsB = 0, draws = 0;
+  const scoreCounts = {};
+
+  // For the displayed "single match" example, save the first interesting one
+  let sampleResult = null;
+
+  for (let i = 0; i < numSims; i++) {
+    const r = simulateMatch(teamA, teamB, playerStatuses, "neutral", matchType === "knockout");
+
+    if (matchType === "group") {
+      // Only count 90-minute outcomes (no extra time, no penalties)
+      // Use raw 90-min goals (before ET adjustments)
+      // simulateMatch with isKnockout=false skips ET, so goalsA/goalsB are 90-min results
+      const sk = `${r.goalsA}-${r.goalsB}`;
+      scoreCounts[sk] = (scoreCounts[sk] || 0) + 1;
+      if (r.goalsA > r.goalsB) winsA++;
+      else if (r.goalsB > r.goalsA) winsB++;
+      else draws++;
+      if (i === 0) sampleResult = r;
+    } else {
+      // Knockout: filter by scenario
+      const wentToPens = r.penalties;
+      const wentToET = r.extraTime;
+
+      if (scenario === "90") {
+        // Only count matches that ended in regulation (no ET, no pens)
+        if (!wentToET && !wentToPens) {
+          const sk = `${r.goalsA}-${r.goalsB}`;
+          scoreCounts[sk] = (scoreCounts[sk] || 0) + 1;
+          if (r.goalsA > r.goalsB) winsA++;
+          else winsB++;
+          if (!sampleResult) sampleResult = r;
+        }
+      } else if (scenario === "et") {
+        // Only count matches that needed extra time (with or without pens)
+        if (wentToET) {
+          const sk = `${r.goalsA}-${r.goalsB}`;
+          scoreCounts[sk] = (scoreCounts[sk] || 0) + 1;
+          // Winner in ET (excluding pens)
+          if (!wentToPens) {
+            if (r.goalsA > r.goalsB) winsA++;
+            else winsB++;
+          } else {
+            draws++;  // tied through ET, went to pens
+          }
+          if (!sampleResult) sampleResult = r;
+        }
+      } else if (scenario === "pens") {
+        // Only count matches that went to penalties
+        if (wentToPens) {
+          if (r.penWinner === teamA) winsA++;
+          else winsB++;
+          if (!sampleResult) sampleResult = r;
+        }
+      }
+    }
+  }
+
+  // Calculate total counted matches for the scenario
+  const total = winsA + winsB + draws;
+  if (total === 0) {
+    return null;  // No matches matched this scenario - very rare
+  }
+
+  // Top 5 most common scores
+  const sortedScores = Object.entries(scoreCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([sk, count]) => {
+      const [ga, gb] = sk.split("-").map(Number);
+      const winner = ga > gb ? teamA : (gb > ga ? teamB : "draw");
+      const scoreText = winner === "draw"
+        ? `${ga}-${gb} draw`
+        : `${teamA} ${ga}-${gb} ${teamB}`;
+      return { scoreText, pct: (count / total) * 100, goalsA: ga, goalsB: gb };
+    });
+
+  // Build display result from sample + aggregated probabilities
+  let scenarioLabel = "Final whistle";
+  if (matchType === "group") scenarioLabel = "Group stage match";
+  else if (scenario === "90") scenarioLabel = "Resolved in 90 minutes";
+  else if (scenario === "et") scenarioLabel = "Went to extra time";
+  else if (scenario === "pens") scenarioLabel = "Penalty shootout";
+
+  // The big displayed score = the MOST LIKELY score (not a random sample)
+  // This way it matches the top of the "Most likely scores" list
+  let displayGoalsA = 0;
+  let displayGoalsB = 0;
+  let displayExtraTime = false;
+  let displayPenalties = false;
+  let displayPenWinner = null;
+
+  if (sortedScores.length > 0) {
+    displayGoalsA = sortedScores[0].goalsA;
+    displayGoalsB = sortedScores[0].goalsB;
+  }
+
+  // Scenario-specific tagging for the result note
+  if (scenario === "et") {
+    displayExtraTime = true;
+    // If the most likely score is a tie (rare in ET data), treat it as going to pens
+    if (displayGoalsA === displayGoalsB) {
+      displayPenalties = true;
+      displayPenWinner = winsA >= winsB ? teamA : teamB;
+    }
+  } else if (scenario === "pens") {
+    displayExtraTime = true;
+    displayPenalties = true;
+    displayPenWinner = winsA >= winsB ? teamA : teamB;
+    // For penalty scenario, the most likely "match score" through ET was a draw
+    // Show that as the displayed score (e.g., 1-1) since the pens decided it
+    if (sortedScores.length > 0) {
+      // Find the most common DRAW score from the aggregated data
+      const drawScores = sortedScores.filter(s => s.goalsA === s.goalsB);
+      if (drawScores.length > 0) {
+        displayGoalsA = drawScores[0].goalsA;
+        displayGoalsB = drawScores[0].goalsB;
+      }
+    }
+  }
+
+  return {
+    teamA, teamB,
+    goalsA: displayGoalsA,
+    goalsB: displayGoalsB,
+    extraTime: displayExtraTime,
+    penalties: displayPenalties,
+    penWinner: displayPenWinner,
+    probA: winsA / total,
+    probB: winsB / total,
+    probDraw: draws / total,
+    scenario,
+    scenarioLabel,
+    likelyScores: sortedScores
+  };
+}
 
 document.getElementById("simulateBtn").addEventListener("click", () => {
   const teamA = document.getElementById("teamA").value;
@@ -1692,24 +1866,55 @@ document.getElementById("simulateBtn").addEventListener("click", () => {
     alert("Please pick two different teams.");
     return;
   }
-  lastMatchSetup = { teamA, teamB, venue: currentVenue, isKnockout: true };
-  const result = simulateMatch(teamA, teamB, playerStatuses, currentVenue, true);
-  showResult(result);
+
+  const btn = document.getElementById("simulateBtn");
+  btn.disabled = true;
+  btn.textContent = "Cooking 5,000 sims...";
+
+  // Use setTimeout to let UI update before heavy computation
+  setTimeout(() => {
+    const result = runMatchupSims(teamA, teamB, playerStatuses, currentMatchType, currentScenario);
+    if (result) {
+      lastMatchSetup = { teamA, teamB, matchType: currentMatchType, scenario: currentScenario };
+      showResult(result);
+    } else {
+      alert("This scenario is too rare to simulate. Try a different scenario.");
+    }
+    btn.disabled = false;
+    btn.textContent = "Play the match";
+  }, 50);
 });
 
 document.getElementById("replayBtn").addEventListener("click", () => {
   if (!lastMatchSetup) return;
-  const { teamA, teamB, venue, isKnockout } = lastMatchSetup;
-  const result = simulateMatch(teamA, teamB, playerStatuses, venue, isKnockout);
-  showResult(result);
+  const { teamA, teamB, matchType, scenario } = lastMatchSetup;
+  const result = runMatchupSims(teamA, teamB, playerStatuses, matchType, scenario);
+  if (result) showResult(result);
 });
 
-// Venue buttons
-document.querySelectorAll(".venue-btn").forEach(btn => {
+// Match type buttons (Group Stage / Knockout)
+document.querySelectorAll('[data-type]').forEach(btn => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".venue-btn").forEach(b => b.classList.remove("is-active"));
+    document.querySelectorAll('[data-type]').forEach(b => b.classList.remove("is-active"));
     btn.classList.add("is-active");
-    currentVenue = btn.dataset.venue;
+    currentMatchType = btn.dataset.type;
+
+    // Show/hide knockout scenarios
+    const scenarios = document.getElementById("knockoutScenarios");
+    if (currentMatchType === "knockout") {
+      scenarios.classList.add("is-visible");
+    } else {
+      scenarios.classList.remove("is-visible");
+    }
+  });
+});
+
+// Scenario buttons (90 / ET / Penalties)
+document.querySelectorAll('[data-scenario]').forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll('[data-scenario]').forEach(b => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    currentScenario = btn.dataset.scenario;
   });
 });
 
