@@ -229,6 +229,113 @@
     color: var(--ink-soft);
   }
 
+  /* === ALL BRACKETS LIST === */
+  .bracket-row {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    margin-bottom: 8px;
+  }
+  .bracket-row-header {
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 50px 1fr auto auto auto;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .bracket-row-header:hover { background: #e9e4d2; }
+  .bracket-row.is-expanded .bracket-row-header { background: #fff7f0; border-bottom: 1px solid var(--rule); }
+  .bracket-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .bracket-name {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .bracket-champion {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .bracket-score {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .bracket-toggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  @media (max-width: 600px) {
+    .bracket-row-header {
+      grid-template-columns: 40px 1fr auto;
+    }
+    .bracket-champion, .bracket-toggle { display: none; }
+  }
+  .bracket-details {
+    display: none;
+    padding: 16px;
+    background: var(--paper);
+  }
+  .bracket-row.is-expanded .bracket-details { display: block; }
+  .bracket-details-section {
+    margin-bottom: 16px;
+  }
+  .bracket-details-section:last-child { margin-bottom: 0; }
+  .bracket-details-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .bracket-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 4px;
+  }
+  .bracket-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+  }
+  .bracket-detail-row .label {
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .bracket-detail-row .val {
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+  }
+  .bracket-empty {
+    text-align: center;
+    padding: 30px;
+    font-family: 'Fraunces', serif;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
   /* === GROUP CARDS === */
   .groups-grid {
     display: grid;
@@ -479,6 +586,16 @@
       </div>
     </div>
 
+    <!-- ALL BRACKETS SECTION -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">All submitted brackets</h2>
+        <span class="section-sub" id="allBracketsCount">--</span>
+      </div>
+      <p class="help-text">Every bracket submitted by every player. Click <strong>"View full bracket"</strong> to see all 55 of their picks. Sorted by score (highest first).</p>
+      <div id="allBracketsList"></div>
+    </div>
+
     <!-- GROUP STAGE -->
     <div class="section">
       <div class="section-header">
@@ -659,6 +776,7 @@ async function loadAdmin() {
     bracketsSnap.forEach(d => brackets.push(d.data()));
 
     renderStats(brackets);
+    renderAllBrackets(brackets);
     renderGroups();
     renderKnockouts();
     setStatus("Loaded", "success");
@@ -742,6 +860,169 @@ function renderStats(brackets) {
       <div class="stat-detail">${fmtDate(latest)}</div>
     </div>
   `;
+}
+
+// =====================================================
+// SCORING (mirrors leaderboard logic)
+// =====================================================
+function calculateScoreAdmin(bracket) {
+  let score = 0;
+  if (realResults.groups && bracket.groups) {
+    for (const g in realResults.groups) {
+      const real = realResults.groups[g];
+      const pick = bracket.groups[g];
+      if (!pick) continue;
+      if (pick.winner && real.first && pick.winner === real.first) score += 1;
+      if (pick.runnerUp && real.second && pick.runnerUp === real.second) score += 1;
+    }
+  }
+  const roundPoints = { "r32": 2, "r16": 4, "qf": 8, "sf": 16, "final": 32 };
+  if (realResults.knockouts && bracket.knockouts) {
+    for (const matchKey in realResults.knockouts) {
+      if (matchKey.includes("_third")) continue;
+      const round = matchKey.split("-")[0];
+      const points = roundPoints[round] || 0;
+      if (bracket.knockouts[matchKey] === realResults.knockouts[matchKey]) {
+        score += points;
+      }
+    }
+  }
+  return score;
+}
+
+// =====================================================
+// RENDER ALL BRACKETS LIST
+// =====================================================
+function renderAllBrackets(brackets) {
+  const container = document.getElementById("allBracketsList");
+  const countEl = document.getElementById("allBracketsCount");
+
+  if (brackets.length === 0) {
+    countEl.textContent = "0 brackets";
+    container.innerHTML = '<div class="bracket-empty">No brackets submitted yet.</div>';
+    return;
+  }
+
+  // Calculate scores and sort
+  const scored = brackets.map(b => ({
+    ...b,
+    score: calculateScoreAdmin(b)
+  }));
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    const aT = a.submittedAt && a.submittedAt.seconds ? a.submittedAt.seconds : 0;
+    const bT = b.submittedAt && b.submittedAt.seconds ? b.submittedAt.seconds : 0;
+    return aT - bT;
+  });
+
+  countEl.textContent = `${scored.length} brackets · sorted by score`;
+
+  container.innerHTML = "";
+  scored.forEach((bracket, i) => {
+    const row = document.createElement("div");
+    row.className = "bracket-row";
+
+    const champion = bracket.champion || (bracket.knockouts && bracket.knockouts["final-0"]) || "?";
+
+    row.innerHTML = `
+      <div class="bracket-row-header" data-toggle="true">
+        <div class="bracket-rank">#${i + 1}</div>
+        <div class="bracket-name">${escapeHtml(bracket.name || "Anonymous")}</div>
+        <div class="bracket-champion">→ ${escapeHtml(champion)}</div>
+        <div class="bracket-score">${bracket.score}<span style="font-size:11px; color:var(--ink-soft); font-weight:400;">/208</span></div>
+        <div class="bracket-toggle">View full ▾</div>
+      </div>
+      <div class="bracket-details">
+        ${renderBracketDetails(bracket)}
+      </div>
+    `;
+
+    container.appendChild(row);
+
+    // Wire up toggle
+    row.querySelector(".bracket-row-header").addEventListener("click", () => {
+      row.classList.toggle("is-expanded");
+      const toggle = row.querySelector(".bracket-toggle");
+      if (toggle) toggle.textContent = row.classList.contains("is-expanded") ? "Hide ▴" : "View full ▾";
+    });
+  });
+}
+
+function renderBracketDetails(bracket) {
+  let html = "";
+
+  // GROUP STAGE
+  if (bracket.groups) {
+    html += '<div class="bracket-details-section">';
+    html += '<div class="bracket-details-title">Group stage picks (24 picks)</div>';
+    html += '<div class="bracket-details-grid">';
+    Object.keys(bracket.groups).sort().forEach(g => {
+      const p = bracket.groups[g];
+      if (!p) return;
+      html += `<div class="bracket-detail-row"><span class="label">Group ${g} 1st</span><span class="val">${escapeHtml(p.winner || "--")}</span></div>`;
+      html += `<div class="bracket-detail-row"><span class="label">Group ${g} 2nd</span><span class="val">${escapeHtml(p.runnerUp || "--")}</span></div>`;
+    });
+    html += '</div></div>';
+  }
+
+  // KNOCKOUTS
+  if (bracket.knockouts) {
+    const ko = bracket.knockouts;
+
+    // R32
+    html += '<div class="bracket-details-section">';
+    html += '<div class="bracket-details-title">Round of 32 (16 picks)</div>';
+    html += '<div class="bracket-details-grid">';
+    for (let i = 0; i < 16; i++) {
+      const winner = ko[`r32-${i}`] || "--";
+      const thirdPick = ko[`r32-${i}_third`];
+      let label = `R32 #${i + 1}`;
+      if (thirdPick) label += ` (3rd: ${thirdPick})`;
+      html += `<div class="bracket-detail-row"><span class="label">${label}</span><span class="val">${escapeHtml(winner)}</span></div>`;
+    }
+    html += '</div></div>';
+
+    // R16
+    html += '<div class="bracket-details-section">';
+    html += '<div class="bracket-details-title">Round of 16 (8 picks)</div>';
+    html += '<div class="bracket-details-grid">';
+    for (let i = 0; i < 8; i++) {
+      html += `<div class="bracket-detail-row"><span class="label">R16 #${i + 1}</span><span class="val">${escapeHtml(ko[`r16-${i}`] || "--")}</span></div>`;
+    }
+    html += '</div></div>';
+
+    // QF
+    html += '<div class="bracket-details-section">';
+    html += '<div class="bracket-details-title">Quarterfinals (4 picks)</div>';
+    html += '<div class="bracket-details-grid">';
+    for (let i = 0; i < 4; i++) {
+      html += `<div class="bracket-detail-row"><span class="label">QF #${i + 1}</span><span class="val">${escapeHtml(ko[`qf-${i}`] || "--")}</span></div>`;
+    }
+    html += '</div></div>';
+
+    // SF
+    html += '<div class="bracket-details-section">';
+    html += '<div class="bracket-details-title">Semifinals (2 picks)</div>';
+    html += '<div class="bracket-details-grid">';
+    for (let i = 0; i < 2; i++) {
+      html += `<div class="bracket-detail-row"><span class="label">SF #${i + 1}</span><span class="val">${escapeHtml(ko[`sf-${i}`] || "--")}</span></div>`;
+    }
+    html += '</div></div>';
+
+    // FINAL
+    html += '<div class="bracket-details-section">';
+    html += '<div class="bracket-details-title">Final · Champion pick</div>';
+    html += '<div class="bracket-details-grid">';
+    html += `<div class="bracket-detail-row"><span class="label">🏆 Champion</span><span class="val" style="color:var(--accent); font-weight:700;">${escapeHtml(ko["final-0"] || "--")}</span></div>`;
+    html += '</div></div>';
+  }
+
+  return html;
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 // =====================================================
@@ -1083,6 +1364,15 @@ async function saveResultsToFirebase() {
       lastUpdated: new Date()
     });
     setStatus("Saved · " + new Date().toLocaleTimeString(), "success");
+
+    // Re-fetch brackets and re-render so all scores update on the brackets list
+    try {
+      const bracketsCol = window.firebaseColl(window.firebaseDB, "brackets");
+      const bracketsSnap = await window.firebaseGetDocs(bracketsCol);
+      const brackets = [];
+      bracketsSnap.forEach(d => brackets.push(d.data()));
+      renderAllBrackets(brackets);
+    } catch (e2) { /* not critical */ }
   } catch (e) {
     console.error(e);
     setStatus("Save failed: " + e.message, "danger");

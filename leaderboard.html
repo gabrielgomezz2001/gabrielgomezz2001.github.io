@@ -292,6 +292,12 @@
     padding: 30px 20px 24px;
     background: linear-gradient(180deg, var(--paper) 0%, #f7f1e0 100%);
   }
+  .podium-card.is-you {
+    background: linear-gradient(180deg, #fff7f0 0%, #fbeaea 100%);
+  }
+  .podium-card.first.is-you {
+    background: linear-gradient(180deg, #fff7f0 0%, #f7eed4 100%);
+  }
   .podium-card.first::before {
     content: "";
     position: absolute;
@@ -680,8 +686,8 @@
   <!-- FULL LEADERBOARD -->
   <div class="full-leaderboard" id="fullLeaderboard">
     <div class="leaderboard-header">
-      <div class="leaderboard-title">All brackets · <span id="totalCount">0</span> submitted</div>
-      <input type="text" class="leaderboard-search" placeholder="Search by name..." id="searchInput">
+      <div class="leaderboard-title">The leaderboard · <span id="totalCount">0</span> brackets</div>
+      <input type="text" class="leaderboard-search" placeholder="Search by name..." id="searchInput" style="display:none;">
     </div>
     <div class="leaderboard-table-wrap">
       <table class="leaderboard-table">
@@ -947,10 +953,18 @@ function renderPodium(top3, gate, tournamentOver) {
       continue;
     }
 
-    // Anonymize unless tournament is over
-    const displayName = tournamentOver ? escapeHtml(player.name) : `Player #${pos.rank}`;
+    // Show real name if it's YOU or if tournament is over
+    const isYou = gate.myBracketId && player.id === gate.myBracketId;
+    let displayName;
+    if (tournamentOver) {
+      displayName = escapeHtml(player.name);
+    } else if (isYou) {
+      displayName = escapeHtml(player.name) + ' <em style="font-style: italic; color: var(--gold); font-size: 13px;">YOU</em>';
+    } else {
+      displayName = `Player #${pos.rank}`;
+    }
 
-    podiumEl.innerHTML += `<div class="podium-card ${pos.className}">
+    podiumEl.innerHTML += `<div class="podium-card ${pos.className}${isYou ? ' is-you' : ''}">
       <div class="podium-medal">${pos.medal}</div>
       <div class="podium-name">${displayName}</div>
       <div class="podium-score">${player.score}</div>
@@ -972,11 +986,26 @@ function renderFullTable(brackets, gate, tournamentOver) {
   document.getElementById("totalCount").textContent = brackets.length;
   body.innerHTML = "";
 
-  brackets.forEach((player, i) => {
-    // Is this the current user's bracket?
+  // Find the current user's bracket and their rank
+  let myRank = -1;
+  let myBracket = null;
+  if (gate.myBracketId) {
+    brackets.forEach((b, i) => {
+      if (b.id === gate.myBracketId) {
+        myRank = i + 1;
+        myBracket = b;
+      }
+    });
+  }
+
+  // Always show top 3 (or fewer if not enough brackets)
+  const top3 = brackets.slice(0, 3);
+
+  // Build rows: top 3, then a separator + your row (if you're not in top 3)
+  top3.forEach((player, i) => {
     const isYou = gate.myBracketId && player.id === gate.myBracketId;
 
-    // Determine display name
+    // Display name logic
     let displayName;
     if (tournamentOver) {
       displayName = escapeHtml(player.name);
@@ -987,10 +1016,6 @@ function renderFullTable(brackets, gate, tournamentOver) {
     }
 
     const row = document.createElement("tr");
-    // For search - only the user's own row is searchable by name pre-reveal
-    const searchableName = (tournamentOver || isYou) ? player.name.toLowerCase() : `player ${i + 1}`;
-    row.dataset.name = searchableName;
-
     const youCls = isYou ? " is-you" : "";
 
     row.innerHTML = `
@@ -1002,19 +1027,37 @@ function renderFullTable(brackets, gate, tournamentOver) {
     body.appendChild(row);
   });
 
+  // If user has a bracket and they're NOT in the top 3, add a separator + their row
+  if (myBracket && myRank > 3) {
+    // Separator row
+    const sep = document.createElement("tr");
+    sep.innerHTML = `<td colspan="4" style="padding: 8px 14px; text-align: center; background: var(--bg); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; border-bottom: 1px solid var(--rule); border-top: 2px solid var(--rule);">· · · ${myRank - 3} bracket${myRank - 3 === 1 ? '' : 's'} above you · · ·</td>`;
+    body.appendChild(sep);
+
+    // Your row
+    const yourRow = document.createElement("tr");
+    yourRow.innerHTML = `
+      <td class="lb-rank is-you">#${myRank}</td>
+      <td class="lb-name is-you">${escapeHtml(myBracket.name)}</td>
+      <td class="lb-champion is-you"><span class="flag">${flagFor(myBracket.champion)}</span>${escapeHtml(myBracket.champion)}</td>
+      <td class="lb-score is-you">${myBracket.score}<span class="max">/208</span></td>
+    `;
+    body.appendChild(yourRow);
+
+    // Show how many brackets are BELOW the user (for context)
+    const below = brackets.length - myRank;
+    if (below > 0) {
+      const belowSep = document.createElement("tr");
+      belowSep.innerHTML = `<td colspan="4" style="padding: 8px 14px; text-align: center; background: var(--bg); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; border-top: 1px solid var(--rule);">· · · ${below} bracket${below === 1 ? '' : 's'} below · · ·</td>`;
+      body.appendChild(belowSep);
+    }
+  }
+
   document.getElementById("fullLeaderboard").classList.add("is-visible");
 
-  const search = document.getElementById("searchInput");
-  search.addEventListener("input", () => {
-    const q = search.value.toLowerCase().trim();
-    body.querySelectorAll("tr").forEach(row => {
-      if (!q || row.dataset.name.includes(q)) {
-        row.classList.remove("is-hidden");
-      } else {
-        row.classList.add("is-hidden");
-      }
-    });
-  });
+  // Remove search since the table is now compact
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) searchInput.style.display = "none";
 }
 
 function updateStatus(brackets, realResults) {
