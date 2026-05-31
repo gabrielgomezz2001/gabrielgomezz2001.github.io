@@ -722,6 +722,20 @@
     margin-top: 30px;
   }
   footer strong { color: var(--ink); font-weight: 600; }
+  .disclaimer {
+    margin-top: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--ink-soft);
+    font-style: italic;
+    opacity: 0.7;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
 
   /* === CONFIRMATION OVERLAY === */
   .confirm-overlay {
@@ -910,7 +924,7 @@
       <div class="success-champion">
         <div class="success-champion-label">Your pick to win it all</div>
         <div class="success-champion-name" id="successChampion">--</div>
-        <div class="success-champion-tagline">2026 FIFA World Cup champion</div>
+        <div class="success-champion-tagline">2026 World Cup champion</div>
       </div>
 
       <div class="success-stats">
@@ -962,6 +976,7 @@
 
 <footer>
   <p><strong>Gabriel Gomez</strong> · World Cup Bracket Challenge · Just a soccer fan thing</p>
+  <p class="disclaimer">Not affiliated with FIFA or any official tournament organizer. Just a fan-built thing for friends. No prizes, no money, no entry fees.</p>
 </footer>
 
 <script type="module">
