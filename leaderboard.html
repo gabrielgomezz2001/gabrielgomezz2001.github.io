@@ -774,13 +774,15 @@ function calculateScore(bracket, realResults) {
   let score = 0;
 
   // Group stage: 1 point per correct group winner or runner-up
+  // Bracket uses: winner, runnerUp
+  // Admin results use: first, second (for group standings)
   if (realResults.groups && bracket.groups) {
     for (const g in realResults.groups) {
       const real = realResults.groups[g];
       const pick = bracket.groups[g];
       if (!pick) continue;
-      if (pick.winner === real.winner) score += 1;
-      if (pick.runnerUp === real.runnerUp) score += 1;
+      if (pick.winner && real.first && pick.winner === real.first) score += 1;
+      if (pick.runnerUp && real.second && pick.runnerUp === real.second) score += 1;
     }
   }
 
