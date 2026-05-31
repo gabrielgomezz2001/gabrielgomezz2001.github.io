@@ -718,7 +718,7 @@
       <div class="success-icon">🎯</div>
       <div class="success-title">Bracket submitted!</div>
       <div class="success-message">Your picks are locked in. As the World Cup unfolds, the leaderboard will update with your score in real time.</div>
-      <div class="success-note">PREVIEW MODE · Leaderboard coming in next update</div>
+      <div class="success-note">SAVED · Leaderboard launches before the tournament starts</div>
     </div>
   </div>
 
@@ -740,6 +740,32 @@
 <footer>
   <p><strong>Gabriel Gomez</strong> · World Cup Bracket Challenge · Just a soccer fan thing</p>
 </footer>
+
+<script type="module">
+// =====================================================
+// FIREBASE SETUP
+// =====================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDW17wBicwcwKWI1qa0-rRmSiKHIw47Rd8",
+  authDomain: "fifa-world-cup-bracket-project.firebaseapp.com",
+  projectId: "fifa-world-cup-bracket-project",
+  storageBucket: "fifa-world-cup-bracket-project.firebasestorage.app",
+  messagingSenderId: "621433307906",
+  appId: "1:621433307906:web:8ec6bb7c7196b863fb381b",
+  measurementId: "G-ZJ4T0V0JRP"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+window.firebaseDB = db;
+window.firebaseColl = collection;
+window.firebaseAddDoc = addDoc;
+window.firebaseGetDocs = getDocs;
+window.firebaseTimestamp = serverTimestamp;
+</script>
 
 <script>
 // =====================================================
@@ -1355,20 +1381,57 @@ document.getElementById("confirmCancelBtn").addEventListener("click", () => {
   document.body.style.overflow = "";
 });
 
-document.getElementById("confirmSubmitBtn").addEventListener("click", () => {
-  // Hide the overlay
-  document.getElementById("confirmOverlay").classList.remove("is-visible");
-  document.body.style.overflow = "";
+document.getElementById("confirmSubmitBtn").addEventListener("click", async () => {
+  const confirmBtn = document.getElementById("confirmSubmitBtn");
+  const cancelBtn = document.getElementById("confirmCancelBtn");
 
-  // Log the submission (Stage 2 will send to Firebase)
-  console.log("=== BRACKET SUBMITTED ===");
-  console.log("Name:", userPicks.name);
-  console.log("Groups:", userPicks.groups);
-  console.log("Knockouts:", userPicks.knockouts);
-  console.log("Champion:", userPicks.knockouts["final-0"]);
+  // Disable buttons while submitting
+  confirmBtn.disabled = true;
+  cancelBtn.disabled = true;
+  confirmBtn.textContent = "Saving...";
 
-  // Show success screen
-  goToStep("success");
+  // Wait briefly for Firebase to be ready (module scripts load async)
+  let attempts = 0;
+  while (!window.firebaseDB && attempts < 30) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
+
+  if (!window.firebaseDB) {
+    alert("Database not ready. Please refresh the page and try again.");
+    confirmBtn.disabled = false;
+    cancelBtn.disabled = false;
+    confirmBtn.textContent = "Yes, lock it in";
+    return;
+  }
+
+  // Build the bracket object to save
+  const bracketData = {
+    name: userPicks.name,
+    groups: userPicks.groups,
+    knockouts: userPicks.knockouts,
+    champion: userPicks.knockouts["final-0"],
+    submittedAt: window.firebaseTimestamp()
+  };
+
+  try {
+    const bracketsCollection = window.firebaseColl(window.firebaseDB, "brackets");
+    const docRef = await window.firebaseAddDoc(bracketsCollection, bracketData);
+    console.log("Bracket saved with ID:", docRef.id);
+
+    // Hide the overlay
+    document.getElementById("confirmOverlay").classList.remove("is-visible");
+    document.body.style.overflow = "";
+
+    // Show success screen
+    goToStep("success");
+  } catch (error) {
+    console.error("Error saving bracket:", error);
+    alert("Something went wrong saving your bracket. Please try again.\n\nError: " + error.message);
+    confirmBtn.disabled = false;
+    cancelBtn.disabled = false;
+    confirmBtn.textContent = "Yes, lock it in";
+  }
 });
 
 </script>
