@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Bracket Challenge</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #faf8f3;
+    --bg: #f0ede4;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --accent: #8b0000;
+    --gold: #c4a76a;
+    --rule: #d8d3c2;
+    --green: #2e7d32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === NAV === */
+  .topnav {
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-left { display: flex; align-items: center; gap: 14px; }
+  .gg-logo {
+    width: 38px; height: 38px;
+    border: 1.5px solid var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .admin-badge {
+    padding: 4px 10px;
+    background: var(--accent);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* === GATE === */
+  .gate {
+    max-width: 420px;
+    margin: 80px auto;
+    padding: 0 24px;
+  }
+  .gate-card {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    padding: 40px 32px;
+    text-align: center;
+  }
+  .gate-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  .gate-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  .gate-input {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    margin-bottom: 14px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .gate-input:focus { outline: none; background: #fff7f0; }
+  .gate-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: var(--paper);
+    border: 1.5px solid var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .gate-btn:hover { background: #6e0000; border-color: #6e0000; }
+  .gate-error {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    margin-top: 14px;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: none;
+  }
+  .gate-error.is-visible { display: block; }
+
+  /* === MAIN ADMIN === */
+  .admin-content { display: none; }
+  .admin-content.is-visible { display: block; }
+
+  .hero {
+    padding: 40px 24px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .hero-sub {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  .section {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .section-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  /* === STATS CARDS === */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .stat-card {
+    padding: 16px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .stat-value.accent { color: var(--accent); }
+  .stat-detail {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+
+  /* === GROUP CARDS === */
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .group-card {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 16px;
+  }
+  .group-card.is-saved {
+    border-color: var(--green);
+    background: #e8f5e9;
+  }
+  .group-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .group-saved-tag {
+    color: var(--green);
+    font-size: 10px;
+  }
+  .group-row {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .group-pos {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .group-pos.first { color: var(--accent); }
+  .group-row select {
+    width: 100%;
+    padding: 7px 10px;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M5%207L0%200h10z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 8px;
+    padding-right: 22px;
+  }
+  .save-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 9px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: var(--accent); }
+  .save-btn:disabled { background: var(--green); cursor: default; }
+
+  /* === KNOCKOUT MATCHES === */
+  .ko-section { margin-top: 20px; }
+  .ko-round-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ko-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px;
+  }
+  .ko-card {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 12px 14px;
+  }
+  .ko-card.is-saved {
+    border-color: var(--green);
+    background: #e8f5e9;
+  }
+  .ko-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ko-id .saved-tag { color: var(--green); }
+  .ko-teams {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .ko-winner-select {
+    width: 100%;
+    padding: 8px 10px;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2210%22%20height%3D%227%22%20viewBox%3D%220%200%2010%207%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M5%207L0%200h10z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 8px;
+    padding-right: 22px;
+    margin-bottom: 8px;
+  }
+
+  /* === GLOBAL ACTIONS === */
+  .global-actions {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 18px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .global-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .global-status.success { color: var(--gold); }
+  .global-status.pending { color: var(--paper); opacity: 0.6; }
+  .global-btn {
+    padding: 10px 18px;
+    background: var(--gold);
+    color: var(--ink);
+    border: 1.5px solid var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .global-btn:hover { background: var(--paper); color: var(--ink); }
+  .global-btn.danger {
+    background: transparent;
+    color: var(--paper);
+    border-color: var(--paper);
+  }
+  .global-btn.danger:hover { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+
+  /* === HELP TEXT === */
+  .help-text {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+  .help-text strong { color: var(--ink); font-weight: 600; font-style: normal; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-left">
+    <a href="index.html" class="gg-logo">GG</a>
+    <span class="admin-badge">Admin</span>
+  </div>
+</nav>
+
+<!-- PASSWORD GATE -->
+<div class="gate" id="passwordGate">
+  <div class="gate-card">
+    <div class="gate-icon">🔒</div>
+    <h2 class="gate-title">Admin access only</h2>
+    <input type="password" class="gate-input" id="passwordInput" placeholder="Enter password..." autofocus>
+    <button class="gate-btn" id="unlockBtn">Unlock</button>
+    <div class="gate-error" id="gateError">Wrong password</div>
+  </div>
+</div>
+
+<!-- MAIN ADMIN CONTENT -->
+<div class="admin-content" id="adminContent">
+
+  <section class="hero">
+    <div class="hero-label">Admin panel · Internal use only</div>
+    <h1>Bracket Challenge Admin</h1>
+    <p class="hero-sub">Enter real match results here. Player scores update automatically on the leaderboard.</p>
+  </section>
+
+  <div class="container">
+
+    <div class="global-actions">
+      <div class="global-status pending" id="globalStatus">Loading...</div>
+      <div>
+        <button class="global-btn" id="saveAllBtn">Save all changes</button>
+      </div>
+    </div>
+
+    <!-- STATS SECTION -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Overview</h2>
+        <span class="section-sub" id="statsCount">--</span>
+      </div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-label">Loading stats...</div>
+          <div class="stat-value">--</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GROUP STAGE -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Group stage results</h2>
+        <span class="section-sub">12 groups · 48 final positions</span>
+      </div>
+      <p class="help-text">For each group, set the final standings: <strong>1st, 2nd, 3rd, 4th</strong>. The top 2 advance automatically. The 8 best 3rd-place teams across all groups also advance (the system handles that comparison for scoring).</p>
+      <div class="groups-grid" id="groupsGrid"></div>
+    </div>
+
+    <!-- KNOCKOUT ROUNDS -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Knockout results</h2>
+        <span class="section-sub">31 matches · R32 to Final</span>
+      </div>
+      <p class="help-text">Enter the winner of each knockout match. The team options will populate as you save earlier rounds.</p>
+
+      <div class="ko-section">
+        <div class="ko-round-title">Round of 32 · 16 matches</div>
+        <div class="ko-grid" id="koR32"></div>
+      </div>
+
+      <div class="ko-section">
+        <div class="ko-round-title">Round of 16 · 8 matches</div>
+        <div class="ko-grid" id="koR16"></div>
+      </div>
+
+      <div class="ko-section">
+        <div class="ko-round-title">Quarterfinals · 4 matches</div>
+        <div class="ko-grid" id="koQF"></div>
+      </div>
+
+      <div class="ko-section">
+        <div class="ko-round-title">Semifinals · 2 matches</div>
+        <div class="ko-grid" id="koSF"></div>
+      </div>
+
+      <div class="ko-section">
+        <div class="ko-round-title">Final</div>
+        <div class="ko-grid" id="koFinal"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+// =====================================================
+// FIREBASE SETUP
+// =====================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDW17wBicwcwKWI1qa0-rRmSiKHIw47Rd8",
+  authDomain: "fifa-world-cup-bracket-project.firebaseapp.com",
+  projectId: "fifa-world-cup-bracket-project",
+  storageBucket: "fifa-world-cup-bracket-project.firebasestorage.app",
+  messagingSenderId: "621433307906",
+  appId: "1:621433307906:web:8ec6bb7c7196b863fb381b",
+  measurementId: "G-ZJ4T0V0JRP"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+window.firebaseDB = db;
+window.firebaseColl = collection;
+window.firebaseGetDocs = getDocs;
+window.firebaseDoc = doc;
+window.firebaseSetDoc = setDoc;
+window.firebaseGetDoc = getDoc;
+</script>
+
+<script>
+// =====================================================
+// PASSWORD CHECK
+// =====================================================
+const ADMIN_PASSWORD = "Gomez1812!";
+const SESSION_KEY = "wc_admin_unlocked";
+
+function checkUnlocked() {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === "true";
+  } catch (e) { return false; }
+}
+
+function setUnlocked() {
+  try { sessionStorage.setItem(SESSION_KEY, "true"); } catch (e) {}
+}
+
+document.getElementById("unlockBtn").addEventListener("click", () => {
+  const pw = document.getElementById("passwordInput").value;
+  if (pw === ADMIN_PASSWORD) {
+    setUnlocked();
+    showAdmin();
+  } else {
+    document.getElementById("gateError").classList.add("is-visible");
+  }
+});
+
+document.getElementById("passwordInput").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") document.getElementById("unlockBtn").click();
+});
+
+function showAdmin() {
+  document.getElementById("passwordGate").style.display = "none";
+  document.getElementById("adminContent").classList.add("is-visible");
+  loadAdmin();
+}
+
+// Auto-unlock if already authenticated this session
+if (checkUnlocked()) showAdmin();
+
+// =====================================================
+// TEAMS DATA
+// =====================================================
+const TEAMS = {
+  "Mexico": "A", "South Korea": "A", "South Africa": "A", "Czechia": "A",
+  "Switzerland": "B", "Canada": "B", "Bosnia-Herzegovina": "B", "Qatar": "B",
+  "Brazil": "C", "Morocco": "C", "Scotland": "C", "Haiti": "C",
+  "United States": "D", "Türkiye": "D", "Paraguay": "D", "Australia": "D",
+  "Germany": "E", "Ecuador": "E", "Ivory Coast": "E", "Curaçao": "E",
+  "Netherlands": "F", "Japan": "F", "Sweden": "F", "Tunisia": "F",
+  "Belgium": "G", "Egypt": "G", "Iran": "G", "New Zealand": "G",
+  "Spain": "H", "Uruguay": "H", "Cape Verde": "H", "Saudi Arabia": "H",
+  "France": "I", "Norway": "I", "Senegal": "I", "Iraq": "I",
+  "Argentina": "J", "Algeria": "J", "Austria": "J", "Jordan": "J",
+  "Portugal": "K", "Colombia": "K", "Uzbekistan": "K", "Congo DR": "K",
+  "Croatia": "L", "England": "L", "Ghana": "L", "Panama": "L"
+};
+
+const GROUPS = {};
+for (const team in TEAMS) {
+  const g = TEAMS[team];
+  if (!GROUPS[g]) GROUPS[g] = [];
+  GROUPS[g].push(team);
+}
+
+// =====================================================
+// RESULTS STATE
+// =====================================================
+// realResults will be loaded from Firebase
+// shape: { groups: { A: {first, second, third, fourth}, ...}, knockouts: { "r32-0": "TeamName", ... } }
+let realResults = { groups: {}, knockouts: {} };
+
+// =====================================================
+// LOAD EXISTING RESULTS FROM FIREBASE
+// =====================================================
+async function loadAdmin() {
+  // Wait for Firebase
+  let attempts = 0;
+  while (!window.firebaseDB && attempts < 30) {
+    await new Promise(r => setTimeout(r, 100));
+    attempts++;
+  }
+  if (!window.firebaseDB) {
+    setStatus("Failed to connect to database", "danger");
+    return;
+  }
+
+  try {
+    // Load existing results from Firebase
+    const resultsDoc = window.firebaseDoc(window.firebaseDB, "results", "current");
+    const snap = await window.firebaseGetDoc(resultsDoc);
+    if (snap.exists()) {
+      const data = snap.data();
+      realResults = {
+        groups: data.groups || {},
+        knockouts: data.knockouts || {}
+      };
+    }
+
+    // Load brackets for stats
+    const bracketsCol = window.firebaseColl(window.firebaseDB, "brackets");
+    const bracketsSnap = await window.firebaseGetDocs(bracketsCol);
+    const brackets = [];
+    bracketsSnap.forEach(d => brackets.push(d.data()));
+
+    renderStats(brackets);
+    renderGroups();
+    renderKnockouts();
+    setStatus("Loaded", "success");
+  } catch (e) {
+    console.error(e);
+    setStatus("Error loading data: " + e.message, "danger");
+  }
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById("globalStatus");
+  el.textContent = msg;
+  el.className = "global-status " + (type || "pending");
+}
+
+// =====================================================
+// STATS
+// =====================================================
+function renderStats(brackets) {
+  const grid = document.getElementById("statsGrid");
+  document.getElementById("statsCount").textContent = brackets.length + " brackets";
+
+  if (brackets.length === 0) {
+    grid.innerHTML = `<div class="stat-card">
+      <div class="stat-label">No brackets yet</div>
+      <div class="stat-value">--</div>
+      <div class="stat-detail">Submissions will appear here</div>
+    </div>`;
+    return;
+  }
+
+  // Calculate stats
+  const championCounts = {};
+  brackets.forEach(b => {
+    const c = b.champion || (b.knockouts && b.knockouts["final-0"]);
+    if (c) championCounts[c] = (championCounts[c] || 0) + 1;
+  });
+
+  const sortedChamps = Object.entries(championCounts).sort((a, b) => b[1] - a[1]);
+  const topChamp = sortedChamps[0];
+  const uniqueChamps = sortedChamps.length;
+
+  // Earliest and latest submitters
+  const sortedByDate = [...brackets].sort((a, b) => {
+    const aT = a.submittedAt && a.submittedAt.seconds ? a.submittedAt.seconds : 0;
+    const bT = b.submittedAt && b.submittedAt.seconds ? b.submittedAt.seconds : 0;
+    return aT - bT;
+  });
+  const earliest = sortedByDate[0];
+  const latest = sortedByDate[sortedByDate.length - 1];
+
+  function fmtDate(b) {
+    if (!b.submittedAt || !b.submittedAt.seconds) return "--";
+    return new Date(b.submittedAt.seconds * 1000).toLocaleDateString();
+  }
+
+  grid.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total brackets</div>
+      <div class="stat-value accent">${brackets.length}</div>
+      <div class="stat-detail">Submitted so far</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Most popular champion</div>
+      <div class="stat-value">${topChamp ? topChamp[0] : "--"}</div>
+      <div class="stat-detail">${topChamp ? topChamp[1] + " pick" + (topChamp[1] > 1 ? "s" : "") + " (" + Math.round(topChamp[1]/brackets.length*100) + "%)" : ""}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Unique champion picks</div>
+      <div class="stat-value">${uniqueChamps}</div>
+      <div class="stat-detail">Different teams picked</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Earliest submitter</div>
+      <div class="stat-value" style="font-size:18px;">${earliest ? earliest.name : "--"}</div>
+      <div class="stat-detail">${fmtDate(earliest)}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Latest submitter</div>
+      <div class="stat-value" style="font-size:18px;">${latest ? latest.name : "--"}</div>
+      <div class="stat-detail">${fmtDate(latest)}</div>
+    </div>
+  `;
+}
+
+// =====================================================
+// RENDER GROUPS
+// =====================================================
+function renderGroups() {
+  const grid = document.getElementById("groupsGrid");
+  grid.innerHTML = "";
+
+  Object.keys(GROUPS).sort().forEach(g => {
+    const teams = GROUPS[g];
+    const existing = realResults.groups[g] || {};
+    const isSaved = existing.first && existing.second;
+
+    const card = document.createElement("div");
+    card.className = "group-card" + (isSaved ? " is-saved" : "");
+
+    let html = `<div class="group-title">
+      <span>Group ${g}</span>
+      ${isSaved ? '<span class="group-saved-tag">✓ Saved</span>' : ''}
+    </div>`;
+
+    const positions = [
+      { key: "first", label: "1st", cls: "first" },
+      { key: "second", label: "2nd", cls: "" },
+      { key: "third", label: "3rd", cls: "" },
+      { key: "fourth", label: "4th", cls: "" }
+    ];
+
+    positions.forEach(pos => {
+      html += `<div class="group-row">
+        <span class="group-pos ${pos.cls}">${pos.label}</span>
+        <select data-group="${g}" data-pos="${pos.key}">
+          <option value="">Pick team...</option>
+          ${teams.map(t => `<option value="${t}" ${existing[pos.key] === t ? 'selected' : ''}>${t}</option>`).join("")}
+        </select>
+      </div>`;
+    });
+
+    html += `<button class="save-btn" data-save-group="${g}">${isSaved ? '✓ Saved · Update' : 'Save Group ' + g}</button>`;
+
+    card.innerHTML = html;
+    grid.appendChild(card);
+  });
+
+  // Wire up save buttons
+  grid.querySelectorAll("[data-save-group]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const g = btn.dataset.saveGroup;
+      const selects = grid.querySelectorAll(`select[data-group="${g}"]`);
+      const standings = {};
+      let hasError = false;
+      const picked = new Set();
+      selects.forEach(s => {
+        const v = s.value;
+        if (!v) { hasError = true; return; }
+        if (picked.has(v)) { hasError = true; return; }
+        picked.add(v);
+        standings[s.dataset.pos] = v;
+      });
+      if (hasError) {
+        alert("Pick all 4 teams (no duplicates)");
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+      realResults.groups[g] = standings;
+      await saveResultsToFirebase();
+      btn.textContent = "✓ Saved";
+      btn.disabled = false;
+      btn.closest(".group-card").classList.add("is-saved");
+      const titleEl = btn.closest(".group-card").querySelector(".group-title");
+      if (!titleEl.querySelector(".group-saved-tag")) {
+        titleEl.innerHTML += '<span class="group-saved-tag">✓ Saved</span>';
+      }
+      // Re-render knockouts since they depend on group results
+      renderKnockouts();
+    });
+  });
+}
+
+// =====================================================
+// KNOCKOUT BRACKET STRUCTURE (matches the user bracket)
+// =====================================================
+const R32_STRUCTURE = [
+  { id: 0,  a: "B-2", b: "A-2" },
+  { id: 1,  a: "E-1", b: "3rd" },
+  { id: 2,  a: "F-1", b: "C-2" },
+  { id: 3,  a: "C-1", b: "F-2" },
+  { id: 4,  a: "I-1", b: "3rd" },
+  { id: 5,  a: "E-2", b: "I-2" },
+  { id: 6,  a: "A-1", b: "3rd" },
+  { id: 7,  a: "L-1", b: "3rd" },
+  { id: 8,  a: "D-1", b: "3rd" },
+  { id: 9,  a: "G-1", b: "3rd" },
+  { id: 10, a: "K-2", b: "L-2" },
+  { id: 11, a: "H-1", b: "J-2" },
+  { id: 12, a: "B-1", b: "3rd" },
+  { id: 13, a: "J-1", b: "H-2" },
+  { id: 14, a: "K-1", b: "3rd" },
+  { id: 15, a: "D-2", b: "G-2" }
+];
+
+const R16_PAIRS = [
+  { id: 0, fromA: 1, fromB: 4 },
+  { id: 1, fromA: 0, fromB: 2 },
+  { id: 2, fromA: 3, fromB: 5 },
+  { id: 3, fromA: 6, fromB: 7 },
+  { id: 4, fromA: 10, fromB: 11 },
+  { id: 5, fromA: 8, fromB: 9 },
+  { id: 6, fromA: 13, fromB: 15 },
+  { id: 7, fromA: 12, fromB: 14 }
+];
+const QF_PAIRS = [
+  { id: 0, fromA: 0, fromB: 1 },
+  { id: 1, fromA: 4, fromB: 5 },
+  { id: 2, fromA: 2, fromB: 3 },
+  { id: 3, fromA: 6, fromB: 7 }
+];
+const SF_PAIRS = [
+  { id: 0, fromA: 0, fromB: 1 },
+  { id: 1, fromA: 2, fromB: 3 }
+];
+
+function resolveTeam(source) {
+  if (source === "3rd") return null;
+  const [group, pos] = source.split("-");
+  const g = realResults.groups[group];
+  if (!g) return null;
+  return pos === "1" ? g.first : g.second;
+}
+
+// =====================================================
+// RENDER KNOCKOUTS
+// =====================================================
+function renderKnockouts() {
+  // R32
+  renderR32();
+  renderKnockoutRound("koR16", "r16", R16_PAIRS, "r32");
+  renderKnockoutRound("koQF", "qf", QF_PAIRS, "r16");
+  renderKnockoutRound("koSF", "sf", SF_PAIRS, "qf");
+  renderFinal();
+}
+
+function renderR32() {
+  const grid = document.getElementById("koR32");
+  grid.innerHTML = "";
+
+  // Get all teams that could be 3rd place (i.e. all teams marked as "third" in any group)
+  const thirdPlaceTeams = [];
+  for (const g in realResults.groups) {
+    if (realResults.groups[g].third) {
+      thirdPlaceTeams.push(realResults.groups[g].third);
+    }
+  }
+
+  R32_STRUCTURE.forEach(match => {
+    const teamA = resolveTeam(match.a);
+    const teamBResolved = resolveTeam(match.b);
+
+    const matchKey = `r32-${match.id}`;
+    const existingWinner = realResults.knockouts[matchKey];
+    const existingThird = realResults.knockouts[matchKey + "_third"];
+    const isSaved = !!existingWinner;
+
+    const div = document.createElement("div");
+    div.className = "ko-card" + (isSaved ? " is-saved" : "");
+
+    let html = `<div class="ko-id">
+      <span>M${73 + match.id} · R32</span>
+      ${isSaved ? '<span class="saved-tag">✓</span>' : ''}
+    </div>`;
+
+    if (!teamA || (match.b !== "3rd" && !teamBResolved)) {
+      html += `<div class="ko-teams">Save groups first to enable this match</div>`;
+      html += `<button class="save-btn" disabled>Locked</button>`;
+      div.innerHTML = html;
+      grid.appendChild(div);
+      return;
+    }
+
+    let teamB;
+    if (match.b === "3rd") {
+      // Show third-place dropdown
+      html += `<div class="ko-teams">${teamA} vs <strong>3rd-place team</strong></div>`;
+      html += `<select class="ko-winner-select" data-match="${matchKey}" data-third="true">
+        <option value="">Pick 3rd place team in this slot...</option>
+        ${thirdPlaceTeams.map(t => `<option value="${t}" ${existingThird === t ? 'selected' : ''}>${t}</option>`).join("")}
+      </select>`;
+      teamB = existingThird;
+    } else {
+      teamB = teamBResolved;
+    }
+
+    if (teamB) {
+      html += `<div class="ko-teams" style="margin-top:6px;">${teamA} vs ${teamB}</div>`;
+      html += `<select class="ko-winner-select" data-match="${matchKey}">
+        <option value="">Pick winner...</option>
+        <option value="${teamA}" ${existingWinner === teamA ? 'selected' : ''}>${teamA}</option>
+        <option value="${teamB}" ${existingWinner === teamB ? 'selected' : ''}>${teamB}</option>
+      </select>`;
+      html += `<button class="save-btn" data-save-match="${matchKey}">${isSaved ? '✓ Saved · Update' : 'Save match'}</button>`;
+    }
+
+    div.innerHTML = html;
+    grid.appendChild(div);
+  });
+
+  wireKnockoutHandlers(grid);
+}
+
+function renderKnockoutRound(containerId, prefix, pairs, sourcePrefix) {
+  const grid = document.getElementById(containerId);
+  grid.innerHTML = "";
+
+  pairs.forEach(pair => {
+    const teamA = realResults.knockouts[`${sourcePrefix}-${pair.fromA}`];
+    const teamB = realResults.knockouts[`${sourcePrefix}-${pair.fromB}`];
+    const matchKey = `${prefix}-${pair.id}`;
+    const existingWinner = realResults.knockouts[matchKey];
+    const isSaved = !!existingWinner;
+
+    const div = document.createElement("div");
+    div.className = "ko-card" + (isSaved ? " is-saved" : "");
+
+    let html = `<div class="ko-id">
+      <span>${prefix.toUpperCase()} #${pair.id + 1}</span>
+      ${isSaved ? '<span class="saved-tag">✓</span>' : ''}
+    </div>`;
+
+    if (!teamA || !teamB) {
+      html += `<div class="ko-teams">Save earlier matches first</div>`;
+      html += `<button class="save-btn" disabled>Locked</button>`;
+      div.innerHTML = html;
+      grid.appendChild(div);
+      return;
+    }
+
+    html += `<div class="ko-teams">${teamA} vs ${teamB}</div>`;
+    html += `<select class="ko-winner-select" data-match="${matchKey}">
+      <option value="">Pick winner...</option>
+      <option value="${teamA}" ${existingWinner === teamA ? 'selected' : ''}>${teamA}</option>
+      <option value="${teamB}" ${existingWinner === teamB ? 'selected' : ''}>${teamB}</option>
+    </select>`;
+    html += `<button class="save-btn" data-save-match="${matchKey}">${isSaved ? '✓ Saved · Update' : 'Save match'}</button>`;
+
+    div.innerHTML = html;
+    grid.appendChild(div);
+  });
+
+  wireKnockoutHandlers(grid);
+}
+
+function renderFinal() {
+  const grid = document.getElementById("koFinal");
+  grid.innerHTML = "";
+
+  const teamA = realResults.knockouts["sf-0"];
+  const teamB = realResults.knockouts["sf-1"];
+  const matchKey = "final-0";
+  const existingWinner = realResults.knockouts[matchKey];
+  const isSaved = !!existingWinner;
+
+  const div = document.createElement("div");
+  div.className = "ko-card" + (isSaved ? " is-saved" : "");
+
+  let html = `<div class="ko-id">
+    <span>FINAL · The big one 🏆</span>
+    ${isSaved ? '<span class="saved-tag">✓ CHAMPION SET</span>' : ''}
+  </div>`;
+
+  if (!teamA || !teamB) {
+    html += `<div class="ko-teams">Save semifinals first</div>`;
+    html += `<button class="save-btn" disabled>Locked</button>`;
+    div.innerHTML = html;
+    grid.appendChild(div);
+    return;
+  }
+
+  html += `<div class="ko-teams">${teamA} vs ${teamB}</div>`;
+  html += `<select class="ko-winner-select" data-match="${matchKey}">
+    <option value="">Pick winner...</option>
+    <option value="${teamA}" ${existingWinner === teamA ? 'selected' : ''}>${teamA}</option>
+    <option value="${teamB}" ${existingWinner === teamB ? 'selected' : ''}>${teamB}</option>
+  </select>`;
+  html += `<button class="save-btn" data-save-match="${matchKey}">${isSaved ? '✓ Champion saved · Update' : 'Crown the champion'}</button>`;
+
+  div.innerHTML = html;
+  grid.appendChild(div);
+
+  wireKnockoutHandlers(grid);
+}
+
+function wireKnockoutHandlers(container) {
+  // 3rd place selectors
+  container.querySelectorAll('select[data-third="true"]').forEach(sel => {
+    sel.addEventListener("change", () => {
+      const matchKey = sel.dataset.match;
+      const team = sel.value;
+      if (team) {
+        realResults.knockouts[matchKey + "_third"] = team;
+      } else {
+        delete realResults.knockouts[matchKey + "_third"];
+      }
+      saveResultsToFirebase().then(() => renderR32());
+    });
+  });
+
+  // Save match buttons
+  container.querySelectorAll("[data-save-match]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const matchKey = btn.dataset.saveMatch;
+      const select = container.querySelector(`select[data-match="${matchKey}"]:not([data-third])`);
+      const winner = select ? select.value : "";
+      if (!winner) {
+        alert("Pick a winner first");
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+      realResults.knockouts[matchKey] = winner;
+      await saveResultsToFirebase();
+      btn.textContent = "✓ Saved";
+      // Re-render next rounds
+      renderKnockouts();
+    });
+  });
+}
+
+// =====================================================
+// SAVE TO FIREBASE
+// =====================================================
+async function saveResultsToFirebase() {
+  try {
+    const resultsDoc = window.firebaseDoc(window.firebaseDB, "results", "current");
+    await window.firebaseSetDoc(resultsDoc, {
+      groups: realResults.groups,
+      knockouts: realResults.knockouts,
+      lastUpdated: new Date()
+    });
+    setStatus("Saved · " + new Date().toLocaleTimeString(), "success");
+  } catch (e) {
+    console.error(e);
+    setStatus("Save failed: " + e.message, "danger");
+  }
+}
+
+// Save all button
+document.getElementById("saveAllBtn").addEventListener("click", async () => {
+  await saveResultsToFirebase();
+});
+
+</script>
+
+</body>
+</html>
